@@ -16,7 +16,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
-let firstRun = true;
+let firstRun = new Set();
 export default async function costco(url, interval) {
     try {
         var res = await axios.get(url);
@@ -26,9 +26,9 @@ export default async function costco(url, interval) {
             let title = doc.getElementsByTagName('title')[0].innerHTML
             let inventory = doc.getElementById('add-to-cart-btn').getAttribute('value')
 
-            if (inventory == 'Out of Stock' && firstRun) {
+            if (inventory == 'Out of Stock' && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at Costco. Will keep retrying every', interval.value, interval.unit)
-                firstRun = false;
+                firstRun.add(url)
             }
             else if (inventory != 'Out of Stock') {
                 threeBeeps();

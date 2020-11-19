@@ -16,7 +16,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
-let firstRun = true;
+let firstRun = new Set();
 export default async function amazon(url, interval) {
     try {
         const { data } = await axios.get(url, {
@@ -33,9 +33,9 @@ export default async function amazon(url, interval) {
         let inventory = doc.getElementById('add-to-cart-button')
 
         if (inventory != null) inventory = inventory.getAttribute('value')
-        if (inventory != 'Add to Cart' && firstRun) {
+        if (inventory != 'Add to Cart' && !firstRun.has(url)) {
             console.info(moment().format('LTS') + ': "' + title + '" not in stock at Amazon. Will keep retrying every', interval.value, interval.unit)
-            firstRun = false;
+            firstRun.add(url)
         }
         else if (inventory != null && inventory == 'Add to Cart') {
             threeBeeps();

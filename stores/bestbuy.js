@@ -16,7 +16,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
-let firstRun = true;
+let firstRun = new Set();
 export default async function bestbuy(url, interval) {
     try {
         var res = await axios.get(url);
@@ -25,9 +25,9 @@ export default async function bestbuy(url, interval) {
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent
             let inventory = doc.getElementsByClassName('btn btn-disabled btn-lg btn-block add-to-cart-button')[0].textContent
-            if (inventory == 'Sold Out' && firstRun) {
+            if (inventory == 'Sold Out' && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at BestBuy. Will keep retrying every', interval.value, interval.unit)
-                firstRun = false;
+                firstRun.add(url)
             }
             else if (inventory == 'Add to Cart') {
                 threeBeeps();
