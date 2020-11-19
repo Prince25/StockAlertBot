@@ -1,0 +1,48 @@
+import { fileURLToPath } from "url";
+import fs from "fs";
+import threeBeeps from "../beep.js"
+import axios from "axios";
+import moment from "moment";
+import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
+
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+    let interval = {
+        unit: 'seconds',  // seconds, m: minutes, h: hours
+        value: 5
+    }
+    let url = 'https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html'
+    costco(url, interval);
+}
+
+
+let firstRun = true;
+export default async function costco(url, interval) {
+    try {
+        var res = await axios.get(url);
+        if (res.status === 200) {
+            let parser = new DomParser();
+            let doc = parser.parseFromString(res.data, 'text/html');
+            let title = doc.getElementsByTagName('title')[0].innerHTML
+            let inventory = doc.getElementById('add-to-cart-btn').getAttribute('value')
+
+            if (inventory == 'Out of Stock' && firstRun) {
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Costco. Will keep retrying every', interval.value, interval.unit)
+                firstRun = false;
+            }
+            else if (inventory != 'Out of Stock') {
+                threeBeeps();
+                console.info(moment().format('LTS') + ': ***** In Stock at Costco *****: ', title);
+                console.info(url);
+            }
+        } else {
+            console.info(moment().format('LTS') + ': Error occured checking ' + title + '. Retrying in', interval.value, interval.unit)
+        }
+
+    } catch (e) {
+        console.log('Unhandled error. Written to logCostco.log')
+        fs.writeFile('logCostco.log', e, function(err, result) {
+            if(err) console.log('File write error: ', err);
+        });
+    }
+};
