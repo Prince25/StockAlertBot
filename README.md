@@ -1,8 +1,7 @@
 # InventoryAlertBot
 Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiciously high markup price, I decided to at least attempt to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s).
 
-Buy me a [pizza](buymeacoff.ee/PrinceSingh) if you'd like to see this project expanded and support me. :)
-<a href="https://www.buymeacoffee.com/PrinceSingh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+Buy me a [coffee](buymeacoff.ee/PrinceSingh) if you'd like to see this project expanded and support me. :) <a href="https://www.buymeacoffee.com/PrinceSingh" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 
 > How does it work?
 
