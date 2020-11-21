@@ -11,10 +11,10 @@ import newegg from './stores/newegg.js'
 const URLS = [
     "https://www.amazon.com/gp/product/B08164VTWH/",
     "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
-    // "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
-    // "https://www.bestbuy.com/site/sony-playstation-5-console/6426149.p?skuId=6426149",
-    // "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
-    // "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
+    "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
+    "https://www.bestbuy.com/site/sony-playstation-5-console/6426149.p?skuId=6426149",
+    "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
+    "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
     "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
 ]
 
@@ -23,6 +23,9 @@ const INTERVAL = {
     unit: 'seconds',  // seconds, m: minutes, h: hours
     value: 25
 }
+
+// Separates the check between Amazon items by this value 
+const AMAZON_DELAY = 25;
 
 
 // https://www.XXX.com/... -> XXX
@@ -56,20 +59,22 @@ async function checkStore(storeFunc, url) {
 async function checkStoreWithDelay(item) {
     let timer = (firstRun) => {
         return new Promise(
-            function(resolve) { 
-                if (!firstRun) item.storeFunc(item.url, item.interval, resolve); 
-                else resolve(item.interval.value); 
+            function(resolve) {
+                item.storeFunc(item.url, item.interval, INTERVAL.value, firstRun, resolve); 
             }
         );
     }
 
     timer(item.firstRun).then(
-        function(interval) {
-            item.firstRun = false;
-            item.interval.value = interval;
+        async function(interval) {
+            if (item.interval.value != interval) {
+                item.firstRun = true; 
+                item.interval.value = interval;
+            } else item.firstRun = false;
+
             switch(item.interval.unit) {
                 case 'seconds':
-                    setTimeout(checkStoreWithDelay, item.interval.value * 1000, item)
+                    await setTimeout(checkStoreWithDelay, item.interval.value * 1000, item)
                     break;
 
                 case 'minutes':
@@ -129,4 +134,20 @@ URLS.forEach(url => {
     }
 });
 
-if (amazonItems.length > 0) amazonItems.forEach(item => checkStoreWithDelay(item));
+if (amazonItems.length > 0) 
+    amazonItems.forEach(
+        (item, idx) => {
+            switch(INTERVAL.unit) {
+                case 'seconds':
+                    setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * idx, item);
+                    break;
+
+                case 'minutes':
+                    setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * 60 * idx, item);
+                    break;
+
+                case 'hours':
+                    setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * 60 * 60 * idx, item);
+                    break;
+            }
+        });

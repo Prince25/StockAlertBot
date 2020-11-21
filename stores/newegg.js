@@ -18,9 +18,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 function writeErrorToFile(error) {
     fs.writeFile('logNewegg.log', error, function(e, result) {
-        if(e) console.log('File write error: ', e);
+        if(e) console.error('File write error: ', e);
     });
-    console.log('Unhandled error. Written to logNewegg.log')
+    console.error('Unhandled error. Written to logNewegg.log')
 }
 
 
@@ -32,7 +32,7 @@ export default async function newegg(url, interval) {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'
             }
         }).catch(async function (error) {
-            if (error.response.status == 503) console.log('Newegg 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
+            if (error.response.status == 503) console.error('Newegg 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
             else writeErrorToFile(error);
         });
 

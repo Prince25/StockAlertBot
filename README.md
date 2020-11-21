@@ -11,7 +11,7 @@ Enter the product URLs and set how often you want the program to check if those 
 > What stores/wesbites are supported?
 
 Currently, the following stores are supported:
-* Amazon
+* Amazon (Fails at low interval rates)
 * Best Buy
 * Costco
 * Microcenter
@@ -43,6 +43,7 @@ Currently, the following stores are supported:
     * Walmart
     * Gamestop
 * Add GUI - Make it easier to use
-* Initially create seperation between intervals for Amazon items  
+* Add color to console  
+* ~~Initially create seperation between intervals for Amazon items~~
 * ~~Add a way to have independent delay timers for Amazon~~
 * ~~Fix~~ Find Bugs

@@ -40,9 +40,9 @@ export default async function costco(url, interval) {
         }
 
     } catch (e) {
-        console.log('Unhandled error. Written to logCostco.log')
+        console.error('Unhandled error. Written to logCostco.log')
         fs.writeFile('logCostco.log', e, function(err, result) {
-            if(err) console.log('File write error: ', err);
+            if(err) console.error('File write error: ', err);
         });
     }
 };

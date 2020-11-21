@@ -41,9 +41,9 @@ export default async function bestbuy(url, interval) {
         }
 
     } catch (e) {
-        console.log('Unhandled error. Written to logBestbuy.log')
+        console.info('Unhandled error. Written to logBestbuy.log')
         fs.writeFile('logBestbuy.log', e, function(err, result) {
-            if(err) console.log('File write error: ', err);
+            if(err) console.info('File write error: ', err);
         });
     }
 };

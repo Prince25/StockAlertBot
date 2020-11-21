@@ -21,7 +21,7 @@ export default async function microcenter(url, interval) {
     let productID = url.match(/(?<=product\/).*(?=\/)/i)[0]
     try {
         const { data } = await axios.get(url).catch(function (error) {
-            console.log(error);
+            console.info(error);
         });
         
         let parser = new DomParser();
@@ -39,9 +39,9 @@ export default async function microcenter(url, interval) {
             console.info(url);
         }
     } catch (e) {
-        console.log('Unhandled error. Written to logMicrocenter.log')
+        console.error('Unhandled error. Written to logMicrocenter.log')
         fs.writeFile('logMicrocenter.log', e, function(err, result) {
-            if(err) console.log('File write error: ', err);
+            if(err) console.error('File write error: ', err);
         });
     }
 };
