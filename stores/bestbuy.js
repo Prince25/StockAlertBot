@@ -20,11 +20,13 @@ let firstRun = new Set();
 export default async function bestbuy(url, interval) {
     try {
         var res = await axios.get(url);
-        if (res.status === 200) {
+        if (res && res.status === 200) {
             let parser = new DomParser();
             let doc = parser.parseFromString(res.data, 'text/html');
-            let title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent
-            let inventory = doc.getElementsByClassName('btn btn-disabled btn-lg btn-block add-to-cart-button')[0].textContent
+            let title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent.trim().slice(0, 150)
+            let inventory = doc.getElementsByClassName('btn btn-disabled btn-lg btn-block add-to-cart-button')
+
+            if (inventory.length > 0) inventory = inventory[0].textContent
             if (inventory == 'Sold Out' && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at BestBuy. Will keep retrying every', interval.value, interval.unit)
                 firstRun.add(url)

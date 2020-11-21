@@ -26,7 +26,7 @@ export default async function microcenter(url, interval) {
         
         let parser = new DomParser();
         let doc = parser.parseFromString(data, 'text/html');
-        let title = doc.getElementsByClassName('ProductLink_' + productID)[0].textContent
+        let title = doc.getElementsByClassName('ProductLink_' + productID)[0].textContent.trim().slice(0, 150)
         let inventory = doc.getElementsByClassName('inventoryCnt')[0].textContent
         
         if (inventory == 'Sold Out' && !firstRun.has(url)) {

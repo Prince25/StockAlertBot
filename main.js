@@ -2,20 +2,20 @@ import amazon from './stores/amazon.js'
 import bestbuy from './stores/bestbuy.js'
 import costco from './stores/costco.js'
 import microcenter from './stores/microcenter.js'
+import newegg from './stores/newegg.js'
 
 
 // All the products to check
-// Current domains supported: Amazon, Best Buy, Costco, Microcenter
+// Current domains supported: Amazon, Best Buy, Costco, Microcenter, Newegg
 // Format: https://www.XXX.com/...
 const URLS = [
-    "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
-    "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
-    "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
     "https://www.amazon.com/gp/product/B08164VTWH/",
-    // "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
+    "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
+    // "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
+    // "https://www.bestbuy.com/site/sony-playstation-5-console/6426149.p?skuId=6426149",
+    // "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
+    // "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
     "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
-    "https://www.amazon.com/Shark-R1001AE-Self-Empty-Connected-Capacity/dp/B07S864GPW"
-    // 'https://www.amazon.com/Coredy-Super-Strong-Automatic-Self-Charging-Medium-Pile/dp/B07NPNN57S'
 ]
 
 // How often to check for products. Too often may be dangerous, especially for Amazon.
@@ -35,21 +35,63 @@ function getDomainName(url) {
 
 // Calls the given store function with the set interval 
 async function checkStore(storeFunc, url) {
-    let timer;
     switch(INTERVAL.unit) {
         case 'seconds':
-            timer = setInterval(storeFunc, INTERVAL.value * 1000, url, INTERVAL)
+            setInterval(storeFunc, INTERVAL.value * 1000, url, INTERVAL)
             break;
 
         case 'minutes':
-            timer = setInterval(storeFunc, INTERVAL.value * 1000 * 60, url, INTERVAL)
+            setInterval(storeFunc, INTERVAL.value * 1000 * 60, url, INTERVAL)
             break;
 
         case 'hours':
-            timer = setInterval(storeFunc, INTERVAL.value * 1000 * 60 * 60, url, INTERVAL)
+            setInterval(storeFunc, INTERVAL.value * 1000 * 60 * 60, url, INTERVAL)
             break;
     }
 }
+
+
+// Same as checkStore() but adds dynamic delay to interval to help avoid 503 error
+// Takes an item with url, interval, firstRun, and storeFunc properties (see amazonItem() below for an example)
+async function checkStoreWithDelay(item) {
+    let timer = (firstRun) => {
+        return new Promise(
+            function(resolve) { 
+                if (!firstRun) item.storeFunc(item.url, item.interval, resolve); 
+                else resolve(item.interval.value); 
+            }
+        );
+    }
+
+    timer(item.firstRun).then(
+        function(interval) {
+            item.firstRun = false;
+            item.interval.value = interval;
+            switch(item.interval.unit) {
+                case 'seconds':
+                    setTimeout(checkStoreWithDelay, item.interval.value * 1000, item)
+                    break;
+
+                case 'minutes':
+                    setTimeout(checkStoreWithDelay, item.interval.value * 1000 * 60, item)
+                    break;
+
+                case 'hours':
+                    setTimeout(checkStoreWithDelay, item.interval.value * 1000 * 60 * 60, item)
+                    break;
+            }
+        }
+    );
+}
+
+
+let amazonItems = [];
+function amazonItem(url) {
+    this.url = url;
+    this.interval = {...INTERVAL};
+    this.firstRun = true;
+    this.storeFunc = amazon;
+};
 
 
 URLS.forEach(url => {
@@ -62,23 +104,29 @@ URLS.forEach(url => {
     }
     
     switch(storeName) {
-        case 'costco':
-            checkStore(costco, url);
+        case 'amazon':
+            amazonItems.push(new amazonItem(url));
             break;
 
         case 'bestbuy':
             checkStore(bestbuy, url);
             break;
 
-        case 'amazon':
-            checkStore(amazon, url);
+        case 'costco':
+            checkStore(costco, url);
             break;
 
         case 'microcenter':
             checkStore(microcenter, url);
             break;
 
+        case 'newegg':
+            checkStore(newegg, url);
+            break;
+
         default:
             console.error('This store is not supported:', storeName)
     }
-})
+});
+
+if (amazonItems.length > 0) amazonItems.forEach(item => checkStoreWithDelay(item));

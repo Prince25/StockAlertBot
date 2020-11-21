@@ -15,6 +15,7 @@ Currently, the following stores are supported:
 * Best Buy
 * Costco
 * Microcenter
+* Newegg
 
 ![Screenshot](https://i.imgur.com/po6GtU6.png)
 
@@ -38,8 +39,10 @@ Currently, the following stores are supported:
 
 ### Things to work on
 * Add more stores
-    * Newegg
+    * ~~Newegg~~
     * Walmart
     * Gamestop
 * Add GUI - Make it easier to use
+* Initially create seperation between intervals for Amazon items  
+* ~~Add a way to have independent delay timers for Amazon~~
 * ~~Fix~~ Find Bugs

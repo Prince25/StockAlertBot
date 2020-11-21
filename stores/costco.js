@@ -20,10 +20,10 @@ let firstRun = new Set();
 export default async function costco(url, interval) {
     try {
         var res = await axios.get(url);
-        if (res.status === 200) {
+        if (res && res.status === 200) {
             let parser = new DomParser();
             let doc = parser.parseFromString(res.data, 'text/html');
-            let title = doc.getElementsByTagName('title')[0].innerHTML
+            let title = doc.getElementsByTagName('title')[0].innerHTML.trim().slice(0, 150)
             let inventory = doc.getElementById('add-to-cart-btn').getAttribute('value')
 
             if (inventory == 'Out of Stock' && !firstRun.has(url)) {
