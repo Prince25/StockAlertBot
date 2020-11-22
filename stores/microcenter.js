@@ -16,32 +16,44 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
+function writeErrorToFile(error) {
+    fs.writeFile('logMicrocenter.log', error, function(e, result) {
+        if(e) console.error('File write error: ', e);
+    });
+    console.error('Unhandled error. Written to logMicrocenter.log')
+}
+
+
 let firstRun = new Set();
 export default async function microcenter(url, interval) {
     let productID = url.match(/(?<=product\/).*(?=\/)/i)[0]
     try {
-        const { data } = await axios.get(url).catch(function (error) {
-            console.info(error);
+        let res = await axios.get(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'
+            }
+        }).catch(async function (error) {
+            if (error.response.status == 503) console.info(moment().format('LTS') + ': ' +'Microcenter 503 (service unavailable) Error. Changing interval rate for', url)
+            else writeErrorToFile(error);
         });
         
-        let parser = new DomParser();
-        let doc = parser.parseFromString(data, 'text/html');
-        let title = doc.getElementsByClassName('ProductLink_' + productID)[0].textContent.trim().slice(0, 150)
-        let inventory = doc.getElementsByClassName('inventoryCnt')[0].textContent
-        
-        if (inventory == 'Sold Out' && !firstRun.has(url)) {
-            console.info(moment().format('LTS') + ': "' + title + '" not in stock at Microcenter. Will keep retrying every', interval.value, interval.unit)
-            firstRun.add(url)
-        }
-        else if (inventory != 'Sold Out') {
-            threeBeeps();
-            console.info(moment().format('LTS') + ': ***** In Stock at Microcenter *****: ', title);
-            console.info(url);
+        if (res && res.status == 200) {
+            let parser = new DomParser();
+            let doc = parser.parseFromString(res.data, 'text/html');
+            let title = doc.getElementsByClassName('ProductLink_' + productID)[0].textContent.trim().slice(0, 150)
+            let inventory = doc.getElementsByClassName('inventoryCnt')[0].textContent
+            
+            if (inventory == 'Sold Out' && !firstRun.has(url)) {
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Microcenter. Will keep retrying every', interval.value, interval.unit)
+                firstRun.add(url)
+            }
+            else if (inventory != 'Sold Out') {
+                threeBeeps();
+                console.info(moment().format('LTS') + ': ***** In Stock at Microcenter *****: ', title);
+                console.info(url);
+            }
         }
     } catch (e) {
-        console.error('Unhandled error. Written to logMicrocenter.log')
-        fs.writeFile('logMicrocenter.log', e, function(err, result) {
-            if(err) console.error('File write error: ', err);
-        });
+        writeErrorToFile(e);
     }
 };
