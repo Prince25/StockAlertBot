@@ -11,8 +11,9 @@ Enter the product URLs and set how often you want the program to check if those 
 > What stores/wesbites are supported?
 
 Currently, the following stores are supported:
+* AntOnline
 * Amazon (Fails at low interval rates)
-* Best Buy
+* Best Buy (including open-box)
 * Costco
 * Microcenter
 * Newegg
@@ -39,9 +40,10 @@ Currently, the following stores are supported:
 
 ### Things to work on
 * Add more stores
-    * ~~Newegg~~
     * Walmart
     * Gamestop
+    * ~~Newegg~~
+    * ~~AntOnline~~
 * Add GUI - Make it easier to use
 * Add color to console  
 * ~~Initially create seperation between intervals for Amazon items~~

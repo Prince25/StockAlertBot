@@ -1,3 +1,4 @@
+import antonline from './stores/antonline.js'
 import amazon from './stores/amazon.js'
 import bestbuy from './stores/bestbuy.js'
 import costco from './stores/costco.js'
@@ -18,7 +19,8 @@ const URLS = [
     "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
     "https://www.newegg.com/asus-geforce-rtx-3080-rog-strix-rtx3080-o10g-gaming/p/N82E16814126457",
     "https://www.newegg.com/asus-geforce-rtx-3080-tuf-rtx3080-o10g-gaming/p/N82E16814126452",
-    "https://www.newegg.com/p/N82E16868110292"
+    "https://www.newegg.com/p/N82E16868110292",
+    "https://www.antonline.com/Sony/Electronics/Gaming_Devices/Gaming_Consoles/1413553",
 ]
 
 // How often to check for products. Too often may be dangerous, especially for Amazon.
@@ -112,6 +114,10 @@ URLS.forEach(url => {
     }
     
     switch(storeName) {
+        case 'antonline':
+            checkStore(antonline, url);
+            break;
+
         case 'amazon':
             amazonItems.push(new amazonItem(url));
             break;
