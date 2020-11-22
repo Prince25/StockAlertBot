@@ -11,7 +11,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         unit: 'seconds',  // seconds, m: minutes, h: hours
         value: 5
     }
-    let url = 'https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942' 
+    let url = 'https://www.bestbuy.com/site/sony-playstation-5-dualsense-wireless-controller/6430163.p?skuId=6430163' 
     bestbuy(url, interval);
 }
 
@@ -24,18 +24,24 @@ export default async function bestbuy(url, interval) {
             let parser = new DomParser();
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent.trim().slice(0, 150)
-            let inventory = doc.getElementsByClassName('btn btn-disabled btn-lg btn-block add-to-cart-button')
+            let inventory = doc.getElementsByClassName('add-to-cart-button')
+            let open_box = doc.getElementsByClassName('open-box-option__label')
 
             if (inventory.length > 0) inventory = inventory[0].textContent
-            if (inventory == 'Sold Out' && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at BestBuy. Will keep retrying every', interval.value, interval.unit)
-                firstRun.add(url)
+            if (open_box && open_box.length > 0) {
+                threeBeeps();
+                console.info(moment().format('LTS') + ': ***** Open Box at BestBuy *****: ', title);
+                console.info(url);
             }
-            else if (inventory == 'Add to Cart') {
+            if (inventory == 'Add to Cart') {
                 threeBeeps();
                 console.info(moment().format('LTS') + ': ***** In Stock at BestBuy *****: ', title);
                 console.info(url);
             }
+            else if (inventory == 'Sold Out' && !firstRun.has(url)) {
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at BestBuy. Will keep retrying every', interval.value, interval.unit)
+                firstRun.add(url)
+            }    
         } else {
             console.info(moment().format('LTS') + ': Error occured checking ' + title + '. Retrying in', interval.value, interval.unit)
         }
