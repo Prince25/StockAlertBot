@@ -1,3 +1,4 @@
+import { fileURLToPath } from "url";
 import antonline from './stores/antonline.js'
 import amazon from './stores/amazon.js'
 import bestbuy from './stores/bestbuy.js'
@@ -15,7 +16,7 @@ const URLS = [
     "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
     "https://www.bestbuy.com/site/sony-playstation-5-console/6426149.p?skuId=6426149",
     "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
-    "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
+    // "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
     "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
     "https://www.newegg.com/asus-geforce-rtx-3080-rog-strix-rtx3080-o10g-gaming/p/N82E16814126457",
     "https://www.newegg.com/asus-geforce-rtx-3080-tuf-rtx3080-o10g-gaming/p/N82E16814126452",
@@ -29,8 +30,16 @@ const INTERVAL = {
     value: 10
 }
 
+// Opens the product url in the default browser if set to true
+export const OPEN_URL = true;
+
 // Separates the check between Amazon items by this value 
 const AMAZON_DELAY = 25;
+
+
+// Runs main only if this file is executed
+if (process.argv[1] === fileURLToPath(import.meta.url))
+    main();
 
 
 // https://www.XXX.com/... -> XXX
@@ -65,17 +74,23 @@ async function checkStoreWithDelay(item) {
     let timer = (firstRun) => {
         return new Promise(
             function(resolve) {
-                item.storeFunc(item.url, item.interval, INTERVAL.value, firstRun, resolve); 
+                item.storeFunc(item.url, item.interval, INTERVAL.value, firstRun, item.urlOpened, resolve); 
             }
         );
     }
 
     timer(item.firstRun).then(
-        async function(interval) {
+        async function({interval, urlOpened}) {
             if (item.interval.value != interval) {
                 item.firstRun = true; 
                 item.interval.value = interval;
             } else item.firstRun = false;
+
+            if (OPEN_URL && urlOpened && urlOpened != item.urlOpened) {
+                item.urlOpened = true;
+                setTimeout(() => item.urlOpened = false, 1000 * 115)  // Open URL every 2 minutes
+            }
+
 
             switch(item.interval.unit) {
                 case 'seconds':
@@ -95,68 +110,70 @@ async function checkStoreWithDelay(item) {
 }
 
 
-let amazonItems = [];
-function amazonItem(url) {
-    this.url = url;
-    this.interval = {...INTERVAL};
-    this.firstRun = true;
-    this.storeFunc = amazon;
-};
+function main() {
+    let amazonItems = [];
+    function amazonItem(url) {
+        this.url = url;
+        this.interval = {...INTERVAL};
+        this.firstRun = true;
+        this.urlOpened = false;
+        this.storeFunc = amazon;
+    };
 
+    URLS.forEach(url => {
+        let storeName;
+        try {
+            storeName = getDomainName(url);
+        } catch(e) {
+            console.error('Incorrect URL format:', url)
+            console.error(e)
+        }
+        
+        switch(storeName) {
+            case 'antonline':
+                checkStore(antonline, url);
+                break;
 
-URLS.forEach(url => {
-    let storeName;
-    try {
-        storeName = getDomainName(url);
-    } catch(e) {
-        console.error('Incorrect URL format:', url)
-        console.error(e)
-    }
-    
-    switch(storeName) {
-        case 'antonline':
-            checkStore(antonline, url);
-            break;
+            case 'amazon':
+                amazonItems.push(new amazonItem(url));
+                break;
 
-        case 'amazon':
-            amazonItems.push(new amazonItem(url));
-            break;
+            case 'bestbuy':
+                checkStore(bestbuy, url);
+                break;
 
-        case 'bestbuy':
-            checkStore(bestbuy, url);
-            break;
+            case 'costco':
+                checkStore(costco, url);
+                break;
 
-        case 'costco':
-            checkStore(costco, url);
-            break;
+            case 'microcenter':
+                checkStore(microcenter, url);
+                break;
 
-        case 'microcenter':
-            checkStore(microcenter, url);
-            break;
+            case 'newegg':
+                checkStore(newegg, url);
+                break;
 
-        case 'newegg':
-            checkStore(newegg, url);
-            break;
+            default:
+                console.error('This store is not supported:', storeName)
+        }
+    });
 
-        default:
-            console.error('This store is not supported:', storeName)
-    }
-});
+    if (amazonItems.length > 0) 
+        amazonItems.forEach(
+            (item, idx) => {
+                switch(INTERVAL.unit) {
+                    case 'seconds':
+                        setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * idx, item);
+                        break;
 
-if (amazonItems.length > 0) 
-    amazonItems.forEach(
-        (item, idx) => {
-            switch(INTERVAL.unit) {
-                case 'seconds':
-                    setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * idx, item);
-                    break;
+                    case 'minutes':
+                        setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * 60 * idx, item);
+                        break;
 
-                case 'minutes':
-                    setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * 60 * idx, item);
-                    break;
-
-                case 'hours':
-                    setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * 60 * 60 * idx, item);
-                    break;
-            }
-        });
+                    case 'hours':
+                        setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * 60 * 60 * idx, item);
+                        break;
+                }
+            });
+}

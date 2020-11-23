@@ -1,22 +1,25 @@
 import { fileURLToPath } from "url";
+import { OPEN_URL } from '../main.js'
 import fs from "fs";
 import threeBeeps from "../beep.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
+import open from "open"
 
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     let interval = {
         unit: 'seconds',  // seconds, m: minutes, h: hours
-        value: 5
+        value: 30
     }
-    let url = 'https://www.antonline.com/Sony/Electronics/Gaming_Devices/Gaming_Consoles/1413553'
+    let url = 'https://www.antonline.com/Sony/Electronics/Audio_Electronics/Headsets+Earsets/1398728'
     antonline(url, interval);
 }
 
 
 let firstRun = new Set();
+let urlOpened = false;
 export default async function antonline(url, interval) {
     try {
         var res = await axios.get(url);
@@ -33,6 +36,7 @@ export default async function antonline(url, interval) {
             }
             else if (inventory && inventory == 'Add to Cart') {
                 threeBeeps();
+                if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; setTimeout(() => urlOpened = false, 1000 * 115) }  // Open URL every 2 minutes
                 console.info(moment().format('LTS') + ': ***** In Stock at AntOnline *****: ', title);
                 console.info(url);
             }

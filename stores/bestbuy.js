@@ -1,9 +1,11 @@
 import { fileURLToPath } from "url";
+import { OPEN_URL } from '../main.js'
 import fs from 'fs';
 import threeBeeps from "../beep.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
+import open from "open"
 
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -17,6 +19,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 
 let firstRun = new Set();
+let urlOpened = false;
 export default async function bestbuy(url, interval) {
     try {
         var res = await axios.get(url);
@@ -30,11 +33,13 @@ export default async function bestbuy(url, interval) {
             if (inventory.length > 0) inventory = inventory[0].textContent
             if (open_box && open_box.length > 0) {
                 threeBeeps();
+                if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; setTimeout(() => urlOpened = false, 1000 * 115) }  // Open URL every 2 minutes
                 console.info(moment().format('LTS') + ': ***** Open Box at BestBuy *****: ', title);
                 console.info(url);
             }
             if (inventory == 'Add to Cart') {
                 threeBeeps();
+                if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; setTimeout(() => urlOpened = false, 1000 * 115) }  // Open URL every 2 minutes
                 console.info(moment().format('LTS') + ': ***** In Stock at BestBuy *****: ', title);
                 console.info(url);
             }

@@ -1,9 +1,11 @@
 import { fileURLToPath } from "url";
+import { OPEN_URL } from '../main.js'
 import fs from "fs";
 import threeBeeps from "../beep.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
+import open from "open"
 
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -12,7 +14,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         value: 25           // Amazon detects bots if too low, do > 10 seconds
     }
     let url = 'https://www.amazon.com/Coredy-Super-Strong-Automatic-Self-Charging-Medium-Pile/dp/B07NPNN57S'
-    amazon(url, interval);
+    amazon(url, interval, interval.value, true, false, () => null);
 }
 
 
@@ -24,7 +26,7 @@ function writeErrorToFile(error) {
 }
 
 
-export default async function amazon(url, interval, originalIntervalValue, firstRun, resolve) {
+export default async function amazon(url, interval, originalIntervalValue, firstRun, urlOpened, resolve) {
     try {
         let res = await axios.get(url, {
             headers: {
@@ -47,12 +49,13 @@ export default async function amazon(url, interval, originalIntervalValue, first
             }
             else if (inventory != null && inventory == 'Add to Cart') {
                 threeBeeps();
+                if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; }
                 console.info(moment().format('LTS') + ': ***** In Stock at Amazon *****: ', title);
                 console.info(url);
             }
-            resolve(interval.value);
+            resolve({interval: interval.value, urlOpened: urlOpened});
         }
-        else resolve(Math.floor(interval.value + Math.random() * originalIntervalValue))
+        else resolve({interval: Math.floor(interval.value + Math.random() * originalIntervalValue), urlOpened: urlOpened})
 
     } catch (e) {
         writeErrorToFile(e)

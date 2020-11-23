@@ -1,9 +1,11 @@
 import { fileURLToPath } from "url";
+import { OPEN_URL } from '../main.js'
 import fs from "fs";
 import threeBeeps from "../beep.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
+import open from "open"
 
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -17,6 +19,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 
 let firstRun = new Set();
+let urlOpened = false;
 export default async function costco(url, interval) {
     try {
         var res = await axios.get(url);
@@ -32,6 +35,7 @@ export default async function costco(url, interval) {
             }
             else if (inventory != 'Out of Stock') {
                 threeBeeps();
+                if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; setTimeout(() => urlOpened = false, 1000 * 115) }  // Open URL every 2 minutes
                 console.info(moment().format('LTS') + ': ***** In Stock at Costco *****: ', title);
                 console.info(url);
             }
