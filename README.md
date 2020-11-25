@@ -6,7 +6,7 @@ Buy me a [pizza](buymeacoff.ee/PrinceSingh) if you'd like to see this project ex
 <br><br>
 > How does it work?
 
-Enter the product URLs, set how often you want the program to check if those products are in stock, and if you want the product page to normal automatically in your default web browser when it gets in stock. When an item becomes available, it will notify you through both text on console and three auditory beeps.
+Enter the product URLs and set how often you want the program to check if those products are in stock. When an item becomes available, it will notify you through both text on console and three auditory beeps as well as opening the product page automatically in your default web browser if you allowed it to do so.
 
 > What stores/wesbites are supported?
 
