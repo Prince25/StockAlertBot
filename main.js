@@ -1,18 +1,16 @@
-import { fileURLToPath } from "url";
-import antonline from './stores/antonline.js'
-import amazon from './stores/amazon.js'
-import bestbuy from './stores/bestbuy.js'
-import costco from './stores/costco.js'
-import microcenter from './stores/microcenter.js'
-import newegg from './stores/newegg.js'
 
+/*
+    **************************************** EDIT THESE ****************************************
+    *************************************** AS NECESSARY ***************************************
+*/
 
 // All the products to check
-// Current domains supported: Amazon, Best Buy, Costco, Microcenter, Newegg
+// Current domains supported: Amazon, AntOnline, Best Buy, Costco, Microcenter, Newegg, Target
 // Format: https://www.XXX.com/...
 const URLS = [
     // "https://www.amazon.com/gp/product/B08164VTWH/",
     // "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
+    "https://www.antonline.com/Sony/Electronics/Gaming_Devices/Gaming_Consoles/1413553",
     "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
     "https://www.bestbuy.com/site/sony-playstation-5-console/6426149.p?skuId=6426149",
     "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
@@ -21,7 +19,8 @@ const URLS = [
     "https://www.newegg.com/asus-geforce-rtx-3080-rog-strix-rtx3080-o10g-gaming/p/N82E16814126457",
     "https://www.newegg.com/asus-geforce-rtx-3080-tuf-rtx3080-o10g-gaming/p/N82E16814126452",
     "https://www.newegg.com/p/N82E16868110292",
-    "https://www.antonline.com/Sony/Electronics/Gaming_Devices/Gaming_Consoles/1413553",
+    "https://www.target.com/p/playstation-5-console/-/A-81114595",
+    "https://www.target.com/p/dualsense-wireless-controller-for-playstation-5/-/A-81114477",
 ]
 
 // How often to check for products. Too often may be dangerous, especially for Amazon.
@@ -30,11 +29,33 @@ const INTERVAL = {
     value: 10
 }
 
-// Opens the product url in the default browser if set to true
-export const OPEN_URL = true;
+// Opens the product url in your default browser if set to true
+export const OPEN_URL = true;   // true, false
 
+// IF YOU ENTERED A AMAZON PRODUCT
 // Separates the check between Amazon items by this value 
 const AMAZON_DELAY = 25;
+
+// IF YOU ENTERED A TARGET PRODUCT
+// Enter your zip code to search for a Target closest to you
+export const TARGET_ZIP_CODE = '90024'
+
+// IF YOU ENTERED A TARGET PRODUCT AND YOU GET API KEY ERRORS
+// Enter the key for your session as described in the README
+export const TARGET_KEY = 'ff457966e64d5e877fdbad070f276d18ecec4a01'
+
+//   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+import { fileURLToPath } from "url";
+import antonline from './stores/antonline.js'
+import amazon from './stores/amazon.js'
+import bestbuy from './stores/bestbuy.js'
+import costco from './stores/costco.js'
+import microcenter from './stores/microcenter.js'
+import newegg from './stores/newegg.js'
+import target from './stores/target.js'
 
 
 // Runs main only if this file is executed
@@ -152,6 +173,10 @@ function main() {
 
             case 'newegg':
                 checkStore(newegg, url);
+                break;
+
+            case 'target':
+                checkStore(target, url);
                 break;
 
             default:
