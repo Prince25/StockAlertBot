@@ -33,15 +33,15 @@ Currently, the following stores are supported:
 ### Usage
 1. Open and edit main.js
     * Add urls of products in the `URLS` array
-    * Change the `INTERVAL` to suit your desires.
+    * Change the `INTERVAL` to suit your desires.\
     **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot (Amazon), or blocking your IP from accessing the website.
     * Set OPEN_URL to false if you don't want the application to automatically open urls when item is in stock
     * If you're planning to track more than one Amazon item, set the delay between items here.
     Otherwise, Amazon may flag the program's requests as a bot.
-    * If you're planning to track Target item(s), enter your zip code
+    * If you're planning to track Target item(s), enter your zip code\
     **NOTE:** If you encounter an error relating to API Key, you need to get this key yourself:
         1. Go to target.com with the DevTools (Chrome) or Developer Tools (Firefox) open (Google or ask if you're unsure how)
-        2. On the console, you should see GET requests as you load the page.
+        2. On the console, you should see GET requests as you load the page.\
         In DevTools, you have to click the gear and check "Log XMLHttpRequests" to see them
         3. Click on any of the urls that has the string "key=" and copy the whole key
         4. Paste it to TARGET_KEY
