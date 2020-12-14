@@ -50,7 +50,7 @@ Currently, the following stores are supported:
     * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to WEBHOOK_URLS array
 2. Execute and continue about your day
     `node main.js`
-3. Consider buying me a [Pizza](buymeacoff.ee/PrinceSingh) or [Paypaling](paypal.me/PrinceSingh25) me
+3. Consider buying me a [Pizza](buymeacoff.ee/PrinceSingh) or [PayPal'ing](paypal.me/PrinceSingh25) me
 
 ### Things to work on
 * Add more stores
