@@ -13,6 +13,7 @@ Enter the product URLs and set how often you want the program to check if those 
 Currently, the following stores are supported:
 * AntOnline
 * Amazon (Fails at low interval rates)
+* Argos (UK, For PS5: use product link)
 * Best Buy (including open-box)
 * Costco
 * Microcenter
@@ -55,11 +56,11 @@ Currently, the following stores are supported:
 * Add more stores
     * Walmart
     * Gamestop
-    * Argos
     * ~~Newegg~~
     * ~~AntOnline~~
     * ~~Target~~
     * ~~Tesco~~
+    * ~~Argos~~
 * Add GUI - Make it easier to use 
 * Add Email and Maybe SMS Notifications
 * ~~Fix~~ Find Bugs

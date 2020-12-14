@@ -5,12 +5,13 @@
 */
 
 // All the products to check
-// Current domains supported: Amazon, AntOnline, Best Buy, Costco, Microcenter, Newegg, Target, Tesco
+// Current domains supported: Amazon, AntOnline, Argos, Best Buy, Costco, Microcenter, Newegg, Target, Tesco
 // Format: https://www.XXX.com/...
 const URLS = [
     // "https://www.amazon.com/gp/product/B08164VTWH/",
     "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
     "https://www.antonline.com/Sony/Electronics/Gaming_Devices/Gaming_Consoles/1413553",
+    "https://www.argos.co.uk/product/8349000",
     "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
     "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
     "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
@@ -53,6 +54,7 @@ export const WEBHOOK_URLS = [
 import { fileURLToPath } from "url";
 import antonline from './stores/antonline.js'
 import amazon from './stores/amazon.js'
+import argos from './stores/argos.js'
 import bestbuy from './stores/bestbuy.js'
 import costco from './stores/costco.js'
 import microcenter from './stores/microcenter.js'
@@ -160,6 +162,10 @@ function main() {
 
             case 'amazon':
                 amazonItems.push(new amazonItem(url));
+                break;
+
+            case 'argos':
+                checkStore(argos, url);
                 break;
 
             case 'bestbuy':
