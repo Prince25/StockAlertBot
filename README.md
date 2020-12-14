@@ -38,7 +38,7 @@ Currently, the following stores are supported:
     * Change the `INTERVAL` to suit your desires.\
     **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot (Amazon), or blocking your IP from accessing the website.
     * Set OPEN_URL to false if you don't want the application to automatically open urls when item is in stock
-    * **If** you're planning to track more than one Amazon item, set the delay between items here.
+    * **If** you're planning to track more than one Amazon item, set the delay (in seconds) between items by editing AMAZON_DELAY.
     Otherwise, Amazon may flag the program's requests as a bot.
     * **If** you're planning to track Target item(s), enter your zip code\
     **NOTE:** If you encounter an error relating to API Key, you need to get this key yourself:
