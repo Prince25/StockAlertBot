@@ -18,6 +18,7 @@ Currently, the following stores are supported:
 * Microcenter
 * Newegg
 * Target (Works but may require intervention)
+* Tesco (UK, Only for PS5)
 
 ![Screenshot](https://i.imgur.com/po6GtU6.png)
 
@@ -53,11 +54,13 @@ Currently, the following stores are supported:
 * Add more stores
     * Walmart
     * Gamestop
+    * Tesco
+    * Argos
     * ~~Newegg~~
     * ~~AntOnline~~
     * ~~Target~~
-* Add GUI - Make it easier to use
-* Add color to console  
+* Add GUI - Make it easier to use 
+* Add Email and Maybe SMS Notifications
 * ~~Fix~~ Find Bugs
 * ~~Initially create seperation between intervals for Amazon items~~
 * ~~Add a way to have independent delay timers for Amazon~~

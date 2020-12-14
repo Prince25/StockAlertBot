@@ -20,7 +20,7 @@ const URLS = [
     "https://www.newegg.com/asus-geforce-rtx-3080-tuf-rtx3080-o10g-gaming/p/N82E16814126452",
     "https://www.newegg.com/p/N82E16868110292",
     "https://www.target.com/p/playstation-5-console/-/A-81114595",
-    "https://www.target.com/p/dualsense-wireless-controller-for-playstation-5/-/A-81114477",
+    "https://www.tescopreorders.com/uk/ps5"
 ]
 
 // How often to check for products. Too often may be dangerous, especially for Amazon.
@@ -56,6 +56,7 @@ import costco from './stores/costco.js'
 import microcenter from './stores/microcenter.js'
 import newegg from './stores/newegg.js'
 import target from './stores/target.js'
+import tesco from './stores/tesco.js'
 
 
 // Runs main only if this file is executed
@@ -149,7 +150,7 @@ function main() {
             console.error('Incorrect URL format:', url)
             console.error(e)
         }
-        
+
         switch(storeName) {
             case 'antonline':
                 checkStore(antonline, url);
@@ -177,6 +178,11 @@ function main() {
 
             case 'target':
                 checkStore(target, url);
+                break;
+
+            case 'tescopreorders':
+                url = url.replace('www.', '')
+                checkStore(tesco, url);
                 break;
 
             default:
