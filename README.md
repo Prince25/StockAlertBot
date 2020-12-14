@@ -1,8 +1,9 @@
 # StockAlertBot
 Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiciously high markup price, I decided to at least attempt to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s). Of course, this is only half the battle. For full writeup on scoring items, look [here](https://github.com/PrinceS25/StockAlertBot/wiki/Beating-Scalpers).
 
-Buy me a [pizza](buymeacoff.ee/PrinceSingh) if you'd like to see this project expanded and support me. :) <br>
+Buy me a [Pizza](buymeacoff.ee/PrinceSingh) or [PayPal](paypal.me/PrinceSingh25) me if you'd like to see this project expanded and support me. :) <br>
 <a href="https://www.buymeacoffee.com/PrinceSingh" target="_blank"><img src="https://i.imgur.com/NeXoy2V.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+<a href="https://www.paypal.me/PrinceSingh25" target="_blank"><img src="https://i.imgur.com/FDuYJBd.png" alt="Paypal me" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 <br><br>
 > How does it work?
 
@@ -37,20 +38,20 @@ Currently, the following stores are supported:
     * Add urls of products in the `URLS` array
     * Change the `INTERVAL` to suit your desires.\
     **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot (Amazon), or blocking your IP from accessing the website.
-    * Set OPEN_URL to false if you don't want the application to automatically open urls when item is in stock
-    * **If** you're planning to track more than one Amazon item, set the delay between items here.
+    * Set `OPEN_URL` to false if you don't want the application to automatically open urls when item is in stock
+    * **If** you're planning to track more than one Amazon item, set the delay (in seconds) between items by editing `AMAZON_DELAY`.
     Otherwise, Amazon may flag the program's requests as a bot.
-    * **If** you're planning to track Target item(s), enter your zip code\
+    * **If** you're planning to track Target item(s), enter your zip code in `TARGET_ZIP_CODE`\
     **NOTE:** If you encounter an error relating to API Key, you need to get this key yourself:
         1. Go to target.com with the DevTools (Chrome) or Developer Tools (Firefox) open (Google or ask if you're unsure how)
         2. On the console, you should see GET requests as you load the page.\
         In DevTools, you have to click the gear and check "Log XMLHttpRequests" to see them
         3. Click on any of the urls that has the string "key=" and copy the whole key
-        4. Paste it to TARGET_KEY
-    * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to WEBHOOK_URLS array
+        4. Paste it to `TARGET_KEY`
+    * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array
 2. Execute and continue about your day
     `node main.js`
-3. Consider buying me a [pizza](buymeacoff.ee/PrinceSingh)
+3. Consider buying me a [Pizza](buymeacoff.ee/PrinceSingh) or [PayPal'ing](paypal.me/PrinceSingh25) me
 
 ### Things to work on
 * Add more stores
