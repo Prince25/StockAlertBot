@@ -1,8 +1,9 @@
 # StockAlertBot
 Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiciously high markup price, I decided to at least attempt to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s). Of course, this is only half the battle. For full writeup on scoring items, look [here](https://github.com/PrinceS25/StockAlertBot/wiki/Beating-Scalpers).
 
-Buy me a [pizza](buymeacoff.ee/PrinceSingh) if you'd like to see this project expanded and support me. :) <br>
+Buy me a [Pizza](buymeacoff.ee/PrinceSingh) or [PayPal](paypal.me/PrinceSingh25) me if you'd like to see this project expanded and support me. :) <br>
 <a href="https://www.buymeacoffee.com/PrinceSingh" target="_blank"><img src="https://i.imgur.com/NeXoy2V.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+<a href="https://www.paypal.me/PrinceSingh25" target="_blank"><img src="https://i.imgur.com/FDuYJBd.png" alt="Paypal me" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 <br><br>
 > How does it work?
 
@@ -49,7 +50,7 @@ Currently, the following stores are supported:
     * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to WEBHOOK_URLS array
 2. Execute and continue about your day
     `node main.js`
-3. Consider buying me a [pizza](buymeacoff.ee/PrinceSingh)
+3. Consider buying me a [Pizza](buymeacoff.ee/PrinceSingh) or [Paypaling](paypal.me/PrinceSingh25) me
 
 ### Things to work on
 * Add more stores
