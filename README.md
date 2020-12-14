@@ -17,8 +17,8 @@ Currently, the following stores are supported:
 * Costco
 * Microcenter
 * Newegg
-* Target (Works but may require intervention)
-* Tesco (UK, Only for PS5)
+* Target (Works but may require additional setup)
+* Tesco (UK. For PS5, use this link: https://www.tescopreorders.com/uk/ps5)
 
 ![Screenshot](https://i.imgur.com/po6GtU6.png)
 
@@ -54,11 +54,11 @@ Currently, the following stores are supported:
 * Add more stores
     * Walmart
     * Gamestop
-    * Tesco
     * Argos
     * ~~Newegg~~
     * ~~AntOnline~~
     * ~~Target~~
+    * ~~Tesco~~
 * Add GUI - Make it easier to use 
 * Add Email and Maybe SMS Notifications
 * ~~Fix~~ Find Bugs
