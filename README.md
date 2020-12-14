@@ -37,17 +37,17 @@ Currently, the following stores are supported:
     * Add urls of products in the `URLS` array
     * Change the `INTERVAL` to suit your desires.\
     **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot (Amazon), or blocking your IP from accessing the website.
-    * Set OPEN_URL to false if you don't want the application to automatically open urls when item is in stock
-    * **If** you're planning to track more than one Amazon item, set the delay (in seconds) between items by editing AMAZON_DELAY.
+    * Set `OPEN_URL` to false if you don't want the application to automatically open urls when item is in stock
+    * **If** you're planning to track more than one Amazon item, set the delay (in seconds) between items by editing `AMAZON_DELAY`.
     Otherwise, Amazon may flag the program's requests as a bot.
-    * **If** you're planning to track Target item(s), enter your zip code\
+    * **If** you're planning to track Target item(s), enter your zip code in `TARGET_ZIP_CODE`\
     **NOTE:** If you encounter an error relating to API Key, you need to get this key yourself:
         1. Go to target.com with the DevTools (Chrome) or Developer Tools (Firefox) open (Google or ask if you're unsure how)
         2. On the console, you should see GET requests as you load the page.\
         In DevTools, you have to click the gear and check "Log XMLHttpRequests" to see them
         3. Click on any of the urls that has the string "key=" and copy the whole key
-        4. Paste it to TARGET_KEY
-    * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to WEBHOOK_URLS array
+        4. Paste it to `TARGET_KEY`
+    * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array
 2. Execute and continue about your day
     `node main.js`
 3. Consider buying me a [Pizza](buymeacoff.ee/PrinceSingh) or [PayPal'ing](paypal.me/PrinceSingh25) me
