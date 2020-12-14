@@ -9,11 +9,11 @@
 // Format: https://www.XXX.com/...
 const URLS = [
     // "https://www.amazon.com/gp/product/B08164VTWH/",
-    // "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
+    "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
     "https://www.antonline.com/Sony/Electronics/Gaming_Devices/Gaming_Consoles/1413553",
     "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
     "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
-    // "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
+    "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
     "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
     "https://www.target.com/p/playstation-5-console/-/A-81114595",
     "https://www.tescopreorders.com/uk/ps5",
@@ -41,10 +41,10 @@ export const TARGET_ZIP_CODE = '90024'
 // Enter the key for your session as described in the README
 export const TARGET_KEY = 'ff457966e64d5e877fdbad070f276d18ecec4a01'
 
-// // IF YOU WANT SLACK OR DISCORD OR OTHER WEBHOOK MESSAGES
-// export const WEBHOOK_URLS = [
-//     ""
-// ] 
+// IF YOU WANT SLACK OR DISCORD WEBHOOKS
+export const WEBHOOK_URLS = [
+    ""
+] 
 
 //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

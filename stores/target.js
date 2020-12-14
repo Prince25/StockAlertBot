@@ -2,6 +2,7 @@ import { fileURLToPath } from "url";
 import { OPEN_URL, TARGET_KEY, TARGET_ZIP_CODE } from '../main.js'
 import fs from "fs";
 import threeBeeps from "../beep.js"
+import sendAlertToWebhooks from "../webhook.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
@@ -73,7 +74,12 @@ export default async function target(url, interval, key, zip_code) {
 
             if (inventory) {
                 threeBeeps();
-                if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; setTimeout(() => urlOpened = false, 1000 * 115) }  // Open URL every 2 minutes
+                if (OPEN_URL && !urlOpened) { 
+                    open(url); 
+                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Target *****: ' + title + "\n" + url)
+                    urlOpened = true; 
+                    setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
+                } 
                 console.info(moment().format('LTS') + ': ***** In Stock at Target *****: ', title);
                 console.info(url);
             }

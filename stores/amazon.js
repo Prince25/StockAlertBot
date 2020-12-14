@@ -2,6 +2,7 @@ import { fileURLToPath } from "url";
 import { OPEN_URL } from '../main.js'
 import fs from "fs";
 import threeBeeps from "../beep.js"
+import sendAlertToWebhooks from "../webhook.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
@@ -49,7 +50,11 @@ export default async function amazon(url, interval, originalIntervalValue, first
             }
             else if (inventory != null && inventory == 'Add to Cart') {
                 threeBeeps();
-                if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; }
+                if (OPEN_URL && !urlOpened) { 
+                    open(url); 
+                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Amazon *****: ' + title + "\n" + url)
+                    urlOpened = true; 
+                }
                 console.info(moment().format('LTS') + ': ***** In Stock at Amazon *****: ', title);
                 console.info(url);
             }

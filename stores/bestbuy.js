@@ -2,6 +2,7 @@ import { fileURLToPath } from "url";
 import { OPEN_URL } from '../main.js'
 import fs from 'fs';
 import threeBeeps from "../beep.js"
+import sendAlertToWebhooks from "../webhook.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
@@ -39,7 +40,12 @@ export default async function bestbuy(url, interval) {
             }
             if (inventory == 'Add to Cart') {
                 threeBeeps();
-                if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; setTimeout(() => urlOpened = false, 1000 * 115) }  // Open URL every 2 minutes
+                if (OPEN_URL && !urlOpened) { 
+                    open(url); 
+                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Best Buy *****: ' + title + "\n" + url)
+                    urlOpened = true; 
+                    setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
+                }
                 console.info(moment().format('LTS') + ': ***** In Stock at BestBuy *****: ', title);
                 console.info(url);
             }
