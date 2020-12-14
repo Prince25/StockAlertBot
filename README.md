@@ -14,7 +14,7 @@ Enter the product URLs and set how often you want the program to check if those 
 Currently, the following stores are supported:
 * AntOnline
 * Amazon (Fails at low interval rates)
-* Argos (UK, For PS5: use product link)
+* Argos (UK. For PS5, use product link. Disc: https://www.argos.co.uk/product/8349000, Digital: https://www.argos.co.uk/product/8349024)
 * Best Buy (including open-box)
 * Costco
 * Microcenter
