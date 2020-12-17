@@ -1,8 +1,8 @@
 import { fileURLToPath } from "url";
 import { OPEN_URL } from '../main.js'
-import fs from 'fs';
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
+import writeErrorToFile from "../writeToFile.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
@@ -23,7 +23,15 @@ let firstRun = new Set();
 let urlOpened = false;
 export default async function bestbuy(url, interval) {
     try {
-        var res = await axios.get(url);
+        let res = await axios.get(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'
+            }
+        }).catch(async function (error) {
+            if (error.response.status == 503) console.error('Best Buy 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
+            else writeErrorToFile('BestBuy', error);
+        });
+
         if (res && res.status === 200) {
             let parser = new DomParser();
             let doc = parser.parseFromString(res.data, 'text/html');
@@ -35,7 +43,7 @@ export default async function bestbuy(url, interval) {
             if (open_box && open_box.length > 0) {
                 threeBeeps();
                 if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; setTimeout(() => urlOpened = false, 1000 * 115) }  // Open URL every 2 minutes
-                console.info(moment().format('LTS') + ': ***** Open Box at BestBuy *****: ', title);
+                console.info(moment().format('LTS') + ': ***** Open Box at Best Buy *****: ', title);
                 console.info(url);
             }
             if (inventory == 'Add to Cart') {
@@ -46,11 +54,11 @@ export default async function bestbuy(url, interval) {
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                 }
-                console.info(moment().format('LTS') + ': ***** In Stock at BestBuy *****: ', title);
+                console.info(moment().format('LTS') + ': ***** In Stock at Best Buy *****: ', title);
                 console.info(url);
             }
             else if (inventory == 'Sold Out' && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at BestBuy. Will keep retrying every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Best Buy. Will keep retrying every', interval.value, interval.unit)
                 firstRun.add(url)
             }    
         } else {
@@ -58,9 +66,6 @@ export default async function bestbuy(url, interval) {
         }
 
     } catch (e) {
-        console.info('Unhandled error. Written to logBestbuy.log')
-        fs.writeFile('logBestbuy.log', e, function(err, result) {
-            if(err) console.info('File write error: ', err);
-        });
+        writeErrorToFile('BestBuy', e)
     }
 };

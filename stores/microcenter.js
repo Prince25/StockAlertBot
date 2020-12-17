@@ -1,8 +1,8 @@
 import { fileURLToPath } from "url";
 import { OPEN_URL } from '../main.js'
-import fs from "fs";
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
+import writeErrorToFile from "../writeToFile.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
@@ -19,14 +19,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
-function writeErrorToFile(error) {
-    fs.writeFile('logMicrocenter.log', error, function(e, result) {
-        if(e) console.error('File write error: ', e);
-    });
-    console.error('Unhandled error. Written to logMicrocenter.log')
-}
-
-
 let firstRun = new Set();
 let urlOpened = false;
 export default async function microcenter(url, interval) {
@@ -37,8 +29,8 @@ export default async function microcenter(url, interval) {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'
             }
         }).catch(async function (error) {
-            if (error.response && error.response.status == 503) console.info(moment().format('LTS') + ': ' +'Microcenter 503 (service unavailable) Error. Changing interval rate for', url)
-            else writeErrorToFile(error);
+            if (error.response && error.response.status == 503) console.error(moment().format('LTS') + ': ' +'Microcenter 503 (service unavailable) Error. Changing interval rate for', url)
+            else writeErrorToFile('Microcenter', error);
         });
         
         if (res && res.status == 200) {
@@ -64,6 +56,6 @@ export default async function microcenter(url, interval) {
             }
         }
     } catch (e) {
-        writeErrorToFile(e);
+        writeErrorToFile('Microcenter', e);
     }
 };

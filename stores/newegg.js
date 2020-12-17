@@ -1,8 +1,8 @@
 import { fileURLToPath } from "url";
 import { OPEN_URL } from '../main.js'
-import fs from "fs";
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
+import writeErrorToFile from "../writeToFile.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
@@ -19,14 +19,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
-function writeErrorToFile(error) {
-    fs.writeFile('logNewegg.log', error, function(e, result) {
-        if(e) console.error('File write error: ', e);
-    });
-    console.error('Unhandled error. Written to logNewegg.log')
-}
-
-
 let firstRun = new Set();
 let urlOpened = false;
 export default async function newegg(url, interval) {
@@ -37,7 +29,7 @@ export default async function newegg(url, interval) {
             }
         }).catch(async function (error) {
             if (error.response.status == 503) console.error('Newegg 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-            else writeErrorToFile(error);
+            else writeErrorToFile('Newegg', error);
         });
 
         if (res && res.status == 200) {
@@ -65,6 +57,6 @@ export default async function newegg(url, interval) {
         }
 
     } catch (e) {
-        writeErrorToFile(e)
+        writeErrorToFile('Newegg', e)
     }
 };

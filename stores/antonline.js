@@ -1,8 +1,8 @@
 import { fileURLToPath } from "url";
 import { OPEN_URL } from '../main.js'
-import fs from "fs";
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
+import writeErrorToFile from "../writeToFile.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
@@ -23,7 +23,15 @@ let firstRun = new Set();
 let urlOpened = false;
 export default async function antonline(url, interval) {
     try {
-        var res = await axios.get(url);
+        let res = await axios.get(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'
+            }
+        }).catch(async function (error) {
+            if (error.response.status == 503) console.error('Ant Online 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
+            else writeErrorToFile('AntOnline', error);
+        });
+
         if (res && res.status === 200) {
             let parser = new DomParser();
             let doc = parser.parseFromString(res.data, 'text/html');
@@ -32,18 +40,18 @@ export default async function antonline(url, interval) {
 
             if (inventory && inventory.length > 0) inventory = inventory[0].textContent
             if (inventory && inventory.length == 0 && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at AntOnline. Will keep retrying every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Ant Online. Will keep retrying every', interval.value, interval.unit)
                 firstRun.add(url)
             }
             else if (inventory && inventory == 'Add to Cart') {
                 threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at AntOnline *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Ant Online *****: ' + title + "\n" + url)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                 }  
-                console.info(moment().format('LTS') + ': ***** In Stock at AntOnline *****: ', title);
+                console.info(moment().format('LTS') + ': ***** In Stock at Ant Online *****: ', title);
                 console.info(url);
             }
         } else {
@@ -51,9 +59,6 @@ export default async function antonline(url, interval) {
         }
 
     } catch (e) {
-        console.error('Unhandled error. Written to logAntOnline.log')
-        fs.writeFile('logAntOnline.log', e, function(err, result) {
-            if(err) console.error('File write error: ', err);
-        });
+        writeErrorToFile('AntOnline', e)
     }
 };
