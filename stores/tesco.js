@@ -3,6 +3,7 @@ import { OPEN_URL } from '../main.js'
 import fs from "fs";
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
+import writeErrorToFile from "../writeToFile.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
@@ -25,15 +26,6 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
-function writeErrorToFile(error) {
-    console.log(error)
-    fs.writeFile('logTesco.log', error, function(e, result) {
-        if(e) console.error('File write error: ', e);
-    });
-    console.error('Unhandled error. Written to logTesco.log')
-}
-
-
 let firstRun = new Set();
 let urlOpened = false;
 export default async function tesco(url, interval) {
@@ -42,10 +34,10 @@ export default async function tesco(url, interval) {
         try {
             let res = await axios.get(url)
             .catch(async function (error) {
-                console.log('1.5')
                 if (error.response.status == 503) console.error('Tesco 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-                else writeErrorToFile(error);
+                else writeErrorToFile('Tesco', error);
             });
+
             if (res && res.status == 200) {
                 let parser = new DomParser();
                 let doc = parser.parseFromString(res.data, 'text/html');
@@ -70,7 +62,7 @@ export default async function tesco(url, interval) {
             }
     
         } catch (e) {
-            writeErrorToFile(e)
+            writeErrorToFile('Tesco', e)
         }
     }
 };
@@ -84,7 +76,7 @@ async function tescoPS5Preorder(url, interval) {
                 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'
             }
         }).catch(async function (error) {
-            console.log(error)
+            writeErrorToFile('Tesco', error)
         });
         
         if (res && res.status == 200) {
@@ -101,6 +93,6 @@ async function tescoPS5Preorder(url, interval) {
             }
         }
     } catch (e) {
-        console.log(e)
+        writeErrorToFile('Tesco', e)
     }
 }
