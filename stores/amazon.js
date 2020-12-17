@@ -1,5 +1,6 @@
 import { fileURLToPath } from "url";
 import { OPEN_URL } from '../main.js'
+import { USER_AGENTS } from '../main.js'
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
 import writeErrorToFile from "../writeToFile.js"
@@ -23,7 +24,7 @@ export default async function amazon(url, interval, originalIntervalValue, first
     try {
         let res = await axios.get(url, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36'
+                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
             }
         }).catch(async function (error) {
             if (error.response.status == 503) console.error(moment().format('LTS') + ': ' +'Amazon 503 (service unavailable) Error. Changing interval rate for', url)
