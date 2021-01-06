@@ -24,11 +24,14 @@ const URLS = [
 // How often to check for products. Too often may be dangerous, especially for Amazon.
 const INTERVAL = {
     unit: 'seconds',  // seconds, m: minutes, h: hours
-    value: 5
+    value: 10
 }
 
 // Opens the product url in your default browser if set to true
 export const OPEN_URL = true;   // true, false
+
+// Makes a sound when a product is in stock
+export const ALARM = true;      // true, false
 
 // IF YOU ENTERED A AMAZON PRODUCT
 // Separates the check between Amazon items by this value 

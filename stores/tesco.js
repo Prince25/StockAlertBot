@@ -1,6 +1,5 @@
 import { fileURLToPath } from "url";
-import { OPEN_URL } from '../main.js'
-import { USER_AGENTS } from '../main.js'
+import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
 import fs from "fs";
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
@@ -46,11 +45,11 @@ export default async function tesco(url, interval) {
                 let inventory = doc.getElementsByClassName('button small add-control button-secondary')[0].innerHTML
 
                 if ((!inventory || !inventory.includes('Add')) && !firstRun.has(url)) {
-                    console.info(moment().format('LTS') + ': "' + title + '" not in stock at Tesco. Will keep retrying every', interval.value, interval.unit)
+                    console.info(moment().format('LTS') + ': "' + title + '" not in stock at Tesco. Will keep retrying in background every', interval.value, interval.unit)
                     firstRun.add(url)
                 }
                 else if (inventory && inventory.includes('Add')) {
-                    threeBeeps();
+                    if (ALARM) threeBeeps();
                     if (OPEN_URL && !urlOpened) { 
                         open(url); 
                         sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Tesco *****: ' + title + "\n" + url)
@@ -83,11 +82,11 @@ async function tescoPS5Preorder(url, interval) {
         if (res && res.status == 200) {
             let ps5PreorderPage = fs.readFileSync(ps5PreorderPagePath, 'utf-8');   
             if (res.data.includes(ps5PreorderPage) && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': PlayStation 5 not in stock at Tesco. Will keep retrying every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "PlayStation 5" not in stock at Tesco. Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
             else if (!res.data.includes(ps5PreorderPage)) {
-                threeBeeps();
+                if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; setTimeout(() => urlOpened = false, 1000 * 115) }  // Open URL every 2 minutes
                 console.info(moment().format('LTS') + ': ***** In Stock at Tesco *****: PlayStation 5');
                 console.info(url);

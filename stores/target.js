@@ -1,6 +1,5 @@
 import { fileURLToPath } from "url";
-import { OPEN_URL, TARGET_KEY, TARGET_ZIP_CODE } from '../main.js'
-import { USER_AGENTS } from '../main.js'
+import { ALARM, OPEN_URL, TARGET_KEY, TARGET_ZIP_CODE, USER_AGENTS } from '../main.js'
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
 import writeErrorToFile from "../writeToFile.js"
@@ -82,7 +81,7 @@ export default async function target(url, interval, key, zip_code) {
                         
 
             if (inventory) {
-                threeBeeps();
+                if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
                     sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Target *****: ' + title + "\n" + url)
@@ -93,7 +92,7 @@ export default async function target(url, interval, key, zip_code) {
                 console.info(url);
             }
             else if (!firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Target. Will keep retrying every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Target. Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
         } else {

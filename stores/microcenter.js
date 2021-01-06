@@ -1,6 +1,5 @@
 import { fileURLToPath } from "url";
-import { OPEN_URL } from '../main.js'
-import { USER_AGENTS } from '../main.js'
+import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
 import writeErrorToFile from "../writeToFile.js"
@@ -8,6 +7,7 @@ import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import console from "console";
 
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -15,7 +15,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         unit: 'seconds',    // seconds, m: minutes, h: hours
         value: 5           
     }
-    let url = 'https://www.microcenter.com/product/512484/intel-core-i7-9700k-coffee-lake-36ghz-eight-core-lga-1151-boxed-processor'
+    let url = 'https://www.microcenter.com/product/613412/pny-quadro-rtx-4000-single-fan-8gb-gddr6-pcie-30-graphics-card'
     microcenter(url, interval);
 }
 
@@ -29,7 +29,8 @@ export default async function microcenter(url, interval) {
             headers: {
                 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
             }
-        }).catch(async function (error) {
+        })
+        .catch(async function (error) {
             if (error.response && error.response.status == 503) console.error(moment().format('LTS') + ': ' +'Microcenter 503 (service unavailable) Error. Changing interval rate for', url)
             else writeErrorToFile('Microcenter', error);
         });
@@ -37,15 +38,15 @@ export default async function microcenter(url, interval) {
         if (res && res.status == 200) {
             let parser = new DomParser();
             let doc = parser.parseFromString(res.data, 'text/html');
-            let title = doc.getElementsByClassName('ProductLink_' + productID)[0].textContent.trim().slice(0, 150)
-            let inventory = doc.getElementsByClassName('inventoryCnt')[0].textContent
+            let title = doc.getElementsByClassName('ProductLink_' + productID)
+            if (title.length > 0) title = title[0].textContent.trim().slice(0, 150)
             
-            if (inventory == 'Sold Out' && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Microcenter. Will keep retrying every', interval.value, interval.unit)
+            if (!res.data.includes('in stock') && !firstRun.has(url)) {
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Microcenter. Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
-            else if (inventory != 'Sold Out') {
-                threeBeeps();
+            else if (res.data.includes('in stock')) {
+                if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
                     sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Microcenter *****: ' + title + "\n" + url)

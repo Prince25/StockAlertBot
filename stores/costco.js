@@ -1,6 +1,5 @@
 import { fileURLToPath } from "url";
-import { OPEN_URL } from '../main.js'
-import { USER_AGENTS } from '../main.js'
+import { ALARM, OPEN_URL } from '../main.js'
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
 import writeErrorToFile from "../writeToFile.js"
@@ -24,11 +23,8 @@ let firstRun = new Set();
 let urlOpened = false;
 export default async function costco(url, interval) {
     try {
-        let res = await axios.get(url, {
-            headers: {
-                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
-            }
-        }).catch(async function (error) {
+        let res = await axios.get(url)
+        .catch(async function (error) {
             if (error.response.status == 503) console.error('Costco 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
             else writeErrorToFile('Costco', error);
         });
@@ -40,11 +36,11 @@ export default async function costco(url, interval) {
             let inventory = doc.getElementById('add-to-cart-btn').getAttribute('value')
 
             if (inventory == 'Out of Stock' && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Costco. Will keep retrying every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Costco. Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
             else if (inventory != 'Out of Stock') {
-                threeBeeps();
+                if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
                     sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Costco *****: ' + title + "\n" + url)

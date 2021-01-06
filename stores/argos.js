@@ -1,6 +1,5 @@
 import { fileURLToPath } from "url";
-import { OPEN_URL } from '../main.js'
-import { USER_AGENTS } from '../main.js'
+import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
 import writeErrorToFile from "../writeToFile.js"
@@ -48,11 +47,11 @@ export default async function argos(url, interval) {
             if (inventory.length > 0) inventory = inventory[0].firstChild.textContent
 
             if ((!inventory || inventory != 'Add to Trolley') && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Argos. Will keep retrying every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Argos. Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
             else if (inventory && inventory == 'Add to Trolley') {
-                threeBeeps();
+                if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
                     sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Argos *****: ' + title + "\n" + url)

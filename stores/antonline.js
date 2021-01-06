@@ -1,6 +1,5 @@
 import { fileURLToPath } from "url";
-import { OPEN_URL } from '../main.js'
-import { USER_AGENTS } from '../main.js'
+import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
 import writeErrorToFile from "../writeToFile.js"
@@ -41,11 +40,11 @@ export default async function antonline(url, interval) {
 
             if (inventory && inventory.length > 0) inventory = inventory[0].textContent
             if (inventory && inventory.length == 0 && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Ant Online. Will keep retrying every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Ant Online. Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
             else if (inventory && inventory == 'Add to Cart') {
-                threeBeeps();
+                if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
                     sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Ant Online *****: ' + title + "\n" + url)

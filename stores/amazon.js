@@ -1,6 +1,5 @@
 import { fileURLToPath } from "url";
-import { OPEN_URL } from '../main.js'
-import { USER_AGENTS } from '../main.js'
+import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../beep.js"
 import sendAlertToWebhooks from "../webhook.js"
 import writeErrorToFile from "../writeToFile.js"
@@ -39,10 +38,10 @@ export default async function amazon(url, interval, originalIntervalValue, first
 
             if (inventory != null) inventory = inventory.getAttribute('value')
             if (inventory != 'Add to Cart' && firstRun) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Amazon. Will keep retrying every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Amazon. Will keep retrying in background every', interval.value, interval.unit)
             }
             else if (inventory != null && inventory == 'Add to Cart') {
-                threeBeeps();
+                if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
                     sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Amazon *****: ' + title + "\n" + url)
