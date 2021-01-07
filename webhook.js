@@ -10,10 +10,10 @@ export default async function sendAlertToWebhooks(url, title, image, store) {
                 axios({
                     method: 'POST',
                     url: urls,
-                    headers:{
+                    headers: {
                         "Content-type": "application/json"
                     },
-                    data:{
+                    data: {
                         username: `${store} Bot`,
                         embeds: [{
                             title: title,
