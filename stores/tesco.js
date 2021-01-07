@@ -43,6 +43,8 @@ export default async function tesco(url, interval) {
                 let doc = parser.parseFromString(res.data, 'text/html');
                 let title = doc.getElementsByClassName('product-details-tile__title')[0].innerHTML.trim().slice(0, 150)
                 let inventory = doc.getElementsByClassName('button small add-control button-secondary')[0].innerHTML
+                let image = doc.getElementsByClassName('product-image product-image-visible')[0].getAttribute('src')
+                let store = 'Tesco'    
 
                 if ((!inventory || !inventory.includes('Add')) && !firstRun.has(url)) {
                     console.info(moment().format('LTS') + ': "' + title + '" not in stock at Tesco. Will keep retrying in background every', interval.value, interval.unit)
@@ -52,7 +54,7 @@ export default async function tesco(url, interval) {
                     if (ALARM) threeBeeps();
                     if (OPEN_URL && !urlOpened) { 
                         open(url); 
-                        sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Tesco *****: ' + title + "\n" + url)
+                        sendAlertToWebhooks(url, title, image, store)
                         urlOpened = true; 
                         setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                     }

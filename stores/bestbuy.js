@@ -36,6 +36,8 @@ export default async function bestbuy(url, interval) {
             let title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent.trim().slice(0, 150)
             let inventory = doc.getElementsByClassName('add-to-cart-button')
             let open_box = doc.getElementsByClassName('open-box-option__label')
+            let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')[0].getAttribute('content')
+            let store = 'Best Buy'
             
             if (inventory.length > 0) inventory = inventory[0].textContent
             if (open_box && open_box.length > 0) {
@@ -48,7 +50,7 @@ export default async function bestbuy(url, interval) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Best Buy *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                 }

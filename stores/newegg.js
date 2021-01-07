@@ -37,6 +37,8 @@ export default async function newegg(url, interval) {
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByClassName('product-title')[0].innerHTML.trim().slice(0, 150)
             let inventory = doc.getElementsByClassName('btn btn-primary btn-wide')
+            let image = doc.getElementsByClassName('image_url')[0].textContent
+            let store = 'Newegg'
             
             if (inventory.length > 0) inventory = inventory[0].firstChild.textContent
             if ((!inventory || inventory != 'Add to cart ') && !firstRun.has(url)) {
@@ -47,7 +49,7 @@ export default async function newegg(url, interval) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Newegg *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                 }

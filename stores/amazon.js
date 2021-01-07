@@ -35,6 +35,8 @@ export default async function amazon(url, interval, originalIntervalValue, first
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementById('productTitle').innerHTML.trim().slice(0, 150)
             let inventory = doc.getElementById('add-to-cart-button')
+            let image = doc.getElementById('landingImage').getAttribute('data-old-hires')
+            let store = 'Amazon'
 
             if (inventory != null) inventory = inventory.getAttribute('value')
             if (inventory != 'Add to Cart' && firstRun) {
@@ -44,7 +46,7 @@ export default async function amazon(url, interval, originalIntervalValue, first
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Amazon *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at Amazon *****: ', title);

@@ -37,6 +37,8 @@ export default async function antonline(url, interval) {
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByClassName('title')[0].innerHTML.slice(0, 150)
             let inventory = doc.getElementsByClassName('uk-button uk-button-primary add_to_cart')
+            let image = doc.getElementsByClassName('main_img')[0].getAttribute('src').replace("45", "500")
+            let store = 'Ant Online'
 
             if (inventory && inventory.length > 0) inventory = inventory[0].textContent
             if (inventory && inventory.length == 0 && !firstRun.has(url)) {
@@ -47,7 +49,7 @@ export default async function antonline(url, interval) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Ant Online *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                 }  

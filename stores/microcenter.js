@@ -39,6 +39,8 @@ export default async function microcenter(url, interval) {
             let parser = new DomParser();
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByClassName('ProductLink_' + productID)
+            let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')[0].getAttribute('content')
+            let store = 'Microcenter'
             if (title.length > 0) title = title[0].textContent.trim().slice(0, 150)
             
             if (!res.data.includes('in stock') && !firstRun.has(url)) {
@@ -49,7 +51,7 @@ export default async function microcenter(url, interval) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Microcenter *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                 }

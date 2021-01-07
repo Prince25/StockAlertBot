@@ -37,6 +37,8 @@ export default async function argos(url, interval) {
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByClassName('Namestyles__Main-sc-269llv-1 bojEI')
             let inventory = doc.getElementsByClassName('Buttonstyles__Button-q93iwm-2 dUQXJf')
+            let image = 'https:' + doc.getElementsByClassName('MediaGallerystyles__ImageWrapper-sc-1jwueuh-2 bhjltf')[0].getElementsByTagName('img')[0].getAttribute('src')
+            let store = 'Argos'
 
             if (title.length > 0) title = title[0].firstChild.textContent.trim().slice(0, 150)
             else {
@@ -54,7 +56,7 @@ export default async function argos(url, interval) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Argos *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                 }

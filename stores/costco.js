@@ -34,6 +34,8 @@ export default async function costco(url, interval) {
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByTagName('title')[0].innerHTML.trim().slice(0, 150)
             let inventory = doc.getElementById('add-to-cart-btn').getAttribute('value')
+            let image = 'https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg'
+            let store = 'Costco'
 
             if (inventory == 'Out of Stock' && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at Costco. Will keep retrying in background every', interval.value, interval.unit)
@@ -43,7 +45,7 @@ export default async function costco(url, interval) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Costco *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                 }

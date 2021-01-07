@@ -42,6 +42,8 @@ export default async function target(url, interval, key, zip_code) {
             let productInfo = JSON.parse(doc.getElementsByTagName('script').filter(script => script.getAttribute('type') == 'application/ld+json')[0].textContent)
             let title = productInfo['@graph'][0]['name']
             let tcin = productInfo['@graph'][0]['sku']
+            let image = productInfo['@graph'][0]['image']
+            let store = 'Target'
 
             let location_id = await axios.get('https://api.target.com/shipt_deliveries/v1/stores?zip=' + zip_code + '&key=' + key)
                 .then(res => res.data)
@@ -84,7 +86,7 @@ export default async function target(url, interval, key, zip_code) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Target *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
                 } 
