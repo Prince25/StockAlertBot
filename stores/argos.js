@@ -38,15 +38,21 @@ export default async function argos(url, interval) {
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByClassName('Namestyles__Main-sc-269llv-1 bojEI')
             let inventory = doc.getElementsByClassName('Buttonstyles__Button-q93iwm-2 dUQXJf')
-            let image = 'https:' + doc.getElementsByClassName('MediaGallerystyles__ImageWrapper-sc-1jwueuh-2 bhjltf')[0].getElementsByTagName('img')[0].getAttribute('src')
-
+            let image = doc.getElementsByClassName('MediaGallerystyles__ImageWrapper-sc-1jwueuh-2 bhjltf')
+            
             if (title.length > 0) title = title[0].firstChild.textContent.trim().slice(0, 150)
             else {
                 title = doc.getElementById('h1title').textContent
                 title = title.replace("Sorry, ", "")
                 title = title.replace(" is currently unavailable.", "")
             }
+
             if (inventory.length > 0) inventory = inventory[0].firstChild.textContent
+            
+            if (image.length > 0) { 
+                image = image[0].getElementsByTagName('img')
+                if (image.length > 0) image = 'https:' + image[0].getAttribute('src')
+            }
 
             if ((!inventory || inventory != 'Add to Trolley') && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
