@@ -2,14 +2,15 @@ import axios from "axios";
 import moment from "moment";
 import { WEBHOOK_URLS } from './main.js'
 
-export default async function sendAlertToWebhooks(url, title, image, store) {
-    WEBHOOK_URLS.forEach(
-        urls => {
-            if (urls.includes('discord')) {
+export default async function sendAlertToWebhooks(product_url, title, image, store) {
+    WEBHOOK_URLS.forEach(   // For each Webhook URL...
+        url => {
+            // Notify Discord
+            if (url.includes('discord')) {
                 console.info(moment().format('LTS') + ": Discord has been notified.")
                 axios({
                     method: 'POST',
-                    url: urls,
+                    url: url,
                     headers: {
                         "Content-type": "application/json"
                     },
@@ -17,7 +18,7 @@ export default async function sendAlertToWebhooks(url, title, image, store) {
                         username: `${store} Bot`,
                         embeds: [{
                             title: title,
-                            url: url,
+                            url: product_url,
                             color: "15736093",
                             footer: {
                                 text: `${moment().format('MMMM Do YYYY - h:mm:ss A')}`
@@ -47,9 +48,11 @@ export default async function sendAlertToWebhooks(url, title, image, store) {
                 .catch(error => 
                     console.error(error)
                 )
-            } else if (urls.includes('slack')) {
+
+            // Notify Slack
+            } else if (url.includes('slack')) {
                 console.info(moment().format('LTS') + ": Slack has been notified.")
-                axios.post(urls, { text: `***** In Stock at ${store} *****: ${title}  \n ${url}` })
+                axios.post(url, { text: `***** In Stock at ${store} *****: ${title}  \n ${url}` })
                 .catch(error => 
                     console.error(error)
                 ) 

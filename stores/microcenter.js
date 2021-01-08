@@ -20,6 +20,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
+const store = 'Microcenter'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function microcenter(url, interval) {
@@ -32,7 +33,7 @@ export default async function microcenter(url, interval) {
         })
         .catch(async function (error) {
             if (error.response && error.response.status == 503) console.error(moment().format('LTS') + ': ' +'Microcenter 503 (service unavailable) Error. Changing interval rate for', url)
-            else writeErrorToFile('Microcenter', error);
+            else writeErrorToFile(store, error);
         });
         
         if (res && res.status == 200) {
@@ -40,11 +41,11 @@ export default async function microcenter(url, interval) {
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByClassName('ProductLink_' + productID)
             let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')[0].getAttribute('content')
-            let store = 'Microcenter'
+            
             if (title.length > 0) title = title[0].textContent.trim().slice(0, 150)
             
             if (!res.data.includes('in stock') && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Microcenter. Will keep retrying in background every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
             else if (res.data.includes('in stock')) {
@@ -53,13 +54,13 @@ export default async function microcenter(url, interval) {
                     open(url); 
                     sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
+                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
                 }
-                console.info(moment().format('LTS') + ': ***** In Stock at Microcenter *****: ', title);
+                console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
             }
         }
     } catch (e) {
-        writeErrorToFile('Microcenter', e);
+        writeErrorToFile(store, e);
     }
 };

@@ -19,6 +19,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
+const store = 'Argos'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function argos(url, interval) {
@@ -28,8 +29,8 @@ export default async function argos(url, interval) {
                 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
             }
         }).catch(async function (error) {
-            if (error.response.status == 503) console.error('Argos 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-            else writeErrorToFile('Argos', error);
+            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
+            else writeErrorToFile(store, error);
         });
 
         if (res && res.status == 200) {
@@ -38,7 +39,6 @@ export default async function argos(url, interval) {
             let title = doc.getElementsByClassName('Namestyles__Main-sc-269llv-1 bojEI')
             let inventory = doc.getElementsByClassName('Buttonstyles__Button-q93iwm-2 dUQXJf')
             let image = 'https:' + doc.getElementsByClassName('MediaGallerystyles__ImageWrapper-sc-1jwueuh-2 bhjltf')[0].getElementsByTagName('img')[0].getAttribute('src')
-            let store = 'Argos'
 
             if (title.length > 0) title = title[0].firstChild.textContent.trim().slice(0, 150)
             else {
@@ -49,7 +49,7 @@ export default async function argos(url, interval) {
             if (inventory.length > 0) inventory = inventory[0].firstChild.textContent
 
             if ((!inventory || inventory != 'Add to Trolley') && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Argos. Will keep retrying in background every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
             else if (inventory && inventory == 'Add to Trolley') {
@@ -58,14 +58,14 @@ export default async function argos(url, interval) {
                     open(url); 
                     sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
+                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
                 }
-                console.info(moment().format('LTS') + ': ***** In Stock at Argos *****: ', title);
+                console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
             }
         }
 
     } catch (e) {
-        writeErrorToFile('Argos', e)
+        writeErrorToFile(store, e)
     }
 };
