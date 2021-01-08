@@ -20,14 +20,15 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
+const store = 'Best Buy'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function bestbuy(url, interval) {
     try {
         let res = await axios.get(url)
         .catch(async function (error) {
-            if (error.response.status == 503) console.error('Best Buy 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-            else writeErrorToFile('BestBuy', error);
+            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
+            else writeErrorToFile(store.replace(' ', ''), error);
         });
         
         if (res && res.status === 200) {
@@ -36,27 +37,32 @@ export default async function bestbuy(url, interval) {
             let title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent.trim().slice(0, 150)
             let inventory = doc.getElementsByClassName('add-to-cart-button')
             let open_box = doc.getElementsByClassName('open-box-option__label')
+            let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')[0].getAttribute('content')
             
             if (inventory.length > 0) inventory = inventory[0].textContent
             if (open_box && open_box.length > 0) {
                 if (ALARM) threeBeeps();
-                if (OPEN_URL && !urlOpened) { open(url); urlOpened = true; setTimeout(() => urlOpened = false, 1000 * 115) }  // Open URL every 2 minutes
-                console.info(moment().format('LTS') + ': ***** Open Box at Best Buy *****: ', title);
+                if (OPEN_URL && !urlOpened) { 
+                    open(url); 
+                    urlOpened = true; 
+                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
+                }
+                console.info(moment().format('LTS') + ': ***** Open Box at ' + store + ' *****: ', title);
                 console.info(url);
             }
             if (inventory == 'Add to Cart') {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Best Buy *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
+                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
                 }
-                console.info(moment().format('LTS') + ': ***** In Stock at Best Buy *****: ', title);
+                console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
             }
             else if (inventory == 'Sold Out' && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Best Buy. Will keep retrying in background every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }    
         } else {
@@ -64,6 +70,6 @@ export default async function bestbuy(url, interval) {
         }
 
     } catch (e) {
-        writeErrorToFile('BestBuy', e)
+        writeErrorToFile(store.replace(' ', ''), e)
     }
 };

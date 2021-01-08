@@ -21,6 +21,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
+const store = 'Target'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function target(url, interval, key, zip_code) {
@@ -32,8 +33,8 @@ export default async function target(url, interval, key, zip_code) {
                 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
             }
         }).catch(async function (error) {
-            if (error.response.status == 503) console.error('Target 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-            else writeErrorToFile('Target', error);
+            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
+            else writeErrorToFile(store, error);
         });
 
         if (res && res.status === 200) {
@@ -42,7 +43,8 @@ export default async function target(url, interval, key, zip_code) {
             let productInfo = JSON.parse(doc.getElementsByTagName('script').filter(script => script.getAttribute('type') == 'application/ld+json')[0].textContent)
             let title = productInfo['@graph'][0]['name']
             let tcin = productInfo['@graph'][0]['sku']
-
+            let image = productInfo['@graph'][0]['image']
+            
             let location_id = await axios.get('https://api.target.com/shipt_deliveries/v1/stores?zip=' + zip_code + '&key=' + key)
                 .then(res => res.data)
                 .then(data => data.closest_eligible_store.location_id)
@@ -84,15 +86,15 @@ export default async function target(url, interval, key, zip_code) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Target *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
+                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
                 } 
-                console.info(moment().format('LTS') + ': ***** In Stock at Target *****: ', title);
+                console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
             }
             else if (!firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Target. Will keep retrying in background every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
         } else {
@@ -100,6 +102,6 @@ export default async function target(url, interval, key, zip_code) {
         }
 
     } catch (e) {
-        writeErrorToFile('Target', e)
+        writeErrorToFile(store, e)
     }
 };

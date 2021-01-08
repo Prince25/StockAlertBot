@@ -19,14 +19,15 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
+const store = 'Costco'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function costco(url, interval) {
     try {
         let res = await axios.get(url)
         .catch(async function (error) {
-            if (error.response.status == 503) console.error('Costco 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-            else writeErrorToFile('Costco', error);
+            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
+            else writeErrorToFile(store, error);
         });
 
         if (res && res.status === 200) {
@@ -34,20 +35,21 @@ export default async function costco(url, interval) {
             let doc = parser.parseFromString(res.data, 'text/html');
             let title = doc.getElementsByTagName('title')[0].innerHTML.trim().slice(0, 150)
             let inventory = doc.getElementById('add-to-cart-btn').getAttribute('value')
+            let image = 'https://www.thermaxglobal.com/wp-content/uploads/2020/05/image-not-found.jpg'
 
             if (inventory == 'Out of Stock' && !firstRun.has(url)) {
-                console.info(moment().format('LTS') + ': "' + title + '" not in stock at Costco. Will keep retrying in background every', interval.value, interval.unit)
+                console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
             else if (inventory != 'Out of Stock') {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(moment().format('LTS') + ': ***** In Stock at Costco *****: ' + title + "\n" + url)
+                    sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 115) // Open URL every 2 minutes
+                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
                 }
-                console.info(moment().format('LTS') + ': ***** In Stock at Costco *****: ', title);
+                console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
             }
         } else {
@@ -55,6 +57,6 @@ export default async function costco(url, interval) {
         }
 
     } catch (e) {
-        writeErrorToFile('Costco', e)
+        writeErrorToFile(store, e)
     }
 };
