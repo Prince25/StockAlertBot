@@ -9,8 +9,6 @@ import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
 
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-
 
 var ps5PreorderPagePath;
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
