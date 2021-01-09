@@ -15,7 +15,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                         "Content-type": "application/json"
                     },
                     data: {
-                        username: `${store} Bot`,
+                        username: store,
                         embeds: [{
                             title: title,
                             url: product_url,
@@ -39,7 +39,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                                 },
                                 {
                                     "name": "Product Page",
-                                    "value": url
+                                    "value": product_url
                                 }
                             ]
                         }]
@@ -52,7 +52,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
             // Notify Slack
             } else if (url.includes('slack')) {
                 console.info(moment().format('LTS') + ": Slack has been notified.")
-                axios.post(url, { text: `***** In Stock at ${store} *****: ${title}  \n ${url}` })
+                axios.post(url, { text: `***** In Stock at ${store} *****: ${title}  \n ${product_url}` })
                 .catch(error => 
                     console.error(error)
                 ) 
