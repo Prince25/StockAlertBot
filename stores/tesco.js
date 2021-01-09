@@ -69,6 +69,8 @@ export default async function tesco(url, interval) {
 
 
 async function tescoPS5Preorder(url, interval) {
+    process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';  // Avoid the certification error
+
     url = url.replace('www.', '')
     try {
         let res = await axios.get(url, {
