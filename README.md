@@ -1,10 +1,13 @@
 # StockAlertBot
 Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiciously high markup price, I decided to at least attempt to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s). Of course, this is only half the battle. For full writeup on scoring items, look [here](https://github.com/PrinceS25/StockAlertBot/wiki/Beating-Scalpers).
 
-Buy me a [Pizza](buymeacoff.ee/PrinceSingh) or [PayPal](paypal.me/PrinceSingh25) me if you'd like to see this project expanded and support me. :) <br>
-<a href="https://www.buymeacoffee.com/PrinceSingh" target="_blank"><img src="https://i.imgur.com/NeXoy2V.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+<p align="center">
+Buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Pizza</a> or <a href="https://paypal.me/PrinceSingh25" target="_blank">PayPal</a> me if you'd like to see this project expanded and support me. :) <br>
+<a href="https://www.buymeacoffee.com/PrinceSingh" target="_blank"><img src="https://i.imgur.com/H7BJq0V.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 <a href="https://www.paypal.me/PrinceSingh25" target="_blank"><img src="https://i.imgur.com/FDuYJBd.png" alt="Paypal me" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+</p>
 <br><br>
+
 > How does it work?
 
 Enter the product URLs and set how often you want the program to check if those products are in stock. When an item becomes available, it will notify you through both text on console and three auditory beeps as well as opening the product page automatically in your default web browser if you allowed it to do so. You may further configure to send alerts to Slack or Discord.
@@ -52,12 +55,13 @@ Currently, the following stores are supported:
     * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array
 2. Execute and continue about your day
     `node main.js`
-3. Consider buying me a [Pizza](buymeacoff.ee/PrinceSingh) or [PayPal'ing](paypal.me/PrinceSingh25) me
+3. Consider buying me a [Pizza](https://buymeacoff.ee/PrinceSingh) or [PayPal'ing](https://paypal.me/PrinceSingh25) me
 
 ### Things to work on
 * Add more stores
     * Walmart
     * Gamestop
+    * Newegg Combos
     * ~~Newegg~~
     * ~~AntOnline~~
     * ~~Target~~
