@@ -53,6 +53,7 @@ Currently, the following stores are supported:
         3. Click on any of the urls that has the string "key=" and copy the whole key
         4. Paste it to `TARGET_KEY`
     * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array
+    * **If** you want to send SMS alerts using Twilio you will first need to [Register](https://www.twilio.com/try-twilio) once registered, you will need to [Create](https://www.twilio.com/console) a trail number, enter your credentials from [Console](https://www.twilio.com/console) in `sms` array
 2. Execute and continue about your day
     `node main.js`
 3. Consider buying me a [Pizza](https://buymeacoff.ee/PrinceSingh) or [PayPal'ing](https://paypal.me/PrinceSingh25) me
@@ -68,7 +69,7 @@ Currently, the following stores are supported:
     * ~~Tesco~~
     * ~~Argos~~
 * Add GUI - Make it easier to use 
-* Add Email and Maybe SMS Notifications
+* Add Email and ~~Maybe SMS Notifications~~
 * ~~Fix~~ Find Bugs
 * ~~Initially create seperation between intervals for Amazon items~~
 * ~~Add a way to have independent delay timers for Amazon~~
