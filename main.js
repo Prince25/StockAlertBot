@@ -5,7 +5,7 @@
 */
 
 // All the products to check
-// Current domains supported: Amazon, AntOnline, Argos, Best Buy, Costco, Microcenter, Newegg, Target, Tesco
+// Current domains supported: Amazon, AntOnline, Argos, Best Buy, Costco, Microcenter, Newegg, Target, Tesco, Walmart
 // Format: https://www.XXX.com/...
 const URLS = [
     // "https://www.amazon.com/gp/product/B08164VTWH/",
@@ -21,7 +21,7 @@ const URLS = [
     // "https://www.tesco.com/groceries/en-GB/products/306276176",
 ]
 
-// How often to check for products. Too often may be dangerous, especially for Amazon.
+// How often to check for products. Too often may be dangerous, especially for Amazon and Walmart
 const INTERVAL = {
     unit: 'seconds',  // seconds, m: minutes, h: hours
     value: 10
@@ -36,6 +36,10 @@ export const ALARM = true;      // true, false
 // IF YOU ENTERED A AMAZON PRODUCT
 // Separates the check between Amazon items by this value 
 const AMAZON_DELAY = 10;
+
+// IF YOU ENTERED A WALMART PRODUCT
+// Separates the check between Walmart items by this value 
+const WALMART_DELAY = 10;
 
 // IF YOU ENTERED A TARGET PRODUCT
 // Enter your zip code to search for a Target closest to you
@@ -64,6 +68,7 @@ import microcenter from './stores/microcenter.js'
 import newegg from './stores/newegg.js'
 import target from './stores/target.js'
 import tesco from './stores/tesco.js'
+import walmart from './stores/walmart.js'
 
 
 // Runs main only if this file is executed
@@ -149,6 +154,15 @@ function main() {
         this.storeFunc = amazon;
     };
 
+    let walmartItems = [];
+    function walmartItem(url) {
+        this.url = url;
+        this.interval = {...INTERVAL};
+        this.firstRun = true;
+        this.urlOpened = false;
+        this.storeFunc = walmart;
+    };
+
     URLS.forEach(url => {
         let storeName;
         try {
@@ -196,6 +210,10 @@ function main() {
                 checkStore(tesco, url);
                 break;
 
+            case 'walmart':
+                walmartItems.push(new walmartItem(url));
+                break;    
+
             default:
                 console.error('This store is not supported:', storeName)
         }
@@ -218,7 +236,25 @@ function main() {
                         break;
                 }
             });
-}
+
+    if (walmartItems.length > 0) 
+        walmartItems.forEach(
+            (item, idx) => {
+                switch(INTERVAL.unit) {
+                    case 'seconds':
+                        setTimeout(checkStoreWithDelay, WALMART_DELAY * 1000 * idx, item);
+                        break;
+
+                    case 'minutes':
+                        setTimeout(checkStoreWithDelay, WALMART_DELAY * 1000 * 60 * idx, item);
+                        break;
+
+                    case 'hours':
+                        setTimeout(checkStoreWithDelay, WALMART_DELAY * 1000 * 60 * 60 * idx, item);
+                        break;
+                }
+            });
+}   
 
 
 export const USER_AGENTS = [
