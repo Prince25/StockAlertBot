@@ -1,6 +1,7 @@
 import { fileURLToPath } from "url";
 import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../beep.js"
+import sendTwilioMessage from "../twilio.js"
 import sendAlertToWebhooks from "../webhook.js"
 import writeErrorToFile from "../writeToFile.js"
 import axios from "axios";
@@ -62,6 +63,7 @@ export default async function argos(url, interval) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
+                    sendTwilioMessage(url, title, store) 
                     sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes

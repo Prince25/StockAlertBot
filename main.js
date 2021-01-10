@@ -50,6 +50,15 @@ export const WEBHOOK_URLS = [
     ""
 ] 
 
+// IF YOU WANT SMS NOTIFICATION
+export const sms = {
+    SID: 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', //Account SID can be found at https://twilio.com/console
+    TOKEN: 'your_auth_token', // Auth Token can be found at https://twilio.com/console
+    TO: 'your_phone_number', // Include country code in the phone number. Example +16461236789
+    FROM: 'twilio_phone_number' // Include country code in the phone number. Example +16461236789
+}
+
+
 //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 

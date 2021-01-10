@@ -1,6 +1,7 @@
 import { fileURLToPath } from "url";
 import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../beep.js"
+import sendTwilioMessage from "../twilio.js"
 import sendAlertToWebhooks from "../webhook.js"
 import writeErrorToFile from "../writeToFile.js"
 import axios from "axios";
@@ -44,7 +45,8 @@ export default async function amazon(url, interval, originalIntervalValue, first
             else if (inventory != null && inventory == 'Add to Cart') {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
-                    open(url); 
+                    open(url);
+                    sendTwilioMessage(url, title, store)  
                     sendAlertToWebhooks(url, title, image, store)
                     urlOpened = true; 
                 }
