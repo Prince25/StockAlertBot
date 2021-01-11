@@ -12,7 +12,7 @@ import open from "open"
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
     let interval = {
         unit: 'seconds',    // seconds, m: minutes, h: hours
-        value: 5           
+        value: 5
     }
     let url = 'https://www.newegg.com/p/N82E16868110292'
     newegg(url, interval);
@@ -35,22 +35,37 @@ export default async function newegg(url, interval) {
 
         if (res && res.status == 200) {
             let parser = new DomParser();
-            let doc = parser.parseFromString(res.data, 'text/html');
-            let title = doc.getElementsByClassName('product-title')[0].innerHTML.trim().slice(0, 150)
-            let inventory = doc.getElementsByClassName('btn btn-primary btn-wide')
-            let image = doc.getElementsByClassName('image_url')[0].textContent
+            let doc, title, inventory, image
+
+            // Check combo product
+            if (url.includes('ComboDealDetails')) {
+                doc = parser.parseFromString(res.data, 'text/html');
+                title = doc.getElementsByTagName('title')[0].textContent
+                inventory = doc.getElementsByClassName('atnPrimary')
+                image = 'https:' + doc.getElementById('mainSlide_0').getAttribute('src')
+            } else { // Check normal product
+                doc = parser.parseFromString(res.data, 'text/html');
+                title = doc.getElementsByClassName('product-title')[0].innerHTML.trim().slice(0, 150)
+                inventory = doc.getElementsByClassName('btn btn-primary btn-wide')
+                image = doc.getElementsByClassName('image_url')
+                if (image.length > 0) image = image[0].textContent
+            }
             
-            if (inventory.length > 0) inventory = inventory[0].firstChild.textContent
-            if ((!inventory || inventory != 'Add to cart ') && !firstRun.has(url)) {
+            if (inventory.length > 0) {
+                inventory = inventory[0].firstChild.textContent
+                inventory = inventory.toLowerCase()
+            }
+            
+            if ((!inventory || inventory != 'add to cart ') && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
-            else if (inventory && inventory == 'Add to cart ') {
+            else if (inventory && inventory == 'add to cart ') {
                 if (ALARM) threeBeeps();
-                if (OPEN_URL && !urlOpened) { 
-                    open(url); 
+                if (OPEN_URL && !urlOpened) {
+                    open(url);
                     sendAlertToWebhooks(url, title, image, store)
-                    urlOpened = true; 
+                    urlOpened = true;
                     setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);

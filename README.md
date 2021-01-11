@@ -21,7 +21,7 @@ Currently, the following stores are supported:
 * Best Buy (including open-box)
 * Costco
 * Microcenter
-* Newegg
+* Newegg (including Combo Deals)
 * Target (Works but may require additional setup)
 * Tesco (UK. For PS5, use this link: https://www.tescopreorders.com/uk/ps5)
 
@@ -61,7 +61,7 @@ Currently, the following stores are supported:
 * Add more stores
     * Walmart
     * Gamestop
-    * Newegg Combos
+    * ~~Newegg Combos~~
     * ~~Newegg~~
     * ~~AntOnline~~
     * ~~Target~~

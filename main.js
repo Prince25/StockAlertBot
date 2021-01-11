@@ -48,7 +48,7 @@ export const TARGET_KEY = 'ff457966e64d5e877fdbad070f276d18ecec4a01'
 // IF YOU WANT SLACK OR DISCORD WEBHOOKS
 export const WEBHOOK_URLS = [
     ""
-] 
+]
 
 //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -81,7 +81,7 @@ function getDomainName(url) {
 
 // Calls the given store function with the set interval 
 async function checkStore(storeFunc, url) {
-    switch(INTERVAL.unit) {
+    switch (INTERVAL.unit) {
         case 'seconds':
             setInterval(storeFunc, INTERVAL.value * 1000, url, INTERVAL)
             break;
@@ -102,16 +102,16 @@ async function checkStore(storeFunc, url) {
 async function checkStoreWithDelay(item) {
     let timer = (firstRun) => {
         return new Promise(
-            function(resolve) {
-                item.storeFunc(item.url, item.interval, INTERVAL.value, firstRun, item.urlOpened, resolve); 
+            function (resolve) {
+                item.storeFunc(item.url, item.interval, INTERVAL.value, firstRun, item.urlOpened, resolve);
             }
         );
     }
 
     timer(item.firstRun).then(
-        async function({interval, urlOpened}) {
+        async function ({ interval, urlOpened }) {
             if (item.interval.value != interval) {
-                item.firstRun = true; 
+                item.firstRun = true;
                 item.interval.value = interval;
             } else item.firstRun = false;
 
@@ -121,9 +121,9 @@ async function checkStoreWithDelay(item) {
             }
 
 
-            switch(item.interval.unit) {
+            switch (item.interval.unit) {
                 case 'seconds':
-                    await setTimeout(checkStoreWithDelay, item.interval.value * 1000, item)
+                    setTimeout(checkStoreWithDelay, item.interval.value * 1000, item)
                     break;
 
                 case 'minutes':
@@ -143,7 +143,7 @@ function main() {
     let amazonItems = [];
     function amazonItem(url) {
         this.url = url;
-        this.interval = {...INTERVAL};
+        this.interval = { ...INTERVAL };
         this.firstRun = true;
         this.urlOpened = false;
         this.storeFunc = amazon;
@@ -153,12 +153,12 @@ function main() {
         let storeName;
         try {
             storeName = getDomainName(url);
-        } catch(e) {
+        } catch (e) {
             console.error('Incorrect URL format:', url)
             console.error(e)
         }
 
-        switch(storeName) {
+        switch (storeName) {
             case 'antonline':
                 checkStore(antonline, url);
                 break;
@@ -201,10 +201,10 @@ function main() {
         }
     });
 
-    if (amazonItems.length > 0) 
+    if (amazonItems.length > 0)
         amazonItems.forEach(
             (item, idx) => {
-                switch(INTERVAL.unit) {
+                switch (INTERVAL.unit) {
                     case 'seconds':
                         setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * idx, item);
                         break;
