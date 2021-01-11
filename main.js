@@ -123,7 +123,7 @@ async function checkStoreWithDelay(item) {
 
             switch (item.interval.unit) {
                 case 'seconds':
-                    await setTimeout(checkStoreWithDelay, item.interval.value * 1000, item)
+                    setTimeout(checkStoreWithDelay, item.interval.value * 1000, item)
                     break;
 
                 case 'minutes':
@@ -184,7 +184,6 @@ function main() {
                 break;
 
             case 'newegg':
-            case 'neweggcombos':
                 checkStore(newegg, url);
                 break;
 
