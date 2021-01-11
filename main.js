@@ -5,7 +5,7 @@
 */
 
 // All the products to check
-// Current domains supported: Amazon, AntOnline, Argos, Best Buy, Costco, Microcenter, Newegg, Target, Tesco
+// Current domains supported: Amazon, AntOnline, Argos, Best Buy, Costco, Currys, Microcenter, Newegg, Target, Tesco
 // Format: https://www.XXX.com/...
 const URLS = [
     // "https://www.amazon.com/gp/product/B08164VTWH/",
@@ -60,6 +60,7 @@ import amazon from './stores/amazon.js'
 import argos from './stores/argos.js'
 import bestbuy from './stores/bestbuy.js'
 import costco from './stores/costco.js'
+import currys from './stores/currys.js'
 import microcenter from './stores/microcenter.js'
 import newegg from './stores/newegg.js'
 import target from './stores/target.js'
@@ -177,6 +178,10 @@ function main() {
 
             case 'costco':
                 checkStore(costco, url);
+                break;
+
+            case 'currys':
+                checkStore(currys, url);
                 break;
 
             case 'microcenter':
