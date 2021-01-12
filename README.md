@@ -20,7 +20,7 @@ Currently, the following stores are supported:
 * Argos (UK. For PS5, use product link. Disc: https://www.argos.co.uk/product/8349000, Digital: https://www.argos.co.uk/product/8349024)
 * Best Buy (including open-box)
 * Costco
-* Currys
+* Currys (UK)
 * Microcenter
 * Newegg (including Combo Deals)
 * Target (Works but may require additional setup)

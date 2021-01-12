@@ -36,16 +36,18 @@ export default async function currys(url, interval) {
         if (res && res.status == 200) {
             let parser = new DomParser();
             let doc = parser.parseFromString(res.data, 'text/html');
-			let title = doc.getElementsByClassName('product_name')[0].textContent
+			let title = doc.getElementsByClassName('product_name')
 			let inventory = doc.getElementsByClassName('space-b center')
-			let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')[0].getAttribute('content')
-
+            let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')
+            
+            if (title.length > 0) title = title[0].textContent
 			if (inventory.length > 0) {
 				inventory = inventory[0].getAttribute('data-button-label')
 				if (inventory.length > 0) inventory = inventory.slice(29, 42)
-			}
+            }
+            if (image.length > 0) image = image[0].getAttribute('content')
 
-			if (inventory != 'Add to basket' && !firstRun.has(url)) {
+            if (inventory != 'Add to basket' && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }

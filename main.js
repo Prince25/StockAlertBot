@@ -14,6 +14,7 @@ const URLS = [
     "https://www.argos.co.uk/product/8349000",
     "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
     "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
+    "https://www.currys.co.uk/gbuk/gaming/console-gaming/consoles/microsoft-xbox-series-x-1-tb-10203371-pdt.html",
     "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
     "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
     "https://www.target.com/p/playstation-5-console/-/A-81114595",
