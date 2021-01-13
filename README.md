@@ -38,7 +38,7 @@ Currently, the following stores are supported:
     `npm install`
 
 ### Usage
-1. Open and edit `config.js`
+1. Open and edit `config.json`
     * Add urls of products in the `URLS` array
     * Change the `INTERVAL` to suit your desires.\
     **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot (Amazon), or blocking your IP from accessing the website.
