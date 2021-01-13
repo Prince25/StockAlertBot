@@ -38,7 +38,7 @@ Currently, the following stores are supported:
     `npm install`
 
 ### Usage
-1. Open and edit main.js
+1. Open and edit `config.js`
     * Add urls of products in the `URLS` array
     * Change the `INTERVAL` to suit your desires.\
     **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot (Amazon), or blocking your IP from accessing the website.
@@ -55,7 +55,9 @@ Currently, the following stores are supported:
         4. Paste it to `TARGET_KEY`
     * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array
 2. Execute and continue about your day
-    `node main.js`
+    `node main.js`\
+    OR\
+    `npm start`
 3. Consider buying me a [Pizza](https://buymeacoff.ee/PrinceSingh) or [PayPal'ing](https://paypal.me/PrinceSingh25) me
 
 ### Things to work on

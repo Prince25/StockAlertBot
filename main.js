@@ -1,59 +1,7 @@
 
-/*
-    **************************************** EDIT THESE ****************************************
-    *************************************** AS NECESSARY ***************************************
-*/
-
-// All the products to check
-// Current domains supported: Amazon, AntOnline, Argos, Best Buy, Costco, Currys, Microcenter, Newegg, Target, Tesco
-// Format: https://www.XXX.com/...
-const URLS = [
-    // "https://www.amazon.com/gp/product/B08164VTWH/",
-    "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
-    "https://www.antonline.com/Sony/Electronics/Gaming_Devices/Gaming_Consoles/1413553",
-    "https://www.argos.co.uk/product/8349000",
-    "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
-    "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
-    "https://www.currys.co.uk/gbuk/gaming/console-gaming/consoles/microsoft-xbox-series-x-1-tb-10203371-pdt.html",
-    "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
-    "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
-    "https://www.target.com/p/playstation-5-console/-/A-81114595",
-    "https://www.tescopreorders.com/uk/ps5",
-    // "https://www.tesco.com/groceries/en-GB/products/306276176",
-]
-
-// How often to check for products. Too often may be dangerous, especially for Amazon.
-const INTERVAL = {
-    unit: 'seconds',  // seconds, m: minutes, h: hours
-    value: 10
-}
-
-// Opens the product url in your default browser if set to true
-export const OPEN_URL = true;   // true, false
-
-// Makes a sound when a product is in stock
-export const ALARM = true;      // true, false
-
-// IF YOU ENTERED A AMAZON PRODUCT
-// Separates the check between Amazon items by this value 
-const AMAZON_DELAY = 10;
-
-// IF YOU ENTERED A TARGET PRODUCT
-// Enter your zip code to search for a Target closest to you
-export const TARGET_ZIP_CODE = '90024'
-
-// IF YOU ENTERED A TARGET PRODUCT AND YOU GET API KEY ERRORS
-// Enter the key for your session as described in the README
-export const TARGET_KEY = 'ff457966e64d5e877fdbad070f276d18ecec4a01'
-
-// IF YOU WANT SLACK OR DISCORD WEBHOOKS
-export const WEBHOOK_URLS = [
-    ""
-]
-
-//   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ END ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
+// Support require
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
 import { fileURLToPath } from "url";
 import antonline from './stores/antonline.js'
@@ -66,6 +14,33 @@ import microcenter from './stores/microcenter.js'
 import newegg from './stores/newegg.js'
 import target from './stores/target.js'
 import tesco from './stores/tesco.js'
+
+
+// Import configs
+export var {
+    URLS, 
+    INTERVAL,
+    OPEN_URL,
+    ALARM,
+    AMAZON_DELAY,
+    TARGET_ZIP_CODE,
+    TARGET_KEY,
+    WEBHOOK_URLS
+} = require('./config.json')
+
+const ADDITIONAL_URLS = [
+    // "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
+    "https://www.amazon.com/gp/product/B08164VTWH/",
+    "https://www.argos.co.uk/product/8349000",
+    "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
+    "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
+    "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
+    "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
+    "https://www.target.com/p/playstation-5-console/-/A-81114595",
+    "https://www.tescopreorders.com/uk/ps5",
+    // "https://www.tesco.com/groceries/en-GB/products/306276176",
+]
+if (ADDITIONAL_URLS.length > 0) URLS = URLS.concat(ADDITIONAL_URLS)
 
 
 // Runs main only if this file is executed

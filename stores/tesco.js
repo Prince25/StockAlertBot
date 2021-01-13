@@ -1,13 +1,13 @@
 import { fileURLToPath } from "url";
-import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
 import fs from "fs";
-import threeBeeps from "../beep.js"
-import sendAlertToWebhooks from "../webhook.js"
-import writeErrorToFile from "../writeToFile.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
+import threeBeeps from "../utils/beep.js"
+import sendAlertToWebhooks from "../utils/webhook.js"
+import writeErrorToFile from "../utils/writeToFile.js"
 
 
 var ps5PreorderPagePath;

@@ -1,8 +1,8 @@
 import { fileURLToPath } from "url";
 import { ALARM, OPEN_URL, TARGET_KEY, TARGET_ZIP_CODE, USER_AGENTS } from '../main.js'
-import threeBeeps from "../beep.js"
-import sendAlertToWebhooks from "../webhook.js"
-import writeErrorToFile from "../writeToFile.js"
+import threeBeeps from "../utils/beep.js"
+import sendAlertToWebhooks from "../utils/webhook.js"
+import writeErrorToFile from "../utils/writeToFile.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
