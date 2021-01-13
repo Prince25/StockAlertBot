@@ -7,7 +7,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
         url => {
             // Notify Discord
             if (url.includes('discord')) {
-                console.info(moment().format('LTS') + ": Discord has been notified.")
+                console.info(moment().format('LTS') + ": Sending alert to discord.")
                 axios({
                     method: 'POST',
                     url: url,
@@ -21,7 +21,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                             url: product_url,
                             color: "15736093",
                             footer: {
-                                text: `${moment().format('MMMM Do YYYY - h:mm:ss A')}`
+                                text: `${store} Bot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
                             },
                             thumbnail: {
                                 url: image,
@@ -51,8 +51,35 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
 
             // Notify Slack
             } else if (url.includes('slack')) {
-                console.info(moment().format('LTS') + ": Slack has been notified.")
-                axios.post(url, { text: `***** In Stock at ${store} *****: ${title}  \n ${product_url}` })
+                console.info(moment().format('LTS') + ": Sending alert to slack.")
+                axios.post(url, { 
+                    attachments: [
+                        {
+                            "title": title,
+                            "title_link": product_url,
+                            "color": "#36a64f",
+                            "fields": [
+                                {
+                                    "title": "Store",
+                                    "value": store,
+                                    "short": true
+                                },
+                                {
+                                    "title": "Status",
+                                    "value": "In Stock",
+                                    "short": true
+                                },
+                                {
+                                    "title": "Product Page",
+                                    "value": product_url,
+                                    "short": false
+                                }
+                            ],
+                            "thumb_url": image,
+                            "footer": `${store} Bot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
+                        }
+                    ]
+                })
                 .catch(error => 
                     console.error(error)
                 ) 
