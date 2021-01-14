@@ -1,7 +1,7 @@
 import { fileURLToPath } from "url";
 import { ALARM, OPEN_URL } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
-import sendAlert from "../utils/notification/alert.js"
+import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
 import axios from "axios";
 import moment from "moment";
@@ -54,7 +54,7 @@ export default async function bestbuy(url, interval) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlert(url, title, image, store)
+                    sendAlerts(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
                 }

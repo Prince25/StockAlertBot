@@ -5,7 +5,7 @@ import config from "../config.js";
 const email = config.email;
 
 export default async function sendAlertToEmail(url, title, image, store) {
-	if (!email.user == "") {
+	if (email.service != "" && email.user != "" && email.pass != "" && email.to != "") {
 		console.info(moment().format('LTS') + ": Sending email alert.")
 		var transporter = nodemailer.createTransport({
 			service: email.service,
