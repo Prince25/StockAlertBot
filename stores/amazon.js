@@ -1,7 +1,7 @@
 import { fileURLToPath } from "url";
 import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
-import threeBeeps from "../utils/beep.js"
-import sendAlertToWebhooks from "../utils/webhook.js"
+import threeBeeps from "../utils/notification/beep.js"
+import sendAlert from "../utils/notification/alert.js"
 import writeErrorToFile from "../utils/writeToFile.js"
 import axios from "axios";
 import moment from "moment";
@@ -45,7 +45,7 @@ export default async function amazon(url, interval, originalIntervalValue, first
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(url, title, image, store)
+                    sendAlert(url, title, image, store)
                     urlOpened = true; 
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);

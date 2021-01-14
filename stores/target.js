@@ -1,7 +1,7 @@
 import { fileURLToPath } from "url";
 import { ALARM, OPEN_URL, TARGET_KEY, TARGET_ZIP_CODE, USER_AGENTS } from '../main.js'
-import threeBeeps from "../utils/beep.js"
-import sendAlertToWebhooks from "../utils/webhook.js"
+import threeBeeps from "../utils/notification/beep.js"
+import sendAlert from "../utils/notification/alert.js"
 import writeErrorToFile from "../utils/writeToFile.js"
 import axios from "axios";
 import moment from "moment";
@@ -86,7 +86,7 @@ export default async function target(url, interval, key, zip_code) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
-                    sendAlertToWebhooks(url, title, image, store)
+                    sendAlert(url, title, image, store)
                     urlOpened = true; 
                     setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
                 } 

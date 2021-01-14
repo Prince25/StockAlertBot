@@ -1,6 +1,6 @@
 import axios from "axios";
 import moment from "moment";
-import { WEBHOOK_URLS } from '../main.js'
+import { WEBHOOK_URLS } from '../../main.js'
 
 export default async function sendAlertToWebhooks(product_url, title, image, store) {
     WEBHOOK_URLS.forEach(   // For each Webhook URL...
