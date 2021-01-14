@@ -80,3 +80,6 @@ Currently, the following stores are supported:
 * ~~Add a way to have independent delay timers for Amazon~~
 * ~~Open product page when in stock~~
 * ~~Add webhookURL to enable posting messages to Slack and Discord~~
+
+## License
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
