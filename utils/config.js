@@ -1,10 +1,5 @@
 import * as dotenv from 'dotenv';
-
-const envFOUND = dotenv.config();
-
-if (!envFOUND) {
-	console.error('.env file not found')
-}
+dotenv.config();
 
 export default {
 	email: {

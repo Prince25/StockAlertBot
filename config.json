@@ -53,8 +53,15 @@
     "TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01",
 
 
+    "__EMAIL_comment": [
+        "IF YOU WANT EMAIL ALERTS",
+        "Make sure to rename example.env file to .env"
+    ],
+    "EMAIL": false,
+
+
     "__WEBHOOK_URLS_comment": [
-        "IF YOU WANT SLACK OR DISCORD WEBHOOKS"
+        "IF YOU WANT SLACK OR DISCORD ALERTS"
     ],
     "WEBHOOK_URLS": [
         ""

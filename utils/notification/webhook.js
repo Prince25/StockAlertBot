@@ -7,7 +7,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
         url => {
             // Notify Discord
             if (url.includes('discord')) {
-                console.info(moment().format('LTS') + ": Sending alert to discord.")
+                console.info(moment().format('LTS') + ": Sending alert to discord")
                 axios({
                     method: 'POST',
                     url: url,
@@ -51,7 +51,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
 
             // Notify Slack
             } else if (url.includes('slack')) {
-                console.info(moment().format('LTS') + ": Sending alert to slack.")
+                console.info(moment().format('LTS') + ": Sending alert to slack")
                 axios.post(url, { 
                     attachments: [
                         {
