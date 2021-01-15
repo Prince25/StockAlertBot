@@ -9,7 +9,7 @@ if (!envFOUND) {
 export default {
 	email: {
 		service: process.env.EMAIL_SERVICE,
-		user: process.env.EMAIL_USER,
+		from: process.env.EMAIL_FROM,
 		pass: process.env.EMAIL_PASS,
 		to: process.env.EMAIL_TO
 	}

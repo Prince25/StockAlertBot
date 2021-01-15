@@ -15,13 +15,13 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                         "Content-type": "application/json"
                     },
                     data: {
-                        username: store,
+                        username: "StockAlertBot",
                         embeds: [{
                             title: title,
                             url: product_url,
                             color: "15736093",
                             footer: {
-                                text: `${store} Bot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
+                                text: `StockAlertBot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
                             },
                             thumbnail: {
                                 url: image,
@@ -76,7 +76,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                                 }
                             ],
                             "thumb_url": image,
-                            "footer": `${store} Bot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
+                            "footer": `StockAlertBot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
                         }
                     ]
                 })

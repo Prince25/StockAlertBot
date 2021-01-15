@@ -5,18 +5,18 @@ import config from "../config.js";
 const email = config.email;
 
 export default async function sendAlertToEmail(url, title, image, store) {
-	if (email.service != "" && email.user != "" && email.pass != "" && email.to != "") {
+	if (email.service != "" && email.from != "" && email.pass != "" && email.to != "") {
 		console.info(moment().format('LTS') + ": Sending email alert.")
 		var transporter = nodemailer.createTransport({
 			service: email.service,
 			auth: {
-				user: email.user,
+				user: email.from,
 				pass: email.pass
 			}
 		});
 
 		var mailOptions = {
-			from: email.user,
+			from: `"StockAlertBot" <${email.from}>`,
 			to: email.to,
 			subject: '***** In Stock at ' + store + ' *****',
 			text: `${title}  \n ${url}`,
