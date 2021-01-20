@@ -1,5 +1,5 @@
 # StockAlertBot
-Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiciously high markup price, I decided to at least attempt to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s). Of course, this is only half the battle. For full writeup on scoring items, look [here](https://github.com/PrinceS25/StockAlertBot/wiki/Beating-Scalpers).
+Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiculously high markup price, I decided to at least attempt to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s). Of course, this is only half the battle. For full writeup on scoring items, look [here](https://github.com/PrinceS25/StockAlertBot/wiki/Beating-Scalpers).
 
 <p align="center">
 Donate, buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Pizza</a> or <a href="https://paypal.me/PrinceSingh25" target="_blank">PayPal</a> me if you'd like to see this project expanded and support me. :) <br> <br>
@@ -56,6 +56,7 @@ Currently, the following stores are supported:
         3. Click on any of the urls that has the string "key=" and copy the whole key
         4. Paste it to `TARGET_KEY`
     * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array
+    * **If** you want to send alerts to email, change `EMAIL` in `config.json` to `true`. Make a copy of `example.env` and rename it to `.env`. Inside `.env`, type out one of the following service providers (`EMAIL_SERVICE`), your email (`EMAIL_FROM`) and password (`EMAIL_PASS`) and the email you want alerts sent to (`EMAIL_TO`). All without quotes.
 2. Execute and continue about your day
     `node main.js`\
     OR\
@@ -74,7 +75,7 @@ Currently, the following stores are supported:
     * ~~Tesco~~
     * ~~Argos~~
 * Add GUI - Make it easier to use 
-* Add Email and Maybe SMS Notifications
+* Add ~~Email and~~ Maybe SMS Notifications
 * ~~Fix~~ Find Bugs
 * ~~Initially create seperation between intervals for Amazon items~~
 * ~~Add a way to have independent delay timers for Amazon~~
