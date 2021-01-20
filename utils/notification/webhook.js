@@ -1,13 +1,13 @@
 import axios from "axios";
 import moment from "moment";
-import { WEBHOOK_URLS } from '../main.js'
+import { WEBHOOK_URLS } from '../../main.js'
 
 export default async function sendAlertToWebhooks(product_url, title, image, store) {
     WEBHOOK_URLS.forEach(   // For each Webhook URL...
         url => {
             // Notify Discord
             if (url.includes('discord')) {
-                console.info(moment().format('LTS') + ": Sending alert to discord.")
+                console.info(moment().format('LTS') + ": Sending alert to discord")
                 axios({
                     method: 'POST',
                     url: url,
@@ -15,13 +15,13 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                         "Content-type": "application/json"
                     },
                     data: {
-                        username: store,
+                        username: "StockAlertBot",
                         embeds: [{
                             title: title,
                             url: product_url,
                             color: "15736093",
                             footer: {
-                                text: `${store} Bot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
+                                text: `StockAlertBot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
                             },
                             thumbnail: {
                                 url: image,
@@ -51,7 +51,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
 
             // Notify Slack
             } else if (url.includes('slack')) {
-                console.info(moment().format('LTS') + ": Sending alert to slack.")
+                console.info(moment().format('LTS') + ": Sending alert to slack")
                 axios.post(url, { 
                     attachments: [
                         {
@@ -76,7 +76,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                                 }
                             ],
                             "thumb_url": image,
-                            "footer": `${store} Bot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
+                            "footer": `StockAlertBot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
                         }
                     ]
                 })
