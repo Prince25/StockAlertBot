@@ -14,13 +14,13 @@ var firstRun = true;
 function readEnvFile(firstRun) {
   let envFile = ''
   try {
-    envFile = fs.readFileSync('../.env', {encoding:'utf8', flag:'r'});
+    envFile = fs.readFileSync('.env', {encoding:'utf8', flag:'r'});
     if (envFile == '') throw new Error('.env file empty!')
     if(firstRun) console.log('.env file found! Attempting to read...')
   } catch (_) {
     if(firstRun) console.log('.env file not found! Creating a new one...')
     envFile = fs.readFileSync('example.env', {encoding:'utf8', flag:'r'});
-    fs.writeFileSync('../.env', envFile);
+    fs.writeFileSync('.env', envFile);
   }
   return envFile
 }

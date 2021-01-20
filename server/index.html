@@ -369,7 +369,7 @@
                         email: this.user_settings.EMAIL,
                         email_color: this.user_settings.EMAIL ? "green--text mb-0 ml-4" : "red--text mb-0 ml-4",
                         email_text_style: " mb-0 ml-4",
-                        webhook_expanded: false
+                        webhook_expanded: this.user_settings.WEBHOOK_URLS.length > 0
                     }
                 },
 
@@ -445,7 +445,10 @@
                     },
 
                     updateFrom() {
-                        if(this.sameAsFromChecked) this.to = this.from
+                        if(this.sameAsFromChecked) {
+                            this.to = this.from
+                            this.updateTo()
+                        }
                         this.$emit('update_from', this.from)
                     },
 
