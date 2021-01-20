@@ -4,12 +4,19 @@
         "Current domains supported: Amazon, AntOnline, Argos, Best Buy, Costco, Currys, Microcenter, Newegg, Target, Tesco",
         "Format: https://www.ABC123.com/..."
     ],
-    "URLS": [
-        "https://www.antonline.com/Sony/Electronics/Gaming_Devices/Gaming_Consoles/1413553",
-        "https://www.currys.co.uk/gbuk/gaming/console-gaming/consoles/microsoft-xbox-series-x-1-tb-10203371-pdt.html"
+    "URLS": [],
+    "SUPPORTED_STORES_DOMAINS": [
+        "amazon",
+        "antonline",
+        "argos",
+        "bestbuy",
+        "costco",
+        "currys",
+        "microcenter",
+        "newegg",
+        "target",
+        "tesco"
     ],
-
-    
     "__INTERVAL_comment": [
         "How often to check for products. Too often may be dangerous, especially for Amazon",
         "Units: seconds, m: minutes, h: hours"
@@ -18,52 +25,40 @@
         "unit": "seconds",
         "value": 10
     },
-
-
     "__OPEN_URL_comment": [
         "Opens the product url in your default browser if set to true"
     ],
     "OPEN_URL": true,
-
-
     "__ALARM_comment": [
         "Makes a sound when a product is in stock"
     ],
     "ALARM": true,
-
-
     "__AMAZON_DELAY_comment": [
         "IF YOU ENTERED A AMAZON PRODUCT",
         "Separates the check between Amazon items by this value"
     ],
     "AMAZON_DELAY": 10,
-
-
     "__TARGET_ZIP_CODE_comment": [
         "IF YOU ENTERED A TARGET PRODUCT",
         "Enter your zip code to search for a Target closest to you"
     ],
     "TARGET_ZIP_CODE": "90024",
-
-
     "__TARGET_KEY_comment": [
         "IF YOU ENTERED A TARGET PRODUCT AND YOU GET API KEY ERRORS",
         "Enter the key for your session as described in the README"
     ],
-    "TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01",
-
-
+    "TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01wqe",
     "__EMAIL_comment": [
         "IF YOU WANT EMAIL ALERTS",
         "Make sure to rename example.env file to .env"
     ],
     "EMAIL": false,
-
-
     "__WEBHOOK_URLS_comment": [
         "IF YOU WANT SLACK OR DISCORD ALERTS"
     ],
-    "WEBHOOK_URLS": [
-        ""
+    "WEBHOOK_URLS": [],
+    "SUPPORTED_WEBHOOK_DOMAINS": [
+        "discord",
+        "slack"
     ]
 }
