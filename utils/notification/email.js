@@ -11,7 +11,7 @@ export default async function sendAlertToEmail(url, title, image, store) {
 		if (!fs.existsSync('.env')) {
 			console.error(moment().format('LTS') + ": Error sending email alert, rename example.env file to .env")
 		}
-		else if (email.service != "" && email.from != "" && email.pass != "" && email.to != "") {
+		else if (email.service == "" || email.from == "" || email.pass == "" || email.to == "") {
 			console.error(moment().format('LTS') + ": Error sending email alert, open and edit .env file")
 		} else  {
 			console.info(moment().format('LTS') + ": Sending email alert")
