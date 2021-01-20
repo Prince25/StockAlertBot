@@ -57,6 +57,12 @@ Currently, the following stores are supported:
         4. Paste it to `TARGET_KEY`
     * **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array
     * **If** you want to send alerts to email, change `EMAIL` in `config.json` to `true`. Make a copy of `example.env` and rename it to `.env`. Inside `.env`, type out one of the following service providers (`EMAIL_SERVICE`), your email (`EMAIL_FROM`) and password (`EMAIL_PASS`) and the email you want alerts sent to (`EMAIL_TO`). All without quotes.
+    ```
+    Gmail, Yahoo, iCloud, Hotmail, Outlook365, QQ, 126, 163, 1und1, AOL, DebugMail, DynectEmail, 
+    FastMail, GandiMail, Godaddy, GodaddyAsia, GodaddyEurope, hot.ee, mail.ee, Mail.ru, Maildev, Mailgun, Mailjet, 
+    Mailosaur, Mandrill, Naver, OpenMailBox, Postmark, QQex, SendCloud, SendGrid, SendinBlue, SendPulse, SES, 
+    SES-US-EAST-1, SES-US-WEST-2, SES-EU-WEST-1, Sparkpost, Yandex, Zoho, qiye.aliyun
+    ```
 2. Execute and continue about your day
     `node main.js`\
     OR\
