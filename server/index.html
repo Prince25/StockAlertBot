@@ -1,11 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <!-- 
+            Designed and coded by:
+            Prabhjot "Prince" Singh
+            https://github.com/PrinceS25/StockAlertBot 
+        -->
         <title>StockAlertBot Settings</title>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         
         <!--  Vue.js CDN  -->
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
         
         <!--  Vuetify.js CDN  -->
         <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
@@ -358,6 +363,15 @@
 
 
 
+
+            /*
+                Designed and coded by:
+                Prabhjot "Prince" Singh
+                https://github.com/PrinceS25/StockAlertBot
+            */
+
+
+
             /*
                 Optional Component
                 optional, email, webhooks, webhook-item, add-webhook
@@ -431,6 +445,7 @@
                         from: this.settings.EMAIL_FROM,
                         pass: this.settings.EMAIL_PASS,
                         to: this.settings.EMAIL_TO,
+                        showPass: false,
                         sameAsFromChecked: true,
                         providers: [ "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
                             "FastMail", "GandiMail", "Godaddy", "GodaddyAsia", "GodaddyEurope", "hot.ee", "mail.ee", "Mail.ru", "Maildev", "Mailgun", "Mailjet", 
@@ -497,7 +512,7 @@
                                 <div style="display: flex; align-items: center; justify-content: center;">
                                     <p class="text-overline mb-5" style="font-size: 1rem!important;">Password</p>
                                     <div style="width: 34%;" class="ml-4 mr-4">
-                                        <v-text-field v-model="pass" single-line type="text" @change="updatePass" dense solo />
+                                        <v-text-field v-model="pass" single-line @change="updatePass" @click:append="showPass = !showPass" :type="showPass ? 'text' : 'password'" :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'" dense solo />
                                     </div>
                                     <v-tooltip bottom>
                                         <template v-slot:activator="{ on, attrs }">
