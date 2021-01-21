@@ -16,10 +16,10 @@ Donate, buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Piz
 
 ### How does it work?
 
-Enter links of the products you want tracked and how often you want the program to check if those products are in stock. When an item becomes available, you may configure it to automatically notify you through variety of alerts including sound, email, discord and slack notifications, text on console, opening the URL in your browser, and more to come. 
+Enter links of the products you want tracked and how often you want the program to check if those products are in stock. When an item becomes available, you may configure it to  notify you through variety of alerts including sound, email, discord and slack notifications, text on console, automatically opening the URL in your browser, and more to come. 
 <br><br>
 
-### What stores/wesbites are supported?
+### What stores/websites are supported?
 
 Currently, the following stores are supported:
 * AntOnline
@@ -50,7 +50,7 @@ Currently, the following stores are supported:
 ## Usage
 There are only two steps to use this program: 1) enter information and 2) launch the program.
 
-1. You can now enter information using two ways: via a Browser (recommended) or a text editor.
+1. You can now enter information using two ways: via a browser (recommended) or a text editor.
     #### Via Browser
     1. At the root directory, run on the terminal:
         `npm run settings`\
@@ -127,7 +127,9 @@ For monetary support, [donate](https://www.paypal.com/donate?business=3Y9NEYR4TU
     * ~~Target~~
     * ~~Tesco~~
     * ~~Argos~~
+* Add delay between items from the same store
 * Add ~~Email and Maybe~~ SMS Notifications
+* More OOP!!
 * ~~Fix~~ Find Bugs
 * ~~Add GUI - Make it easier to use~~ 
 * ~~Initially create seperation between intervals for Amazon items~~
