@@ -1,10 +1,9 @@
 
 ### New in v2.0: :email: E-mail notification support and an user interface :iphone: !! (see [screenshots](#Screenshots))
 
-
 # StockAlertBot
 Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiculously high markup prices, I decided to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s).
-###### Of course, this is only half the battle. For full writeup on scoring items, look [here](https://github.com/PrinceS25/StockAlertBot/wiki/Beating-Scalpers).
+###### Of course, this is only half the battle. For full writeup on scoring items, look [here](https://github.com/PrinceS25/StockAlertBot/wiki/Beating-Scalpers).<br><br><br><br>
 
 <p align="center">
 Donate, buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Pizza</a> or <a href="https://paypal.me/PrinceSingh25" target="_blank">PayPal</a> me if you'd like to see this project expanded and support me. :) <br> <br>
@@ -15,10 +14,13 @@ Donate, buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Piz
 <br><br>
 
 
-> How does it work?
-Enter the product URLs and set how often you want the program to check if those products are in stock. When an item becomes available, it will notify you through both text on console and three auditory beeps as well as opening the product page automatically in your default web browser if you allowed it to do so. You may further configure to send alerts to Slack or Discord.
+### How does it work?
 
-> What stores/wesbites are supported?
+Enter links of the products you want tracked and how often you want the program to check if those products are in stock. When an item becomes available, you may configure it to automatically notify you through variety of alerts including sound, email, discord and slack notifications, text on console, opening the URL in your browser, and more to come. 
+<br><br>
+
+### What stores/wesbites are supported?
+
 Currently, the following stores are supported:
 * AntOnline
 * Amazon (Fails at low interval rates)
@@ -48,23 +50,23 @@ Currently, the following stores are supported:
 ## Usage
 There are only two steps to use this program: 1) enter information and 2) launch the program.
 
-1. You can now enter information using two ways: via a GUI (graphical user interface; recommended) or a text editor
-    ### Via GUI
+1. You can now enter information using two ways: via a Browser (recommended) or a text editor.
+    #### Via Browser
     1. At the root directory, run on the terminal:
-        `npm run settings`
+        `npm run settings`\
         A browser window should open up. If it doesn't and the console says `Server started!`, go to: `http://localhost:3250/` in your browser.
-    2. Enter the links of the items you want to track in the URLs tab
-    3. Go to Settings tab and change to your heart's content
-    If you have Amazon link(s), you will see an option to put delay between Amazon items.
+    2. Enter the links of the items you want to track in the URLs tab.
+    3. Go to Settings tab and change to your heart's content.\
+    If you have Amazon link(s), you will see an option to put delay between Amazon items.\
     If you have Target link(s), you will see additional options to put zip code and API Key. Only change the key if you get API key errors. Refer to the instructions in the following [section](#Via-Text-Editor).
-    4. Configure notification options in Optional tab.
-    If you want notifications sent to Discord or Slack, expand WEBHOOKS and enter the URL there.
+    4. Configure notification options in Optional tab.\
+    If you want notifications sent to Discord or Slack, expand WEBHOOKS and enter the URL(s) there.\
     If you want notifications sent to Email, turn on email and enter your service provider information. Some providers (Yahoo, AOL, AT&T) cause problems. Refer to following [section](#Via-Text-Editor).
-    5. Once you're happy with the settings, click `Save Settings`.
-    `config.json` and `.env` files should now reflect your settings.
-    You can use `CTRL + C` or `CMD + C` to stop the program.
+    5. Once you're happy with the settings, click `Save Settings`.\
+    `config.json` and `.env` files should now reflect your settings.\
+    You can use `CTRL + C` or `CMD + C` to stop the program.<br><br>
 
-    ### Via Text Editor 
+    #### Via Text Editor 
     Open and edit `config.json`
     1. Add urls of products in the `URLS` array
     2. Change the `INTERVAL` to suit your desires.\
@@ -100,15 +102,18 @@ There are only two steps to use this program: 1) enter information and 2) launch
 
 
 ## Screenshots
-![Screenshot of URLs](https://i.imgur.com/FVrmKNA.png)
-![Screenshot of Settings](https://i.imgur.com/ue3Pdlv.png)
-![Screenshot of Optional](https://i.imgur.com/w7xkXIw.png)
+![Screenshot of URLs](https://i.imgur.com/FVrmKNA.png)<br><br>
+---
+<br><br>![Screenshot of Settings](https://i.imgur.com/ue3Pdlv.png)<br><br>
+---
+<br><br>![Screenshot of Optional](https://i.imgur.com/w7xkXIw.png)
 
 
 ## Feedback and Support
-To report bugs, please create an [issue](https://github.com/PrinceS25/StockAlertBot/issues).
-To ask questions, give feedback or suggestions among other things, create a new [discussion](https://github.com/PrinceS25/StockAlertBot/discussions).
-To 
+To report bugs, please create an [issue](https://github.com/PrinceS25/StockAlertBot/issues).\
+To ask questions, give feedback or suggestions among other things, create a new [discussion](https://github.com/PrinceS25/StockAlertBot/discussions).\
+To contribute code, programming questions/guidance, gaming sessions, and more, add me on Discord: Prince#0584\
+For monetary support, [donate](https://www.paypal.com/donate?business=3Y9NEYR4TURT8&item_name=Making+software+and+hacking+the+world%21+%E2%99%A5&currency_code=USD) or buy me a [Pizza](https://buymeacoff.ee/PrinceSingh) or [PayPal](https://paypal.me/PrinceSingh25) me 
 
 
 ## Things to work on
