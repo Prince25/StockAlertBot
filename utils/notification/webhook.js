@@ -28,25 +28,25 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                             },
                             fields: [
                                 {
-                                    "name": "Store",
-                                    "value": store,
-                                    "inline": true
+                                    name: "Store",
+                                    value: store,
+                                    inline: true
                                 },
                                 {
-                                    "name": "Status",
-                                    "value": "In Stock",
-                                    "inline": true
+                                    name: "Status",
+                                    value: "In Stock",
+                                    inline: true
                                 },
                                 {
-                                    "name": "Product Page",
-                                    "value": product_url
+                                    name: "Product Page",
+                                    value: product_url
                                 }
                             ]
                         }]
                     }
                 })
                 .catch(error => 
-                    console.error(error)
+                    console.error(moment().format('LTS') + ": Error sending alert to discord", error)
                 )
 
             // Notify Slack
@@ -55,33 +55,33 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                 axios.post(url, { 
                     attachments: [
                         {
-                            "title": title,
-                            "title_link": product_url,
-                            "color": "#36a64f",
-                            "fields": [
+                            title: title,
+                            title_link: product_url,
+                            color: "#36a64f",
+                            fields: [
                                 {
-                                    "title": "Store",
-                                    "value": store,
-                                    "short": true
+                                    title: "Store",
+                                    value: store,
+                                    short: true
                                 },
                                 {
-                                    "title": "Status",
-                                    "value": "In Stock",
-                                    "short": true
+                                    title: "Status",
+                                    value: "In Stock",
+                                    short: true
                                 },
                                 {
-                                    "title": "Product Page",
-                                    "value": product_url,
-                                    "short": false
+                                    title: "Product Page",
+                                    value: product_url,
+                                    short: false
                                 }
                             ],
-                            "thumb_url": image,
-                            "footer": `StockAlertBot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
+                            thumb_url: image,
+                            footer: `StockAlertBot | ${moment().format('MMMM Do YYYY - h:mm:ss A')}`
                         }
                     ]
                 })
                 .catch(error => 
-                    console.error(error)
+                    console.error(moment().format('LTS') + ": Error sending alert to slack", error)
                 ) 
             }    
         }   

@@ -39,7 +39,7 @@ export default async function sendAlertToEmail(url, title, image, store) {
 
 			transporter.sendMail(mailOptions, function (error, info) {
 				if (error) {
-					console.error(error);
+					console.error(moment().format('LTS') + ": Error sending email alert", error)
 				} else {
 					console.info(moment().format('LTS') + ": Email alert sent to:", info.accepted);
 				}

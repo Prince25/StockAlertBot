@@ -33,12 +33,22 @@ export default async function bestbuy(url, interval) {
         
         if (res && res.status === 200) {
             let parser = new DomParser();
-            let doc = parser.parseFromString(res.data, 'text/html');
-            let title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent.trim().slice(0, 150)
-            let inventory = doc.getElementsByClassName('add-to-cart-button')
-            let open_box = doc.getElementsByClassName('open-box-option__label')
-            let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')[0].getAttribute('content')
-            
+            let doc, title, inventory, open_box, image
+           
+            // Check package products
+            if (url.includes('combo')) {
+                doc = parser.parseFromString(res.data, 'text/html');
+                inventory = doc.getElementsByClassName('add-to-cart-button')
+                title = doc.getElementsByClassName('sku-title')[0].textContent
+                image = doc.getElementsByClassName('picture-wrapper')[0].getElementsByTagName('img')[0].getAttribute('src');
+            } else { // Check normal products
+                doc = parser.parseFromString(res.data, 'text/html');
+                title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent.trim().slice(0, 150)
+                inventory = doc.getElementsByClassName('add-to-cart-button')
+                open_box = doc.getElementsByClassName('open-box-option__label')
+                image = doc.getElementsByClassName('primary-image')[0].getAttribute('src')
+            } 
+
             if (inventory.length > 0) inventory = inventory[0].textContent
             if (open_box && open_box.length > 0) {
                 if (ALARM) threeBeeps();
