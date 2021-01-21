@@ -765,8 +765,7 @@
                     // Add a webhook URL
                     addWebhookURL(urlToAdd) {
                         if(this.isValidHttpUrl(urlToAdd)) {
-                            let webhookDomain = this.getDomainName(urlToAdd)
-                            if(this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.includes(webhookDomain))
+                            if(this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some(webhookDomain => urlToAdd.includes(webhookDomain)))
                                 if(!this.userSettings.WEBHOOK_URLS.includes(urlToAdd)) {
                                     this.userSettings.WEBHOOK_URLS.push(urlToAdd)
                                     document.getElementById('add_webhook_url_error').textContent = ''
