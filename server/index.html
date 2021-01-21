@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 
+            Designed and coded by:
+            Prabhjot "Prince" Singh
+            https://github.com/PrinceS25/StockAlertBot 
+        -->
+        <title>StockAlertBot Settings</title>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        
+        <!--  Vue.js CDN  -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+        
+        <!--  Vuetify.js CDN  -->
+        <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    </head>
+
+    <body>
+        <div id="app">
+            <v-app>
+                <v-main>
+                    <v-container>
+
+                        <p class="text-h4 font-weight-medium text-center ">StockAlertBot SETTINGS</p>
+                        <v-divider></v-divider>
+                                           
+                        <v-tabs v-model="current_tab" fixed-tabs>
+                            <v-tab v-for="tab in tabs" :key="tab">
+                                {{ tab }}
+                            </v-tab>
+
+                            <v-tab-item>
+                                <v-divider class="mb-4"></v-divider>
+                                <url-list 
+                                    v-bind:urls="userSettings.URLS" 
+                                    v-on:remove_url="removeURL" 
+                                    v-on:add_url="addURL" 
+                                />
+                            </v-tab-item>
+
+                            <v-tab-item>
+                                <v-divider class="mb-4"></v-divider>
+                                <settings 
+                                    v-bind:user_settings="userSettings" 
+                                    v-bind:has_amazon="has_amazon" 
+                                    v-bind:has_target="has_target" 
+                                    v-on:update_interval="updateInterval" 
+                                    v-on:update_open_url="updateOpenURL" 
+                                    v-on:update_alarm="updateAlarm" 
+                                    v-on:update_amazon="updateAmazon" 
+                                    v-on:update_target="updateTarget" 
+                                />
+                            </v-tab-item>
+
+                            <v-tab-item>
+                                <v-divider class="mb-4"></v-divider>
+                                <optional
+                                    v-bind:user_settings="userSettings"
+                                    v-bind:email_settings="envSettings"
+                                    v-on:toggle_email="setEmail" 
+                                    v-on:remove_webhook_url="removeWebhookURL" 
+                                    v-on:add_webhook_url="addWebhookURL"
+                                    v-on:update_service="updateService"
+                                    v-on:update_from="updateFrom"
+                                    v-on:update_pass="updatePass"
+                                    v-on:update_to="updateTo"
+                                />
+                            </v-tab-item>
+
+                            <v-tab-item>
+                                <v-divider class="mb-4"></v-divider>
+                                <p v-for="(settings,key) in userSettings">
+                                    {{key}}:{{settings}}
+                                </p>
+                                <p v-for="(settings,key) in envSettings">
+                                    {{key}}:{{settings}}
+                                </p>
+                                <p>has_amazon: {{has_amazon}}</p>
+                                <p>has_target: {{has_target}}</p>
+                            </v-tab-item>
+                        </v-tabs>
+
+                        <v-divider class="mt-4 mb-4"></v-divider>
+
+                        <div style="text-align: center;">
+                            <v-btn elevation="4" outlined v-on:click="sendSettings" :disabled="checkSaveButton">
+                                Save Settings 
+                                <v-icon right dark>mdi-content-save</v-icon>
+                            </v-btn>
+                            <p class="pa-0 ma-0 mt-2" style="color: red;" id="save_button_error"></p>
+                        </div>
+
+                    </v-container>
+                </v-main>
+            </v-app>
+        </div>
+    
+
+        <script>
+
+            /*
+                URL Components
+                url-list, url-item, add-url
+            */
+            Vue.component('url-list', {
+                props: ['urls'],
+                template:   `<div>
+                                <v-row dense>
+                                    <v-col v-for="(url, index) in urls" :key="index" md="6" class="ma-0 pa-3 pl-8 pr-8">
+                                        <url-item v-bind:url="url" v-bind:key="url" v-on:remove_url="$emit('remove_url', $event)" />
+                                    </v-col>
+                                </v-row>
+                                <v-divider inset class="ma-7 mb-0"></v-divider>
+                                <add-url class="ma-0 pa-3" v-on:add_url="$emit('add_url', $event)" />
+                            </div>`
+            });
+
+            Vue.component('url-item', {
+                props: ['url'],
+                methods: {
+                    remove() {
+                        this.$emit('remove_url', this.url)
+                    }
+                },
+                template:   `<v-text-field
+                                dense
+                                solo
+                                readonly
+                                type="text"
+                                hide-details
+                                :value="url"
+                                :append-outer-icon="'mdi-close'"
+                                @click:append-outer="remove"
+                            ></v-text-field>`
+            });
+
+            Vue.component('add-url', {
+                data: function() {
+                    return {
+                        url: '',
+                    }
+                },
+                methods: {
+                    add() {
+                        if(this.url) {
+                            this.$emit('add_url', this.url)
+                            this.url = ''
+                        }
+                    }
+                },
+                template:   `<div>
+                                <p style="font-size: 1.075rem!important;" class="text-button ma-0 text-center">Add URL</p>
+                                <div class="ma-0 pa-0" style="max-width: 65%; display: flex; align-items: baseline;margin: auto !important;">
+                                    <v-text-field
+                                        dense
+                                        solo
+                                        outlined
+                                        clearable
+                                        hide-details
+                                        clear-icon="mdi-close-circle"
+                                        type="text"
+                                        label="Enter URL"
+                                        v-model="url"
+                                        :append-outer-icon="'mdi-plus'"
+                                        @click:append-outer="add"
+                                    ></v-text-field>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Format: https://www.ABC123.com/...</span>
+                                    </v-tooltip>
+                                </div>
+                                <p class="pa-0 ma-0" style="color: red; text-align: center;" id="add_url_error"></p>
+                            </div>`
+            });
+
+
+
+            /*
+                Settings Component
+                settings
+            */
+            Vue.component('settings', {
+                props: ["user_settings", "has_amazon", "has_target"],
+                data: function() {
+                    return {
+                        // Interval variables
+                        interval_value: this.user_settings.INTERVAL.value,
+                        interval_value_rule: value => parseInt(value) > 0 || 'Must be more than 0',
+                        interval_unit: this.user_settings.INTERVAL.unit,
+                        interval_units: ['seconds', 'minutes', 'hours'],
+
+                        // Boolean: Open URL and Alarm
+                        open_url: this.user_settings.OPEN_URL,
+                        sound_alarm: this.user_settings.ALARM,
+
+                        // Amazon delay
+                        amazon_delay: this.user_settings.AMAZON_DELAY,
+
+                        // Target Zip Code and API KEY
+                        target_zip: this.user_settings.TARGET_ZIP_CODE,
+                        target_key: this.user_settings.TARGET_KEY,
+                        target_zip_rule: value => (parseInt(value) > 9999 && value.toString().length == 5) || 'Zip code must be postive and have length of 5'
+                    }
+                },
+
+                methods: {
+                    updateInterval() {
+                        if(this.interval_value > 0) {
+                            this.$emit('update_interval', {
+                                unit: this.interval_unit,
+                                value: parseInt(this.interval_value)
+                            })
+                        }
+                    },
+
+                    updateOpenURL() {
+                        this.$emit('update_open_url', this.open_url)
+                    },
+
+                    updateAlarm() {
+                        this.$emit('update_alarm', this.sound_alarm)
+                    },
+
+                    updateAmazon() {
+                        if(this.amazon_delay > 0) this.$emit('update_amazon', parseInt(this.amazon_delay))
+                    },
+
+                    updateTarget() {
+                        if(this.target_zip > 9999 && this.target_zip.toString().length == 5 && this.target_key != '')
+                            this.$emit('update_target', {
+                                zip: this.target_zip,
+                                key: this.target_key
+                            })
+                    },
+
+                    resetTargetKey() {
+                        this.target_key = "ff457966e64d5e877fdbad070f276d18ecec4a01"
+                        this.updateTarget()
+                    }
+                },
+
+                template:   `<div>
+                                <v-row dense>
+
+                                    <!--  Interval HTML  -->
+                                    <v-col md="6" class="ma-0 pa-3 pl-8 pr-8">
+                                        <div style="display: flex; align-items: center; justify-content: center;">
+                                            <p class="text-overline mb-5" style="font-size: 1.1rem!important;">Interval</p>
+                                            <div style="max-width: 15%" class="ml-4 mr-4">
+                                                <v-text-field v-model="interval_value" single-line type="number" :rules="[interval_value_rule]" @change="updateInterval" dense solo />
+                                            </div>
+                                            <div style="max-width: 30%">
+                                                <v-select :items="interval_units" v-model="interval_unit" @change="updateInterval" dense solo></v-select>
+                                            </div>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                        <v-icon dark>mdi-help</v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>How often to check for products. Too often may be dangerous, especially for Amazon.</span>
+                                            </v-tooltip>
+                                        </div>
+                                    </v-col>
+                                    
+                                    <!--  Open URL, Sound Alarm HTML  -->
+                                    <v-col md="6" class="ma-0 pa-3 pl-8 pr-8">
+                                        <div style="display: flex; align-items: center; justify-content: center;">
+                                            <v-checkbox class="mt-0" v-model="open_url" label="Open URL" @change="updateOpenURL" dense></v-checkbox>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                        <v-icon dark>mdi-help</v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>Opens the product url in your default browser if checked when product is available.</span>
+                                            </v-tooltip>
+                                            
+                                            <v-checkbox class="mt-0 ml-8 pl-8" v-model="sound_alarm" label="Sound Alarm" @change="updateAlarm"></v-checkbox>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                        <v-icon dark>mdi-help</v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>Makes a sound when a product is in stock.</span>
+                                            </v-tooltip>
+                                        </div>
+                                    </v-col>
+                                </v-row>
+                                
+                                <!--  Amazon Delay HTML  -->
+                                <div v-if="has_amazon">
+                                    <v-divider inset></v-divider>
+                                    <p class="ma-4 mb-1 text.subtitle-2 text-center font-weight-medium">Amazon Settings</p>
+                                    <div style="display: flex; align-items: center; justify-content: center;">
+                                        <p class="text-overline mb-5" style="font-size: 1.1rem!important;">Delay Between URLs</p>
+                                        <div style="max-width: 8%" class="ml-4 mr-4">
+                                            <v-text-field v-model="amazon_delay" single-line type="number" :rules="[interval_value_rule]" @change="updateAmazon" dense solo />
+                                        </div>
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                    <v-icon dark>mdi-help</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>Separates the check between Amazon items by this value (seconds).</span>
+                                        </v-tooltip>
+                                    </div>
+                                </div>
+
+                                <!--  Target HTML  -->
+                                <div v-if="has_target">
+                                    <v-divider inset></v-divider>
+                                    <p class="ma-4 mb-1 text.subtitle-2 text-center font-weight-medium">Target Settings</p>
+                                    <div style="display: flex; align-items: center; justify-content: center;">
+                                        <p class="text-overline mb-5" style="font-size: 1.1rem!important;">Zip Code</p>
+                                        <div style="max-width: 8%" class="ml-4 mr-4">
+                                            <v-text-field v-model="target_zip" single-line type="text" :rules="[target_zip_rule]" @change="updateTarget" dense solo />
+                                        </div>
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                    <v-icon dark>mdi-help</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>Enter your zip code to search for a Target closest to you.</span>
+                                        </v-tooltip>
+                                    </div>
+                                    <div style="display: flex; align-items: center; justify-content: center;">
+                                        <p class="text-overline mb-5" style="font-size: 1.1rem!important;">API Key</p>
+                                        <div style="max-width: 84%; width: 50%;" class="ml-4 mr-4">
+                                            <v-text-field v-model="target_key" single-line type="text" @change="updateTarget" dense solo />
+                                        </div>
+                                        <v-btn small color="primary" class="ma-2 mb-8 white--text" @click="resetTargetKey">
+                                            Reset
+                                            <v-icon right dark>
+                                                mdi-undo-variant
+                                            </v-icon>
+                                        </v-btn>
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                    <v-icon dark>mdi-help</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>IF you get API key errors, enter the key for your session as described in the README.</span>
+                                        </v-tooltip>
+                                    </div>
+                                </div>
+
+                            </div>`
+            });
+
+
+
+
+            /*
+                Designed and coded by:
+                Prabhjot "Prince" Singh
+                https://github.com/PrinceS25/StockAlertBot
+            */
+
+
+
+            /*
+                Optional Component
+                optional, email, webhooks, webhook-item, add-webhook
+            */
+            Vue.component('optional', {
+                props: ['user_settings', 'email_settings'],
+                data: function() {
+                    return {
+                        email: this.user_settings.EMAIL,
+                        email_color: this.user_settings.EMAIL ? "green--text mb-0 ml-4" : "red--text mb-0 ml-4",
+                        email_text_style: " mb-0 ml-4",
+                        webhook_expanded: this.user_settings.WEBHOOK_URLS.length > 0
+                    }
+                },
+
+                methods: {
+                    toggleEmail() { 
+                        this.email_color = this.email ? "green--text" : "red--text"
+                        this.email_color += this.email_text_style;
+                        this.$emit('toggle_email', this.email)
+                    },
+                    toggleWebhooks() { this.webhook_expanded = !this.webhook_expanded },
+                },
+
+                template:   `<div style="display: flex; flex-direction: column; align-items: center;">
+                                <p class="ma-4 mb-1 text-h6 text-center font-weight-medium">Notifications</p>
+                                <v-divider inset style="width: 90%; margin-right: 80px;"></v-divider>
+
+                                <!--  Webhook HTML  -->
+                                <v-btn class="mt-4 mb-8" color="primary" @click="toggleWebhooks">
+                                    Webhooks
+                                    <v-icon right>
+                                        {{this.webhook_expanded ? "mdi-minus" : "mdi-plus" }}
+                                    </v-icon>
+                                </v-btn>
+
+                                <div style="width: 100%;" class="mb-4" v-if="webhook_expanded">
+                                    <webhooks
+                                        v-bind:webhook_urls="user_settings.WEBHOOK_URLS" 
+                                        v-on:remove_webhook_url="$emit('remove_webhook_url', $event)" 
+                                        v-on:add_webhook_url="$emit('add_webhook_url', $event)" 
+                                    />
+                                </div>
+
+                                <!--  Emails HTML  -->
+                                <v-divider inset style="width: 50%; margin-right: 80px;"></v-divider>
+                                <div class="mt-3" style="display: flex;align-items: center;">
+                                    <v-switch v-model="email" @change="toggleEmail" inset label="Emails:" ></v-switch>
+                                    <p id="email_val" :class="this.email_color">{{this.email ? "ON" : "OFF"}}</p>
+                                </div>
+
+                                <div v-if="email" style="width: 100%;">
+                                    <email 
+                                        v-bind:settings="email_settings"
+                                        v-on:update_service="$emit('update_service', $event)" 
+                                        v-on:update_from="$emit('update_from', $event)" 
+                                        v-on:update_pass="$emit('update_pass', $event)" 
+                                        v-on:update_to="$emit('update_to', $event)" 
+                                        class="ma-4" 
+                                    />
+                                </div>
+
+                            </div>`
+            });
+
+            Vue.component('email', {
+                props: ['settings'],
+                data: function() {
+                    return {
+                        service: this.settings.EMAIL_SERVICE,
+                        from: this.settings.EMAIL_FROM,
+                        pass: this.settings.EMAIL_PASS,
+                        to: this.settings.EMAIL_TO,
+                        showPass: false,
+                        sameAsFromChecked: true,
+                        providers: [ "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
+                            "FastMail", "GandiMail", "Godaddy", "GodaddyAsia", "GodaddyEurope", "hot.ee", "mail.ee", "Mail.ru", "Maildev", "Mailgun", "Mailjet", 
+                            "Mailosaur", "Mandrill", "Naver", "OpenMailBox", "Postmark", "QQex", "SendCloud", "SendGrid", "SendinBlue", "SendPulse", "SES", 
+                            "SES-US-EAST-1", "SES-US-WEST-2", "SES-EU-WEST-1", "Sparkpost", "Yandex", "Zoho", "qiye.aliyun" ]
+                    }
+                },
+
+                methods: {
+                    updateService() {
+                        this.$emit('update_service', this.service)
+                    },
+
+                    updateFrom() {
+                        if(this.sameAsFromChecked) {
+                            this.to = this.from
+                            this.updateTo()
+                        }
+                        this.$emit('update_from', this.from)
+                    },
+
+                    updatePass() {
+                        this.$emit('update_pass', this.pass)
+                    },
+
+                    updateTo() {
+                        this.$emit('update_to', this.to)
+                    },
+
+                    updateToFromFrom() {
+                        if(this.sameAsFromChecked) this.to = this.from
+                        else this.to = ''
+                        this.updateTo()
+                    }
+                },
+
+                template:   `<div style="margin: 0px !important">
+
+                                <!--  Service HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Email Provider</p>
+                                    <div style="width: 20%;" class="ml-4 mr-4">
+                                        <v-select :items="providers" v-model="service" @change="updateService" dense solo></v-select>
+                                    </div>
+                                </div>
+
+                                <!--  From HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">From E-mail</p>
+                                    <div style="width: 34%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="from" single-line type="text" @change="updateFrom" dense solo />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Login email. Also the email to send notification from.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Pass HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Password</p>
+                                    <div style="width: 34%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="pass" single-line @change="updatePass" @click:append="showPass = !showPass" :type="showPass ? 'text' : 'password'" :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'" dense solo />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Login password.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  To HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">To E-mail</p>
+                                    <div style="width: 34%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="to" single-line type="text" @change="updateTo" :filled="sameAsFromChecked" :disabled="sameAsFromChecked" dense solo />
+                                    </div>
+                                    <v-checkbox class="mt-0 mr-4" label="Same as FROM" v-model="sameAsFromChecked" @change="updateToFromFrom" dense></v-checkbox>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Email to send stock notification to.</span>
+                                    </v-tooltip>
+                                </div>
+                            </div>`
+            });
+            
+            Vue.component('webhooks', {
+                props: ['webhook_urls'],
+                template:   `<div>
+                                <v-row dense>
+                                    <v-col v-for="(url, index) in webhook_urls" :key="index" md="6" class="ma-0 pa-3 pl-8 pr-8">
+                                        <webhook-item v-bind:webhook_url="url" v-bind:key="url" v-on:remove_webhook_url="$emit('remove_webhook_url', $event)" />
+                                    </v-col>
+                                </v-row>
+                                <div v-if="webhook_urls.length > 0">
+                                    <v-divider inset class="ma-7 mb-0"></v-divider>
+                                </div>
+                                <add-webhook class="ma-0 pa-3" style="text-align: center;" v-on:add_webhook_url="$emit('add_webhook_url', $event)" />
+                            </div>`
+            });
+
+            Vue.component('webhook-item', {
+                props: ['webhook_url'],
+                methods: {
+                    remove() {
+                        this.$emit('remove_webhook_url', this.webhook_url)
+                    }
+                },
+                template:   `<v-text-field
+                                dense
+                                solo
+                                readonly
+                                type="text"
+                                hide-details
+                                :value="webhook_url"
+                                :append-outer-icon="'mdi-close'"
+                                @click:append-outer="remove"
+                            ></v-text-field>`
+            });
+
+            Vue.component('add-webhook', {
+                data: function() {
+                    return {
+                        webhook_url: '',
+                    }
+                },
+                methods: {
+                    add() {
+                        if(this.webhook_url) {
+                            this.$emit('add_webhook_url', this.webhook_url)
+                            this.webhook_url = ''
+                        }
+                    }
+                },
+                template:   `<div class="ma-0 pa-0">
+                                <p style="font-size: 1.075rem!important" class="text-button ma-0">Add Discord or Slack Webhook</p>
+                                <div class="ma-0 pa-0" style="max-width: 65%;display: flex;align-items: baseline;margin: auto !important;">
+                                    <v-text-field
+                                        dense
+                                        solo
+                                        outlined
+                                        clearable
+                                        hide-details
+                                        clear-icon="mdi-close-circle"
+                                        type="text"
+                                        label="Enter Webhook URL"
+                                        v-model="webhook_url"
+                                        :append-outer-icon="'mdi-plus'"
+                                        @click:append-outer="add"
+                                    ></v-text-field>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Format: https://www.ABC123.com/...</span>
+                                    </v-tooltip>
+                                </div>
+                                <p class="pa-0 ma-0" style="color: red; text-align: center;" id="add_webhook_url_error"></p>
+                            </div>`
+            });
+
+
+            
+            /*
+                Main Component
+            */
+            var app = new Vue({
+                el: '#app',
+                vuetify: new Vuetify(),
+
+                data: function() {
+                    return {
+                        current_tab: null,
+                        tabs: ["URLs", "Settings", "Optional", "DEBUG"],
+                        userSettings: {},
+                        envSettings: {},
+                        has_amazon: false,
+                        has_target: false,
+                        disableSaveButton: false
+                    }
+                },
+
+                computed: {
+                    // Disable Save Button if email is on but information is not provided
+                    checkSaveButton: function() {
+                        this.disableSaveButton = ( 
+                            this.userSettings.EMAIL &&
+                            (
+                                this.envSettings.EMAIL_SERVICE == '' ||
+                                this.envSettings.EMAIL_FROM == '' ||
+                                this.envSettings.EMAIL_PASS == '' ||
+                                this.envSettings.EMAIL_TO == ''
+                            )
+                        );
+                        if(this.disableSaveButton) document.getElementById('save_button_error').textContent = 'Error: Email information not provided.'
+                        else document.getElementById('save_button_error').textContent = ''
+                        return this.disableSaveButton
+                    },
+                },
+
+                methods: {
+
+                    // Gets the domain from an URL
+                    getDomainName(url) {
+                        let hostName = new URL(url).hostname;
+                        let host = hostName.split('.');
+                        return host[1];
+                    },
+
+                    // Check for valid URLs
+                    isValidHttpUrl(string) {
+                        let url;
+                        try {
+                            url = new URL(string);
+                        } catch (_) {
+                            return false;  
+                        }
+                        return url.protocol === "http:" || url.protocol === "https:";
+                    },
+
+                    // Add an URL
+                    addURL(urlToAdd) {
+                        if(this.isValidHttpUrl(urlToAdd)) {
+                            let storeName = this.getDomainName(urlToAdd)
+                            if(this.userSettings.SUPPORTED_STORES_DOMAINS.includes(storeName))
+                                if(!this.userSettings.URLS.includes(urlToAdd)) {
+                                    this.userSettings.URLS.push(urlToAdd)
+                                    document.getElementById('add_url_error').textContent = ''
+
+                                    // Check for Amazon or Target linnks
+                                    if (!this.has_amazon || !this.has_target) {
+                                        if(storeName == 'amazon') this.has_amazon = true
+                                        if(storeName == 'target') this.has_target = true
+                                    }
+                                }
+                                else document.getElementById('add_url_error').textContent = 'Error: URL already included.'
+                            else document.getElementById('add_url_error').textContent = "Error: Store currently not supported."
+                        } else document.getElementById('add_url_error').textContent = "Error: Invalid URL format."
+                    },
+
+                    // Removes an URL
+                    removeURL(urlToRemove) {
+                        this.userSettings.URLS = this.userSettings.URLS.filter(url => url !== urlToRemove)
+
+                        // Check for Amazon URL
+                        if (!this.userSettings.URLS.some(url => this.getDomainName(url) == 'amazon'))
+                            this.has_amazon = false;
+
+                        // Check for Target URL
+                        if (!this.userSettings.URLS.some(url => this.getDomainName(url) == 'target'))
+                            this.has_target = false;
+                    },
+
+                    // Update check interval
+                    updateInterval(interval) {
+                        this.userSettings.INTERVAL.unit = interval.unit
+                        this.userSettings.INTERVAL.value = interval.value
+                    },
+
+                    // Update open URL boolean
+                    updateOpenURL(boolean) {
+                        this.userSettings.OPEN_URL = boolean
+                    },
+
+                    // Update alarm boolean
+                    updateAlarm(boolean) {
+                        this.userSettings.ALARM = boolean
+                    },
+
+                    // Update Amazon Delay
+                    updateAmazon(delay) {
+                        this.userSettings.AMAZON_DELAY = delay
+                    },
+
+                    // Update Target settings
+                    updateTarget(target_info) {
+                        this.userSettings.TARGET_ZIP_CODE = target_info.zip
+                        this.userSettings.TARGET_KEY = target_info.key
+                    },
+
+                    // Set Email Value
+                    setEmail(value) { this.userSettings.EMAIL = value },
+
+                    // Update service provider
+                    updateService(provider) {
+                        this.envSettings.EMAIL_SERVICE = provider
+                    },
+
+                    // Update from email
+                    updateFrom(from) {
+                        this.envSettings.EMAIL_FROM = from
+                    },
+
+                    // Update email password
+                    updatePass(pass) {
+                        this.envSettings.EMAIL_PASS = pass
+                    },
+
+                    // Update to email
+                    updateTo(to) {
+                        this.envSettings.EMAIL_TO = to
+                    },
+
+                    // Add a webhook URL
+                    addWebhookURL(urlToAdd) {
+                        if(this.isValidHttpUrl(urlToAdd)) {
+                            if(this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some(webhookDomain => urlToAdd.includes(webhookDomain)))
+                                if(!this.userSettings.WEBHOOK_URLS.includes(urlToAdd)) {
+                                    this.userSettings.WEBHOOK_URLS.push(urlToAdd)
+                                    document.getElementById('add_webhook_url_error').textContent = ''
+                                }
+                                else document.getElementById('add_webhook_url_error').textContent = 'Error: URL already included.'
+                            else document.getElementById('add_webhook_url_error').textContent = "Error: Webhook currently not supported."
+                        } else document.getElementById('add_webhook_url_error').textContent = "Error: Invalid URL format."
+                    },
+
+                    // Removes a webhook URL
+                    removeWebhookURL(urlToRemove) {
+                        this.userSettings.WEBHOOK_URLS = this.userSettings.WEBHOOK_URLS.filter(url => url !== urlToRemove)
+                    },
+
+                    // Send settings via a POST request to be saved
+                    sendSettings() {
+                        axios.post('http://localhost:3250/config', this.userSettings)
+                            .then(function (response) {
+                                console.log('User settings successfully written!', response);
+                            }).catch(function (error) {   // Handle error
+                                console.log('Error writing user settings', error);
+                            })
+
+                        axios.post('http://localhost:3250/env', this.envSettings)
+                            .then(function (response) {
+                                console.log('.env settings successfully written!', response);
+                            }).catch(function (error) {   // Handle error
+                                console.log('Error writing .env settings', error);
+                            })
+                    },
+                },
+
+                mounted() {
+                    // Get settings already saved in file
+                    axios.get('http://localhost:3250/config')
+                        .then(res => {
+                            this.userSettings = res.data
+                            console.log('User settings successfully fetched!')
+
+                            // Check for Amazon URL
+                            if (this.userSettings.URLS.some(url => this.getDomainName(url) == 'amazon'))
+                                this.has_amazon = true;
+
+                            // Check for Target URL
+                            if (this.userSettings.URLS.some(url => this.getDomainName(url) == 'target'))
+                                this.has_target = true;
+                        }).catch(function (error) {   // Handle error
+                            console.log('Error fetching user settings', error);
+                        })
+
+                    // Get .env data
+                    axios.get('http://localhost:3250/env')
+                        .then(res => {
+                            this.envSettings = res.data
+                            console.log('.env settings successfully fetched!')
+                        }).catch(function (error) {   // Handle error
+                            console.log('Error fetching .env settings', error);
+                        })
+                }
+            })
+        </script>
+    </body>
+</html>
