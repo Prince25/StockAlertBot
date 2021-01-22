@@ -28,6 +28,7 @@ Currently, the following stores are supported:
 * Best Buy (including open-box)
 * Costco
 * Currys (UK)
+* Gamestop
 * Microcenter
 * Newegg (including Combo Deals)
 * Target (Works but may require additional setup)
