@@ -1,5 +1,5 @@
 import { fileURLToPath } from "url";
-import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
+import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
@@ -7,6 +7,7 @@ import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import HttpsProxyAgent from 'https-proxy-agent'
 
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -20,9 +21,21 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 
 const store = 'Newegg'
-let firstRun = new Set();
 let urlOpened = false;
+let firstRun = new Set();
+let badProxies = new Set()
 export default async function newegg(url, interval) {
+
+    // Setup proxies
+    let proxy = null;
+    if(PROXIES) {
+        do {
+            proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+        } while (badProxies.has(proxy))
+        let agent = new HttpsProxyAgent(proxy);
+        axios.create(agent)
+    }
+
     try {
         let res = await axios.get(url, {
             headers: {
@@ -34,6 +47,12 @@ export default async function newegg(url, interval) {
         });
 
         if (res && res.status == 200) {
+            if (String(res.data).includes('Are you a human?')) {
+                console.info('NEWEGG RATE LIMIT ON: ' + url + ". PROXY: " + proxy)
+                badProxies.add(proxy)
+                return
+            }
+
             let parser = new DomParser();
             let doc, title, inventory, image
 

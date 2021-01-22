@@ -22,6 +22,7 @@
     "AMAZON_DELAY": 10,
     "TARGET_ZIP_CODE": "90024",
     "TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01",
+    "PROXIES": true,
     "EMAIL": false,
     "WEBHOOK_URLS": [],
     "SUPPORTED_WEBHOOK_DOMAINS": [

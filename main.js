@@ -4,6 +4,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
 import { fileURLToPath } from "url";
+import fs from "fs";
 import antonline from './stores/antonline.js'
 import amazon from './stores/amazon.js'
 import argos from './stores/argos.js'
@@ -22,6 +23,7 @@ export var {
     INTERVAL,
     OPEN_URL,
     ALARM,
+    PROXIES,
     AMAZON_DELAY,
     TARGET_ZIP_CODE,
     TARGET_KEY,
@@ -43,6 +45,10 @@ const ADDITIONAL_URLS = [
     // "https://www.tesco.com/groceries/en-GB/products/306276176",
 ]
 if (ADDITIONAL_URLS.length > 0) URLS = URLS.concat(ADDITIONAL_URLS)
+
+
+// Read proxies.txt
+export const PROXY_LIST = PROXIES ? fs.readFileSync('proxies.txt', 'UTF-8').split(/\r?\n/) : [] 
 
 
 // Runs main only if this file is executed
