@@ -1,13 +1,14 @@
 import { fileURLToPath } from "url";
+import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
+import threeBeeps from "../utils/notification/beep.js"
+import sendAlerts from "../utils/notification/alerts.js"
+import writeErrorToFile from "../utils/writeToFile.js"
 import fs from "fs";
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
-import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
-import threeBeeps from "../utils/notification/beep.js"
-import sendAlerts from "../utils/notification/alerts.js"
-import writeErrorToFile from "../utils/writeToFile.js"
+import HttpsProxyAgent from 'https-proxy-agent'
 
 
 var ps5PreorderPagePath;
@@ -28,6 +29,14 @@ let firstRun = new Set();
 let urlOpened = false;
 let store = 'Tesco'
 export default async function tesco(url, interval) {
+    
+    // Setup proxies
+    if(PROXIES) {
+        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+        let agent = new HttpsProxyAgent(proxy);
+        axios.create(agent)
+    }
+
     if (url.includes('tescopreorders')) tescoPS5Preorder(url, interval)
     else {
         try {
@@ -70,6 +79,13 @@ export default async function tesco(url, interval) {
 
 async function tescoPS5Preorder(url, interval) {
     process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';  // Avoid the certification error
+    
+    // Setup proxies
+    if(PROXIES) {
+        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+        let agent = new HttpsProxyAgent(proxy);
+        axios.create(agent)
+    }
 
     url = url.replace('www.', '')
     try {

@@ -1,12 +1,13 @@
+import { fileURLToPath } from "url";
+import { ALARM, PROXIES, PROXY_LIST, OPEN_URL } from '../main.js'
+import threeBeeps from "../utils/notification/beep.js"
+import sendAlerts from "../utils/notification/alerts.js"
+import writeErrorToFile from "../utils/writeToFile.js"
 import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
-import { fileURLToPath } from "url";
-import { ALARM, OPEN_URL } from '../main.js'
-import threeBeeps from "../utils/notification/beep.js"
-import sendAlerts from "../utils/notification/alerts.js"
-import writeErrorToFile from "../utils/writeToFile.js"
+import HttpsProxyAgent from 'https-proxy-agent'
 
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -23,6 +24,14 @@ const store = 'Gamestop'
 let firstRun = new Set();   // Used to show initial message, once for each product, that product isn't available but will keep checking in the background
 let urlOpened = false;
 export default async function gamestop(url, interval) {
+    
+    // Setup proxies
+    if(PROXIES) {
+        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+        let agent = new HttpsProxyAgent(proxy);
+        axios.create(agent)
+    }
+
     try {
         let res = await axios.get(url)
         .catch(async function (error) {

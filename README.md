@@ -16,7 +16,7 @@ Donate, buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Piz
 
 ### How does it work?
 
-Enter links of the products you want tracked and how often you want the program to check if those products are in stock. When an item becomes available, you may configure it to  notify you through variety of alerts including sound, email, discord and slack notifications, text on console, automatically opening the URL in your browser, and more to come. 
+Enter links of the products you want tracked and how often you want the program to check if those products are in stock. When an item becomes available, you may configure it to  notify you through variety of alerts including sound, email, discord and slack notifications, text on console, automatically opening the URL in your browser, and more to come.
 <br><br>
 
 ### What stores/websites are supported?
@@ -58,6 +58,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
         A browser window should open up. If it doesn't and the console says `Server started!`, go to: `http://localhost:3250/` in your browser.
     2. Enter the links of the items you want to track in the URLs tab.
     3. Go to Settings tab and change to your heart's content.\
+    If you want to use Proxies, turn it on and create a file called `proxies.txt` in the root directory and fill it with one proxy per line.\
     If you have Amazon link(s), you will see an option to put delay between Amazon items.\
     If you have Target link(s), you will see additional options to put zip code and API Key. Only change the key if you get API key errors. Refer to the instructions in the following [section](#Via-Text-Editor).
     4. Configure notification options in Optional tab.\
@@ -77,15 +78,16 @@ There are only two steps to use this program: 1) enter information and 2) launch
     5. Optional Settings.
         1. **If** you're planning to track more than one Amazon item, set the delay (in seconds) between items by editing `AMAZON_DELAY`.
         Otherwise, Amazon may flag the program's requests as a bot.
-        2. **If** you're planning to track Target item(s), enter your zip code in `TARGET_ZIP_CODE`\
+        2. **If** you're planning to track Target item(s), enter your zip code in `TARGET_ZIP_CODE`.\
         **NOTE:** If you encounter an error relating to API Key, you need to get this key yourself:
             1. Go to target.com with the DevTools (Chrome) or Developer Tools (Firefox) open (Google or ask if you're unsure how)
             2. On the console, you should see GET requests as you load the page.\
             In DevTools, you have to click the gear and check "Log XMLHttpRequests" to see them
             3. Click on any of the urls that has the string "key=" and copy the whole key
             4. Paste it to `TARGET_KEY`
-        3. **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array
-        4. **If** you want to send alerts to email, change `EMAIL` in `config.json` to `true`. Make a copy of `example.env` and rename it to `.env`. Inside `.env`, type out one of the following service providers (`EMAIL_SERVICE`), your email (`EMAIL_FROM`) and password (`EMAIL_PASS`) and the email you want alerts sent to (`EMAIL_TO`). All without quotes.
+        3. **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array.
+        4. **If** you want to use Proxies, change `PROXIES` to `true` and create a file called `proxies.txt` in the root directory and fill it with one proxy per line.
+        5. **If** you want to send alerts to email, change `EMAIL` in `config.json` to `true`. Make a copy of `example.env` and rename it to `.env`. Inside `.env`, type out one of the following service providers (`EMAIL_SERVICE`), your email (`EMAIL_FROM`) and password (`EMAIL_PASS`) and the email you want alerts sent to (`EMAIL_TO`). All without quotes.
         ```
         Gmail, Yahoo, iCloud, Hotmail, Outlook365, QQ, 126, 163, 1und1, AOL, DebugMail, DynectEmail, 
         FastMail, GandiMail, Godaddy, GodaddyAsia, GodaddyEurope, hot.ee, mail.ee, Mail.ru, Maildev, Mailgun, Mailjet, 
@@ -95,10 +97,12 @@ There are only two steps to use this program: 1) enter information and 2) launch
         **NOTE** If you receive the error: `535 5.7.0 (#AUTH005) Too many bad auth attempts`, most likely you are using Yahoo for the email server or an email server managed by Yahoo, such as AOL or AT&T. Yahoo has implemented an option that by default, does not let 3rd party products access the email servers. To resolve, go to https://login.yahoo.com/account/security and then enable the option to allow apps that use less secure sign in. Use the password generated by "Generate app password". If you are using AOL, do the same thing, from https://login.aol.com/account/security.
 
 2. Execute and continue about your day: 
-    `npm start`\
+    `npm start` OR `node --experimental-modules main.js`\
     You can use `CTRL + C` or `CMD + C` to stop the program.
 
 3. Consider [donating](https://www.paypal.com/donate?business=3Y9NEYR4TURT8&item_name=Making+software+and+hacking+the+world%21+%E2%99%A5&currency_code=USD) or buying me a [Pizza](https://buymeacoff.ee/PrinceSingh) or [PayPal](https://paypal.me/PrinceSingh25) me :smile:
+
+**NOTE** If you plan to use low interval rates OR track several items per store, it is highly recommended that you use proxies such as ones from [Webshare](https://www.webshare.io/).
 
 
 ## Screenshots
@@ -110,10 +114,10 @@ There are only two steps to use this program: 1) enter information and 2) launch
 
 
 ## Feedback and Support
-To report bugs, please create an [issue](https://github.com/PrinceS25/StockAlertBot/issues).\
+To ensure this program continues to work, please report bugs by creating an [issue](https://github.com/PrinceS25/StockAlertBot/issues).\
 To ask questions, give feedback or suggestions among other things, create a new [discussion](https://github.com/PrinceS25/StockAlertBot/discussions).\
 To contribute code, programming questions/guidance, gaming sessions, and more, add me on Discord: Prince#0584\
-For monetary support, [donate](https://www.paypal.com/donate?business=3Y9NEYR4TURT8&item_name=Making+software+and+hacking+the+world%21+%E2%99%A5&currency_code=USD) or buy me a [Pizza](https://buymeacoff.ee/PrinceSingh) or [PayPal](https://paypal.me/PrinceSingh25) me 
+To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9NEYR4TURT8&item_name=Making+software+and+hacking+the+world%21+%E2%99%A5&currency_code=USD) or buy me a [Pizza](https://buymeacoff.ee/PrinceSingh) or [PayPal](https://paypal.me/PrinceSingh25) me 
 
 
 ## Things to work on

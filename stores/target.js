@@ -1,5 +1,5 @@
 import { fileURLToPath } from "url";
-import { ALARM, OPEN_URL, TARGET_KEY, TARGET_ZIP_CODE, USER_AGENTS } from '../main.js'
+import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, TARGET_KEY, TARGET_ZIP_CODE, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
@@ -7,6 +7,7 @@ import axios from "axios";
 import moment from "moment";
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import HttpsProxyAgent from 'https-proxy-agent'
 
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -25,6 +26,14 @@ const store = 'Target'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function target(url, interval, key, zip_code) {
+    
+    // Setup proxies
+    if(PROXIES) {
+        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+        let agent = new HttpsProxyAgent(proxy);
+        axios.create(agent)
+    }
+
     key = key || TARGET_KEY
     zip_code = zip_code || TARGET_ZIP_CODE
     try {
