@@ -118,7 +118,7 @@ For monetary support, [donate](https://www.paypal.com/donate?business=3Y9NEYR4TU
 ## Things to work on
 * Add more stores
     * Walmart
-    * Gamestop
+    * ~~Gamestop~~
     * ~~Currys~~
     * ~~Newegg Combos~~
     * ~~Newegg~~
