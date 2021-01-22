@@ -57,13 +57,13 @@ There are only two steps to use this program: 1) enter information and 2) launch
         `npm run settings`\
         A browser window should open up. If it doesn't and the console says `Server started!`, go to: `http://localhost:3250/` in your browser.
     2. Enter the links of the items you want to track in the URLs tab.
-    3. Go to Settings tab and change to your heart's content.\
-    If you want to use Proxies, turn it on and create a file called `proxies.txt` in the root directory and fill it with one proxy per line. See [proxies](#Proxies).\
-    If you have Amazon link(s), you will see an option to put delay between Amazon items.\
-    If you have Target link(s), you will see additional options to put zip code and API Key. Only change the key if you get API key errors. Refer to the instructions in the following [section](#Via-Text-Editor).
-    4. Configure notification options in Optional tab.\
-    If you want notifications sent to Discord or Slack, expand WEBHOOKS and enter the URL(s) there.\
-    If you want notifications sent to Email, turn on email and enter your service provider information. Some providers (Yahoo, AOL, AT&T) cause problems. Refer to following [section](#Via-Text-Editor).
+    3. Go to Settings tab and change to your heart's content.
+        - If you want to use Proxies, turn it on and create a file called `proxies.txt` in the root directory and fill it with one proxy per line. See [proxies](#Proxies).
+        - If you have Amazon link(s), you will see an option to put delay between Amazon items.
+        - If you have Target link(s), you will see additional options to put zip code and API Key. Only change the key if you get API key errors. Refer to the instructions in the following [section](#Via-Text-Editor).
+    4. Configure notification options in Optional tab.
+        - If you want notifications sent to Discord or Slack, expand WEBHOOKS and enter the URL(s) there.
+        - If you want notifications sent to Email, turn on email and enter your service provider information. Some providers (Yahoo, AOL, AT&T) cause problems. Refer to following [section](#Via-Text-Editor).
     5. Once you're happy with the settings, click `Save Settings`.\
     `config.json` and `.env` files should now reflect your settings.\
     You can use `CTRL + C` or `CMD + C` to stop the program.<br><br>
@@ -72,7 +72,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
     Open and edit `config.json`
     1. Add urls of products in the `URLS` array
     2. Change the `INTERVAL` to suit your desires.\
-    **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot (Amazon), or blocking your IP from accessing the website.
+    **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot (Amazon), or blocking your IP from accessing the website. See [proxies](#Proxies).
     3. Set `OPEN_URL` to false if you don't want the application to automatically open urls when item is in stock
     4. Set `ALARM` to false if you want to disable the audible warning
     5. Optional Settings.
