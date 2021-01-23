@@ -19,7 +19,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     amazon(url, interval, interval.value, true, false, () => null);
 }
 
+
 const store = 'Amazon'
+let badProxies = new Set()
 export default async function amazon(url, interval, originalIntervalValue, firstRun, urlOpened, resolve) {
     let res = null, html = null, proxy = null
 
@@ -27,8 +29,14 @@ export default async function amazon(url, interval, originalIntervalValue, first
         let options = null
 
         // Setup proxies
-        if(PROXIES) {
-            proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+        if(PROXIES && PROXY_LIST.length > 0) {
+            if (badProxies.size == PROXY_LIST.length)   // If all proxies are used, start over
+                badProxies = new Set()
+
+            do {
+                proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            } while(badProxies.has(proxy))
+
             let agent = new HttpsProxyAgent(proxy);
             options = { 
                 agent: agent, 
@@ -36,14 +44,18 @@ export default async function amazon(url, interval, originalIntervalValue, first
                     'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
                 }
             }
-        } 
+        }
         else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
         
+
+        // Fetch Page
         res = await fetch(url, options)
             .catch(async function (error) {
                 writeErrorToFile(store, error);
             });
 
+        
+        // Extract Information
         if (res && res.status == 200) {
             html = await res.text()
 
@@ -53,7 +65,7 @@ export default async function amazon(url, interval, originalIntervalValue, first
                 if(PROXIES) message += 'For proxy: ' + proxy + '. Consider lowering interval.'
                 else message += 'Consider using proxies or lowering interval.'
                 console.error(message)
-                writeErrorToFile(store, 'asd')
+                badProxies.add(proxy)
                 resolve({interval: Math.floor(interval.value + Math.random() * originalIntervalValue), urlOpened: urlOpened})
                 return
             }
