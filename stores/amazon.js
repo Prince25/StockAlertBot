@@ -3,10 +3,10 @@ import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
-import axios from "axios";
-import moment from "moment";
-import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import moment from "moment";
+import fetch from 'node-fetch'
+import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import HttpsProxyAgent from 'https-proxy-agent'
 
 
@@ -21,27 +21,45 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 const store = 'Amazon'
 export default async function amazon(url, interval, originalIntervalValue, firstRun, urlOpened, resolve) {
-
-    // Setup proxies
-    if(PROXIES) {
-        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
-        let agent = new HttpsProxyAgent(proxy);
-        axios.create(agent)
-    }
+    let res = null, html = null, proxy = null
 
     try {
-        let res = await axios.get(url, {
-            headers: {
-                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
+        let options = null
+
+        // Setup proxies
+        if(PROXIES) {
+            proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            let agent = new HttpsProxyAgent(proxy);
+            options = { 
+                agent: agent, 
+                headers: {
+                    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
+                }
             }
-        }).catch(async function (error) {
-            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Changing interval rate for', url)
-            else writeErrorToFile(store, error);
-        });
+        } 
+        else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
+        
+        res = await fetch(url, options)
+            .catch(async function (error) {
+                writeErrorToFile(store, error);
+            });
 
         if (res && res.status == 200) {
+            html = await res.text()
+
+            // If bot Detected
+            if (html.includes("we just need to make sure you're not a robot")) {
+                let message = moment().format('LTS') + ': ' + store + ' bot detected. '
+                if(PROXIES) message += 'For proxy: ' + proxy + '. Consider lowering interval.'
+                else message += 'Consider using proxies or lowering interval.'
+                console.error(message)
+                writeErrorToFile(store, 'asd')
+                resolve({interval: Math.floor(interval.value + Math.random() * originalIntervalValue), urlOpened: urlOpened})
+                return
+            }
+
             let parser = new DomParser();
-            let doc = parser.parseFromString(res.data, 'text/html');
+            let doc = parser.parseFromString(html, 'text/html');
             let title = doc.getElementById('productTitle').innerHTML.trim().slice(0, 150)
             let inventory = doc.getElementById('add-to-cart-button')
             let image = doc.getElementById('landingImage').getAttribute('data-old-hires')
@@ -65,6 +83,6 @@ export default async function amazon(url, interval, originalIntervalValue, first
         else resolve({interval: Math.floor(interval.value + Math.random() * originalIntervalValue), urlOpened: urlOpened})
 
     } catch (e) {
-        writeErrorToFile(store, e)
+        writeErrorToFile(store, e, html, res.status)
     }
 };
