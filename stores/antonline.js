@@ -3,10 +3,10 @@ import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
-import axios from "axios";
-import moment from "moment";
-import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import moment from "moment"
+import fetch from 'node-fetch'
+import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import HttpsProxyAgent from 'https-proxy-agent'
 
 
@@ -24,32 +24,54 @@ const store = 'Ant Online'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function antonline(url, interval) {
-    
-    // Setup proxies
-    if(PROXIES) {
-        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
-        let agent = new HttpsProxyAgent(proxy);
-        axios.create(agent)
-    }
+    let res = null, html = null, proxy = null
 
     try {
-        let res = await axios.get(url, {
-            headers: {
-                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
+        let options = null
+
+        // Setup proxies
+        if(PROXIES && PROXY_LIST.length > 0) {
+            let proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            let agent = new HttpsProxyAgent(proxy);
+            options = { 
+                agent: agent, 
+                headers: {
+                    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
+                }
             }
-        }).catch(async function (error) {
-            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-            else writeErrorToFile(store.replace(' ', ''), error);
-        });
+        } 
+        else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
 
+
+        // Fetch Page
+        res = await fetch(url, options)
+            .catch(async function (error) {
+                writeErrorToFile(store.replace(' ', ''), error);
+            });
+
+
+        // Extract Information
         if (res && res.status === 200) {
-            let parser = new DomParser();
-            let doc = parser.parseFromString(res.data, 'text/html');
-            let title = doc.getElementsByClassName('title')[0].innerHTML.slice(0, 150)
-            let inventory = doc.getElementsByClassName('uk-button uk-button-primary add_to_cart')
-            let image = doc.getElementsByClassName('main_img')[0].getAttribute('src').replace("45", "500")
+            html = await res.text()
 
+            let parser = new DomParser();
+            let doc = parser.parseFromString(html, 'text/html');
+            let title = doc.getElementsByClassName('title')
+            let inventory = doc.getElementsByClassName('uk-button uk-button-primary add_to_cart')
+            let image = doc.getElementsByClassName('uk-slideshow')
+
+            if(title.length > 0) title = title[0].innerHTML.slice(0, 150)
+            if(image.length > 0) {
+                image = parser.parseFromString(image[0].innerHTML, 'text/html')
+                image = image.getElementsByTagName('img')
+                image = image[0].getAttribute('src')
+            }
+            else {
+                image = doc.getElementsByClassName('main_img')
+                image = image.length > 0 ? image[0].getAttribute('src').replace("45", "500") : null
+            }
             if (inventory && inventory.length > 0) inventory = inventory[0].textContent
+            
             if (inventory && inventory.length == 0 && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
@@ -65,11 +87,9 @@ export default async function antonline(url, interval) {
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
             }
-        } else {
-            console.info(moment().format('LTS') + ': Error occured checking ' + title + '. Retrying in', interval.value, interval.unit)
         }
 
     } catch (e) {
-        writeErrorToFile(store.replace(' ', ''), e)
+        writeErrorToFile(store.replace(' ', ''), e, html, res.status)
     }
 };

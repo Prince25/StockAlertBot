@@ -3,10 +3,10 @@ import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
-import axios from "axios";
-import moment from "moment";
-import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import moment from "moment"
+import fetch from 'node-fetch'
+import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import HttpsProxyAgent from 'https-proxy-agent'
 
 
@@ -24,28 +24,40 @@ const store = 'Argos'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function argos(url, interval) {
-    
-    // Setup proxies
-    if(PROXIES) {
-        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
-        let agent = new HttpsProxyAgent(proxy);
-        axios.create(agent)
-    }
+    let res = null, html = null, proxy = null
 
     try {
-        let res = await axios.get(url, {
-            headers: {
-                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
-            }
-        }).catch(async function (error) {
-            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-            else writeErrorToFile(store, error);
-        });
+        let options = null
 
+        // Setup proxies
+        if(PROXIES && PROXY_LIST.length > 0) {
+            proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            let agent = new HttpsProxyAgent(proxy);
+            options = { 
+                agent: agent, 
+                headers: {
+                    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
+                }
+            }
+        }
+        else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
+
+
+        // Fetch Page
+        res = await fetch(url, options)
+            .catch(async function (error) {
+                if(error.errno == "ECONNRESET") console.log('Connection error to Argos. Argos probably ended connection.')
+                else writeErrorToFile(store, error);
+            });
+
+        
+        // Extract Information
         if (res && res.status == 200) {
+            html = await res.text()
+
             let parser = new DomParser();
-            let doc = parser.parseFromString(res.data, 'text/html');
-            let title = doc.getElementsByClassName('Namestyles__Main-sc-269llv-1 bojEI')
+            let doc = parser.parseFromString(html, 'text/html');
+            let title = doc.getElementsByClassName('Namestyles__Main-sc-269llv-1')
             let inventory = doc.getElementsByClassName('Buttonstyles__Button-q93iwm-2 dUQXJf')
             let image = doc.getElementsByClassName('MediaGallerystyles__ImageWrapper-sc-1jwueuh-2 bhjltf')
             
@@ -81,6 +93,6 @@ export default async function argos(url, interval) {
         }
 
     } catch (e) {
-        writeErrorToFile(store, e)
+        writeErrorToFile(store, e, html, res.status)
     }
 };

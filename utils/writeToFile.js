@@ -10,12 +10,14 @@ export default async function writeErrorToFile(name, error, html = null, status 
         if(e) console.error('File write error: ', e);
     });
     console.error(moment().format('LTS') + ': Unhandled error for ' + name + '. Written to ' + dir + name + '.log')
-    console.error('This is usually not a problem but if this error appears frequently, please report the error (and the log) to GitHub.')
-
+    let message = 'This is usually not a problem but if this error appears frequently, please report the error (and the log) to GitHub.'
+    
     if(html) {
-        console.info(moment().format('LTS') + ': HTML written for ' + name + ' to ' + dir + name + 'ErrorPage.html. Please report this bug to GitHub and upload this file')
+        message += '\nHTML written for ' + name + ' to ' + dir + name + 'ErrorPage.html. Please report this bug to GitHub and upload this file'
         fs.writeFile(dir + name + 'ErrorPage.html', html + '\n' + status, function(e, result) {
             if(e) console.error('File write error: ', e);
         });
     }
+
+    console.error(message)
 }

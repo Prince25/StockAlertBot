@@ -4,7 +4,7 @@ import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
 import open from "open"
-import moment from "moment";
+import moment from "moment"
 import fetch from 'node-fetch'
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import HttpsProxyAgent from 'https-proxy-agent'

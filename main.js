@@ -48,8 +48,8 @@ if (ADDITIONAL_URLS.length > 0) URLS = URLS.concat(ADDITIONAL_URLS)
 
 
 // Read proxies.txt
-export const PROXY_LIST = PROXIES ? fs.readFileSync('proxies.txt', 'UTF-8').split(/\r?\n/) : [] 
-
+export var PROXY_LIST = PROXIES ? fs.readFileSync('proxies.txt', 'UTF-8').split(/\r?\n/) : []
+if (PROXY_LIST.length > 0) PROXY_LIST = PROXY_LIST.filter(proxy => proxy != '')
 
 // Runs main only if this file is executed
 if (process.argv[1] === fileURLToPath(import.meta.url))
