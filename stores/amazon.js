@@ -38,10 +38,10 @@ export default async function amazon(url, interval, originalIntervalValue, first
             let image = doc.getElementById('landingImage').getAttribute('data-old-hires')
             
             if (inventory != null) inventory = inventory.getAttribute('value')
-            if (inventory != 'Add to Cart' && firstRun) {
+            if (inventory == null && firstRun) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
             }
-            else if (inventory != null && inventory == 'Add to Cart') {
+            else if (inventory != null) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
