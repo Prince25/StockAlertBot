@@ -4,10 +4,10 @@ import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
 import fs from "fs";
-import axios from "axios";
-import moment from "moment";
-import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import moment from "moment"
+import fetch from 'node-fetch'
+import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import HttpsProxyAgent from 'https-proxy-agent'
 
 
@@ -29,26 +29,41 @@ let firstRun = new Set();
 let urlOpened = false;
 let store = 'Tesco'
 export default async function tesco(url, interval) {
+    let res = null, html = null, proxy = null
     
-    // Setup proxies
-    if(PROXIES) {
-        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
-        let agent = new HttpsProxyAgent(proxy);
-        axios.create(agent)
-    }
 
     if (url.includes('tescopreorders')) tescoPS5Preorder(url, interval)
     else {
         try {
-            let res = await axios.get(url)
-            .catch(async function (error) {
-                if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-                else writeErrorToFile(store, error);
-            });
+            let options = null
 
+            // Setup proxies
+            if (PROXIES && PROXY_LIST.length > 0) {
+                proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+                let agent = new HttpsProxyAgent(proxy);
+                options = {
+                    agent: agent,
+                    headers: {
+                        'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
+                    }
+                }
+            }
+            else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
+
+
+            // Fetch Page
+            res = await fetch(url, options)
+                .catch(async function (error) {
+                    writeErrorToFile(store, error);
+                });
+
+
+            // Extract Information
             if (res && res.status == 200) {
+                html = await res.text()
+
                 let parser = new DomParser();
-                let doc = parser.parseFromString(res.data, 'text/html');
+                let doc = parser.parseFromString(html, 'text/html');
                 let title = doc.getElementsByClassName('product-details-tile__title')[0].innerHTML.trim().slice(0, 150)
                 let inventory = doc.getElementsByClassName('button small add-control button-secondary')[0].innerHTML
                 let image = doc.getElementsByClassName('product-image product-image-visible')[0].getAttribute('src')
@@ -71,7 +86,7 @@ export default async function tesco(url, interval) {
             }
     
         } catch (e) {
-            writeErrorToFile(store, e)
+            writeErrorToFile(store, e, html, res.status)
         }
     }
 };
@@ -79,6 +94,8 @@ export default async function tesco(url, interval) {
 
 async function tescoPS5Preorder(url, interval) {
     process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';  // Avoid the certification error
+    
+    let res = null, html = null, proxy = null
     
     // Setup proxies
     if(PROXIES) {
@@ -89,21 +106,37 @@ async function tescoPS5Preorder(url, interval) {
 
     url = url.replace('www.', '')
     try {
-        let res = await axios.get(url, {
-            headers: {
-                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
+        let options = null
+
+        // Setup proxies
+        if (PROXIES && PROXY_LIST.length > 0) {
+            proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            let agent = new HttpsProxyAgent(proxy);
+            options = {
+                agent: agent,
+                headers: {
+                    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
+                }
             }
-        }).catch(async function (error) {
-            writeErrorToFile(store, error)
-        });
+        }
+        else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
+
+
+        // Fetch Page
+        res = await fetch(url, options)
+            .catch(async function (error) {
+                writeErrorToFile(store, error);
+            });
         
         if (res && res.status == 200) {
+            html = await res.text()
+
             let ps5PreorderPage = fs.readFileSync(ps5PreorderPagePath, 'utf-8');   
-            if (res.data.includes(ps5PreorderPage) && !firstRun.has(url)) {
+            if (html.includes(ps5PreorderPage) && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "PlayStation 5" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
-            else if (!res.data.includes(ps5PreorderPage)) {
+            else if (!html.includes(ps5PreorderPage)) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
@@ -115,6 +148,6 @@ async function tescoPS5Preorder(url, interval) {
             }
         }
     } catch (e) {
-        writeErrorToFile(store, e)
+        writeErrorToFile(store, e, html, res.status)
     }
 }

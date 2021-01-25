@@ -3,10 +3,10 @@ import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
-import axios from "axios";
-import moment from "moment";
-import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import moment from "moment"
+import fetch from 'node-fetch'
+import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import console from "console";
 import HttpsProxyAgent from 'https-proxy-agent'
 
@@ -25,39 +25,50 @@ const store = 'Microcenter'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function microcenter(url, interval) {
-    
-    // Setup proxies
-    if(PROXIES) {
-        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
-        let agent = new HttpsProxyAgent(proxy);
-        axios.create(agent)
-    }
+    let res = null, html = null, proxy = null
 
     let productID = url.match(/(?<=product\/).*(?=\/)/i)[0]
+
     try {
-        let res = await axios.get(url, {
-            headers: {
-                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
+        let options = null
+
+        // Setup proxies
+        if (PROXIES && PROXY_LIST.length > 0) {
+            proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            let agent = new HttpsProxyAgent(proxy);
+            options = {
+                agent: agent,
+                headers: {
+                    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
+                }
             }
-        })
-        .catch(async function (error) {
-            if (error.response && error.response.status == 503) console.error(moment().format('LTS') + ': ' +'Microcenter 503 (service unavailable) Error. Changing interval rate for', url)
-            else writeErrorToFile(store, error);
-        });
-        
+        }
+        else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
+
+
+        // Fetch Page
+        res = await fetch(url, options)
+            .catch(async function (error) {
+                writeErrorToFile(store, error);
+            });
+
+
+        // Extract Information
         if (res && res.status == 200) {
+            html = await res.text()
+
             let parser = new DomParser();
-            let doc = parser.parseFromString(res.data, 'text/html');
+            let doc = parser.parseFromString(html, 'text/html');
             let title = doc.getElementsByClassName('ProductLink_' + productID)
             let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')[0].getAttribute('content')
             
             if (title.length > 0) title = title[0].textContent.trim().slice(0, 150)
             
-            if (!res.data.includes('in stock') && !firstRun.has(url)) {
+            if (!html.includes('in stock') && !firstRun.has(url)) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
                 firstRun.add(url)
             }
-            else if (res.data.includes('in stock')) {
+            else if (html.includes('in stock')) {
                 if (ALARM) threeBeeps();
                 if (OPEN_URL && !urlOpened) { 
                     open(url); 
@@ -70,6 +81,6 @@ export default async function microcenter(url, interval) {
             }
         }
     } catch (e) {
-        writeErrorToFile(store, e);
+        writeErrorToFile(store, e, html, res.status)
     }
 };

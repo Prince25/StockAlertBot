@@ -3,10 +3,10 @@ import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
-import axios from "axios";
-import moment from "moment";
-import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import moment from "moment"
+import fetch from 'node-fetch'
+import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import HttpsProxyAgent from 'https-proxy-agent'
 
 
@@ -25,30 +25,48 @@ let urlOpened = false;
 let firstRun = new Set();
 let badProxies = new Set()
 export default async function newegg(url, interval) {
-
-    // Setup proxies
-    let proxy = null;
-    if(PROXIES) {
-        do {
-            proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
-        } while (badProxies.has(proxy))
-        let agent = new HttpsProxyAgent(proxy);
-        axios.create(agent)
-    }
+    let res = null, html = null, proxy = null
 
     try {
-        let res = await axios.get(url, {
-            headers: {
-                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
-            }
-        }).catch(async function (error) {
-            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-            else writeErrorToFile(store, error);
-        });
+        let options = null
 
+        // Setup proxies
+        if(PROXIES && PROXY_LIST.length > 0) {
+            if (badProxies.size == PROXY_LIST.length)   // If all proxies are used, start over
+                badProxies = new Set()
+
+            do {
+                proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            } while(badProxies.has(proxy))
+
+            let agent = new HttpsProxyAgent(proxy);
+            options = { 
+                agent: agent, 
+                headers: {
+                    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
+                }
+            }
+        }
+        else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
+        
+
+        // Fetch Page
+        res = await fetch(url, options)
+            .catch(async function (error) {
+                writeErrorToFile(store, error);
+            });
+
+        
+        // Extract Information
         if (res && res.status == 200) {
-            if (String(res.data).includes('Are you a human?')) {
-                console.info('NEWEGG RATE LIMIT ON: ' + url + ". PROXY: " + proxy)
+            html = await res.text()
+
+            // If bot Detected
+            if (html.includes("Are you a human?")) {
+                let message = moment().format('LTS') + ': ' + store + ' bot detected. '
+                if(PROXIES) message += 'NEWEGG RATE LIMIT ON: ' + url + ". PROXY: " + proxy
+                else message += 'Consider using proxies or lowering interval.'
+                console.error(message)
                 badProxies.add(proxy)
                 return
             }
@@ -58,12 +76,12 @@ export default async function newegg(url, interval) {
 
             // Check combo product
             if (url.includes('ComboDealDetails')) {
-                doc = parser.parseFromString(res.data, 'text/html');
+                doc = parser.parseFromString(html, 'text/html');
                 title = doc.getElementsByTagName('title')[0].textContent
                 inventory = doc.getElementsByClassName('atnPrimary')
                 image = 'https:' + doc.getElementById('mainSlide_0').getAttribute('src')
             } else { // Check normal product
-                doc = parser.parseFromString(res.data, 'text/html');
+                doc = parser.parseFromString(html, 'text/html');
                 title = doc.getElementsByClassName('product-title')[0].innerHTML.trim().slice(0, 150)
                 inventory = doc.getElementsByClassName('btn btn-primary btn-wide')
                 image = doc.getElementsByClassName('image_url')
@@ -93,6 +111,6 @@ export default async function newegg(url, interval) {
         }
 
     } catch (e) {
-        writeErrorToFile(store, e)
+        writeErrorToFile(store, e, html, res.status)
     }
 };

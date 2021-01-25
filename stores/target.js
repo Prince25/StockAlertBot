@@ -3,10 +3,10 @@ import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, TARGET_KEY, TARGET_ZIP_CODE, USER
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
-import axios from "axios";
-import moment from "moment";
-import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import moment from "moment"
+import fetch from 'node-fetch'
+import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import HttpsProxyAgent from 'https-proxy-agent'
 
 
@@ -26,40 +26,52 @@ const store = 'Target'
 let firstRun = new Set();
 let urlOpened = false;
 export default async function target(url, interval, key, zip_code) {
-    
-    // Setup proxies
-    if(PROXIES) {
-        let proxy = 'https://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
-        let agent = new HttpsProxyAgent(proxy);
-        axios.create(agent)
-    }
+    let res = null, html = null, proxy = null
 
     key = key || TARGET_KEY
     zip_code = zip_code || TARGET_ZIP_CODE
-    try {
-        let res = await axios.get(url, {
-            headers: {
-                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
-            }
-        }).catch(async function (error) {
-            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
-            else writeErrorToFile(store, error);
-        });
 
-        if (res && res.status === 200) {
+    try {
+        let options = null
+
+        // Setup proxies
+        if (PROXIES && PROXY_LIST.length > 0) {
+            proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            let agent = new HttpsProxyAgent(proxy);
+            options = {
+                agent: agent,
+                headers: {
+                    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
+                }
+            }
+        }
+        else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
+
+
+        // Fetch Page
+        res = await fetch(url, options)
+            .catch(async function (error) {
+                writeErrorToFile(store, error);
+            });
+
+
+        // Extract Information
+        if (res && res.status == 200) {
+            html = await res.text()
+
             let parser = new DomParser();
-            let doc = parser.parseFromString(res.data, 'text/html');
+            let doc = parser.parseFromString(html, 'text/html');
             let productInfo = JSON.parse(doc.getElementsByTagName('script').filter(script => script.getAttribute('type') == 'application/ld+json')[0].textContent)
             let title = productInfo['@graph'][0]['name']
             let tcin = productInfo['@graph'][0]['sku']
             let image = productInfo['@graph'][0]['image']
             
-            let location_id = await axios.get('https://api.target.com/shipt_deliveries/v1/stores?zip=' + zip_code + '&key=' + key)
+            let location_id = await fetch('https://api.target.com/shipt_deliveries/v1/stores?zip=' + zip_code + '&key=' + key)
                 .then(res => res.data)
                 .then(data => data.closest_eligible_store.location_id)
                 .catch(e => console.error(moment().format('LTS') + ': Error while fetching data for ' + title))
 
-            let stock_options = await axios.get('https://redsky.target.com/redsky_aggregations/v1/web/pdp_fulfillment_v1?' + 
+            let stock_options = await fetch('https://redsky.target.com/redsky_aggregations/v1/web/pdp_fulfillment_v1?' + 
                 'key=' + key + 
                 '&tcin=' + tcin +
                 '&has_store_positions_store_id=false' + 
@@ -111,6 +123,6 @@ export default async function target(url, interval, key, zip_code) {
         }
 
     } catch (e) {
-        writeErrorToFile(store, e)
+        writeErrorToFile(store, e, html, res.status)
     }
 };
