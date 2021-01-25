@@ -31,7 +31,7 @@ export default async function antonline(url, interval) {
 
         // Setup proxies
         if(PROXIES && PROXY_LIST.length > 0) {
-            let proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
             let agent = new HttpsProxyAgent(proxy);
             options = { 
                 agent: agent, 

@@ -24,8 +24,8 @@ Enter links of the products you want tracked and how often you want the program 
 Currently, the following stores are supported:
 * AntOnline
 * Amazon (fails at low interval rates, see [proxies](#Proxies))
-* Argos (UK. For PS5, use product link. Disc: https://www.argos.co.uk/product/8349000, Digital: https://www.argos.co.uk/product/8349024)
-* Best Buy (including open-box and combos)
+* Argos (UK. Does not work with proxies) (For PS5, use product link. Disc: https://www.argos.co.uk/product/8349000, Digital: https://www.argos.co.uk/product/8349024)
+* Best Buy (including open-box and combos. Does not work with proxies)
 * Costco
 * Currys (UK)
 * Gamestop
