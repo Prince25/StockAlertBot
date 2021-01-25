@@ -66,9 +66,9 @@ export default async function target(url, interval, key, zip_code) {
             let tcin = productInfo['@graph'][0]['sku']
             let image = productInfo['@graph'][0]['image']
             
-            let location_id = await fetch('https://api.target.com/shipt_deliveries/v1/stores?zip=' + zip_code + '&key=' + key)
-                .then(res => res.data)
-                .then(data => data.closest_eligible_store.location_id)
+            let location_id = await fetch('https://api.target.com/shipt_deliveries/v1/stores?zip=' + zip_code + '&key=' + key, options)
+                .then(res => res.json())
+                .then(json => json.closest_eligible_store.location_id)
                 .catch(e => console.error(moment().format('LTS') + ': Error while fetching data for ' + title))
 
             let stock_options = await fetch('https://redsky.target.com/redsky_aggregations/v1/web/pdp_fulfillment_v1?' + 
@@ -78,9 +78,9 @@ export default async function target(url, interval, key, zip_code) {
                 '&store_id=' + location_id +
                 '&store_positions_store_id=' + location_id +
                 '&scheduled_delivery_store_id=' + location_id +
-                '&pricing_store_id=' + location_id)
-                .then(res => res.data)
-                .then(data => data.data.product.fulfillment)
+                '&pricing_store_id=' + location_id, options)
+                .then(res => res.json())
+                .then(json => json.data.product.fulfillment)
                 .catch(e => console.error(moment().format('LTS') + ': Error while fetching data for ' + title))
 
             let in_store = false;
