@@ -103,7 +103,8 @@ There are only two steps to use this program: 1) enter information and 2) launch
 3. Consider [donating](https://www.paypal.com/donate?business=3Y9NEYR4TURT8&item_name=Making+software+and+hacking+the+world%21+%E2%99%A5&currency_code=USD) or buying me a [Pizza](https://buymeacoff.ee/PrinceSingh) or [PayPal](https://paypal.me/PrinceSingh25) me :smile:
 
 #### Proxies
-If you plan to use low interval rates OR track several items from one store, it is highly recommended that you use proxies such as ones from [Webshare](https://www.webshare.io/).
+If you plan to use low interval rates OR track several items from one store, it is highly recommended that you use proxies such as ones from [Webshare](https://www.webshare.io/).<br>\
+**NOTE:** The following stores do not currently with proxies due to them blocking some connections/headers which results in inconsistent connection: Argos, Best Buy, Costco, and Tesco. Thus we thought it'd be best if we take off proxy support for now until we can do some further research or find an alternative way.
 
 
 ## Screenshots
@@ -124,6 +125,7 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 ## Things to work on
 * Add more stores
     * Walmart
+    * B&H Photo Video
     * ~~Gamestop~~
     * ~~Currys~~
     * ~~Newegg Combos~~
