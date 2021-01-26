@@ -4,6 +4,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
 import { fileURLToPath } from "url";
+import fs from "fs";
 import antonline from './stores/antonline.js'
 import amazon from './stores/amazon.js'
 import argos from './stores/argos.js'
@@ -23,6 +24,7 @@ export var {
     INTERVAL,
     OPEN_URL,
     ALARM,
+    PROXIES,
     AMAZON_DELAY,
     TARGET_ZIP_CODE,
     TARGET_KEY,
@@ -36,7 +38,6 @@ const ADDITIONAL_URLS = [
     // "https://www.amazon.com/gp/product/B08164VTWH/",
     // "https://www.argos.co.uk/product/8349000",
     // "https://www.bestbuy.com/site/amd-ryzen-9-5900x-4th-gen-12-core-24-threads-unlocked-desktop-processor-without-cooler/6438942.p?skuId=6438942",
-    // "https://www.costco.com/sony-playstation-5-gaming-console-bundle.product.100691489.html",
     // "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
     // "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
     // "https://www.target.com/p/playstation-5-console/-/A-81114595",
@@ -45,6 +46,10 @@ const ADDITIONAL_URLS = [
 ]
 if (ADDITIONAL_URLS.length > 0) URLS = URLS.concat(ADDITIONAL_URLS)
 
+
+// Read proxies.txt
+export var PROXY_LIST = PROXIES ? fs.readFileSync('proxies.txt', 'UTF-8').split(/\r?\n/) : []
+if (PROXY_LIST.length > 0) PROXY_LIST = PROXY_LIST.filter(proxy => proxy != '')
 
 // Runs main only if this file is executed
 if (process.argv[1] === fileURLToPath(import.meta.url))

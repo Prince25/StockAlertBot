@@ -52,6 +52,7 @@
                                     v-on:update_interval="updateInterval" 
                                     v-on:update_open_url="updateOpenURL" 
                                     v-on:update_alarm="updateAlarm" 
+                                    v-on:update_proxies="updateProxies" 
                                     v-on:update_amazon="updateAmazon" 
                                     v-on:update_target="updateTarget" 
                                 />
@@ -198,9 +199,10 @@
                         interval_unit: this.user_settings.INTERVAL.unit,
                         interval_units: ['seconds', 'minutes', 'hours'],
 
-                        // Boolean: Open URL and Alarm
+                        // Boolean: Open URL, Alarm, Proxies
                         open_url: this.user_settings.OPEN_URL,
                         sound_alarm: this.user_settings.ALARM,
+                        proxies: this.user_settings.PROXIES,
 
                         // Amazon delay
                         amazon_delay: this.user_settings.AMAZON_DELAY,
@@ -228,6 +230,10 @@
 
                     updateAlarm() {
                         this.$emit('update_alarm', this.sound_alarm)
+                    },
+
+                    updateProxies() {
+                        this.$emit('update_proxies', this.proxies)
                     },
 
                     updateAmazon() {
@@ -294,7 +300,18 @@
                                                 </template>
                                                 <span>Makes a sound when a product is in stock.</span>
                                             </v-tooltip>
+
+                                            <v-checkbox class="mt-0 ml-8 pl-8" v-model="proxies" label="Proxies" @change="updateProxies"></v-checkbox>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on, attrs }">
+                                                    <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                        <v-icon dark>mdi-help</v-icon>
+                                                    </v-btn>
+                                                </template>
+                                                <span>Enable support for proxies.</span>
+                                            </v-tooltip>
                                         </div>
+                                        <p class="text-right red--text" v-if="proxies">Make sure to put proxies (one proxy per line) in the file, "proxies.txt" Argos, Best Buy, Costco and Tesco do not currently work with proxies.</p> 
                                     </v-col>
                                 </v-row>
                                 
@@ -726,6 +743,11 @@
                     // Update alarm boolean
                     updateAlarm(boolean) {
                         this.userSettings.ALARM = boolean
+                    },
+
+                    // Update proxies boolean
+                    updateProxies(boolean) {
+                        this.userSettings.PROXIES = boolean
                     },
 
                     // Update Amazon Delay

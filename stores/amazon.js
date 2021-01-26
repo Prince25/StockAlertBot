@@ -1,12 +1,13 @@
 import { fileURLToPath } from "url";
-import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
+import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
-import axios from "axios";
-import moment from "moment";
-import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import open from "open"
+import axios from "axios";
+import moment from "moment"
+import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
+import HttpsProxyAgent from 'https-proxy-agent'
 
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -18,21 +19,59 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     amazon(url, interval, interval.value, true, false, () => null);
 }
 
-const store = 'Amazon'
-export default async function amazon(url, interval, originalIntervalValue, firstRun, urlOpened, resolve) {
-    try {
-        let res = await axios.get(url, {
-            headers: {
-                'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
-            }
-        }).catch(async function (error) {
-            if (error.response.status == 503) console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Changing interval rate for', url)
-            else writeErrorToFile(store, error);
-        });
 
+const store = 'Amazon'
+let badProxies = new Set()
+export default async function amazon(url, interval, originalIntervalValue, firstRun, urlOpened, resolve) {
+    let res = null, html = null, proxy = null
+
+    try {
+        let options = null
+
+        // Setup proxies
+        if(PROXIES && PROXY_LIST.length > 0) {
+            if (badProxies.size == PROXY_LIST.length)   // If all proxies are used, start over
+                badProxies = new Set()
+
+            do {
+                proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
+            } while(badProxies.has(proxy))
+
+            let agent = new HttpsProxyAgent(proxy);
+            options = { 
+                httpsAgent: agent, 
+                headers: {
+                    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)]
+                }
+            }
+        }
+        else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
+        
+
+        // Get Page
+        res = await axios.get(url, options)
+            .catch(async function (error) {
+                writeErrorToFile(store, error);
+            });
+
+        
+        // Extract Information
         if (res && res.status == 200) {
+            html = res.data
+
+            // If bot Detected
+            if (html.includes("we just need to make sure you're not a robot")) {
+                let message = moment().format('LTS') + ': ' + store + ' bot detected. '
+                if(PROXIES) message += 'For proxy: ' + proxy + '. Consider lowering interval.'
+                else message += 'Consider using proxies or lowering interval.'
+                console.error(message)
+                badProxies.add(proxy)
+                resolve({interval: Math.floor(interval.value + Math.random() * originalIntervalValue), urlOpened: urlOpened})
+                return
+            }
+
             let parser = new DomParser();
-            let doc = parser.parseFromString(res.data, 'text/html');
+            let doc = parser.parseFromString(html, 'text/html');
             let title = doc.getElementById('productTitle').innerHTML.trim().slice(0, 150)
             let inventory = doc.getElementById('add-to-cart-button')
             let image = doc.getElementById('landingImage').getAttribute('data-old-hires')
@@ -56,6 +95,6 @@ export default async function amazon(url, interval, originalIntervalValue, first
         else resolve({interval: Math.floor(interval.value + Math.random() * originalIntervalValue), urlOpened: urlOpened})
 
     } catch (e) {
-        writeErrorToFile(store, e)
+        writeErrorToFile(store, e, html, res.status)
     }
 };
