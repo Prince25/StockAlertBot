@@ -4,8 +4,8 @@ import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
 import open from "open"
+import axios from "axios";
 import moment from "moment"
-import fetch from 'node-fetch'
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import HttpsProxyAgent from 'https-proxy-agent'
 
@@ -39,7 +39,7 @@ export default async function target(url, interval, key, zip_code) {
             proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
             let agent = new HttpsProxyAgent(proxy);
             options = {
-                agent: agent,
+                httpsAgent: agent,
                 headers: {
                     'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
                 }
@@ -48,8 +48,8 @@ export default async function target(url, interval, key, zip_code) {
         else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
 
 
-        // Fetch Page
-        res = await fetch(url, options)
+        // Get Page
+        res = await axios.get(url, options)
             .catch(async function (error) {
                 writeErrorToFile(store, error);
             });
@@ -57,7 +57,7 @@ export default async function target(url, interval, key, zip_code) {
 
         // Extract Information
         if (res && res.status == 200) {
-            html = await res.text()
+            html = res.data
 
             let parser = new DomParser();
             let doc = parser.parseFromString(html, 'text/html');
@@ -66,12 +66,12 @@ export default async function target(url, interval, key, zip_code) {
             let tcin = productInfo['@graph'][0]['sku']
             let image = productInfo['@graph'][0]['image']
             
-            let location_id = await fetch('https://api.target.com/shipt_deliveries/v1/stores?zip=' + zip_code + '&key=' + key, options)
-                .then(res => res.json())
-                .then(json => json.closest_eligible_store.location_id)
+            let location_id = await axios.get('https://api.target.com/shipt_deliveries/v1/stores?zip=' + zip_code + '&key=' + key, options)
+                .then(res => res.data)
+                .then(data => data.closest_eligible_store.location_id)
                 .catch(e => console.error(moment().format('LTS') + ': Error while fetching data for ' + title))
 
-            let stock_options = await fetch('https://redsky.target.com/redsky_aggregations/v1/web/pdp_fulfillment_v1?' + 
+            let stock_options = await axios.get('https://redsky.target.com/redsky_aggregations/v1/web/pdp_fulfillment_v1?' + 
                 'key=' + key + 
                 '&tcin=' + tcin +
                 '&has_store_positions_store_id=false' + 
@@ -79,8 +79,8 @@ export default async function target(url, interval, key, zip_code) {
                 '&store_positions_store_id=' + location_id +
                 '&scheduled_delivery_store_id=' + location_id +
                 '&pricing_store_id=' + location_id, options)
-                .then(res => res.json())
-                .then(json => json.data.product.fulfillment)
+                .then(res => res.data)
+                .then(data => data.data.product.fulfillment)
                 .catch(e => console.error(moment().format('LTS') + ': Error while fetching data for ' + title))
 
             let in_store = false;

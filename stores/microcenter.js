@@ -4,8 +4,8 @@ import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
 import open from "open"
+import axios from "axios";
 import moment from "moment"
-import fetch from 'node-fetch'
 import DomParser from "dom-parser";     // https://www.npmjs.com/package/dom-parser
 import console from "console";
 import HttpsProxyAgent from 'https-proxy-agent'
@@ -37,7 +37,7 @@ export default async function microcenter(url, interval) {
             proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
             let agent = new HttpsProxyAgent(proxy);
             options = {
-                agent: agent,
+                httpsAgent: agent,
                 headers: {
                     'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
                 }
@@ -46,8 +46,8 @@ export default async function microcenter(url, interval) {
         else options = { headers: { 'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)] } }
 
 
-        // Fetch Page
-        res = await fetch(url, options)
+        // Get Page
+        res = await axios.get(url, options)
             .catch(async function (error) {
                 writeErrorToFile(store, error);
             });
@@ -55,7 +55,7 @@ export default async function microcenter(url, interval) {
 
         // Extract Information
         if (res && res.status == 200) {
-            html = await res.text()
+            html = res.data
 
             let parser = new DomParser();
             let doc = parser.parseFromString(html, 'text/html');
