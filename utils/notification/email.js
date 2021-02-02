@@ -6,15 +6,16 @@ import { EMAIL } from '../../main.js'
 
 const email = config.email;
 
-export default async function sendAlertToEmail(url, title, image, store) {
+export default async function sendAlertToEmail(product_url, title, image, store) {
 	if (EMAIL) {
 		if (!fs.existsSync('.env')) {
 			console.error(moment().format('LTS') + ": Error sending email alert, rename example.env file to .env")
 		}
 		else if (email.service == "" || email.from == "" || email.pass == "" || email.to == "") {
 			console.error(moment().format('LTS') + ": Error sending email alert, open and edit .env file")
-		} else  {
+		} else {
 			console.info(moment().format('LTS') + ": Sending email alert")
+
 			var transporter = nodemailer.createTransport({
 				service: email.service,
 				auth: {
@@ -27,7 +28,7 @@ export default async function sendAlertToEmail(url, title, image, store) {
 				from: `"StockAlertBot" <${email.from}>`,
 				to: email.to,
 				subject: '***** In Stock at ' + store + ' *****',
-				text: `${title}  \n ${url}`,
+				text: `${title}  \n ${product_url}`,
 				attachments: [
 					{
 						filename: 'Product.jpg',

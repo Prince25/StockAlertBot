@@ -28,7 +28,10 @@ export var {
     AMAZON_DELAY,
     TARGET_ZIP_CODE,
     TARGET_KEY,
+    AWS,
     EMAIL,
+    SMS,
+    TWILIO,
     WEBHOOK_URLS
 } = require('./config.json')
 
