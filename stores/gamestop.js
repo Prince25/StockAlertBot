@@ -86,11 +86,11 @@ export default async function gamestop(url, interval) {
 
             if (inventory == 'Available') {
                 if (ALARM) threeBeeps();
-                if (OPEN_URL && !urlOpened) {
-                    open(url);
+                if (!urlOpened) {
+                    if (OPEN_URL) open(url)
                     sendAlerts(url, title, image, store)
                     urlOpened = true;
-                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
+                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
