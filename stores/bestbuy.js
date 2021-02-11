@@ -52,21 +52,21 @@ export default async function bestbuy(url, interval) {
             if (inventory.length > 0) inventory = inventory[0].textContent
             if (open_box && open_box.length > 0) {
                 if (ALARM) threeBeeps();
-                if (OPEN_URL && !urlOpened) { 
-                    open(url); 
+                if (!urlOpened) { 
+                    if (OPEN_URL) open(url) 
                     urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
+                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** Open Box at ' + store + ' *****: ', title);
                 console.info(url);
             }
             if (inventory == 'Add to Cart') {
                 if (ALARM) threeBeeps();
-                if (OPEN_URL && !urlOpened) { 
-                    open(url); 
+                if (!urlOpened) { 
+                    if (OPEN_URL) open(url) 
                     sendAlerts(url, title, image, store)
                     urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and post to webhook every 5 minutes
+                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);

@@ -82,8 +82,8 @@ export default async function amazon(url, interval, originalIntervalValue, first
             }
             else if (inventory != null) {
                 if (ALARM) threeBeeps();
-                if (OPEN_URL && !urlOpened) { 
-                    open(url); 
+                if (!urlOpened) { 
+                    if (OPEN_URL) open(url) 
                     sendAlerts(url, title, image, store)
                     urlOpened = true; 
                 }

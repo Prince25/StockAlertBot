@@ -102,7 +102,7 @@ async function checkStoreWithDelay(item) {
 
             if (OPEN_URL && urlOpened && urlOpened != item.urlOpened) {
                 item.urlOpened = true;
-                setTimeout(() => item.urlOpened = false, 1000 * 295)  // Open URL and post to webhook every 5 minutes
+                setTimeout(() => item.urlOpened = false, 1000 * 295)  // Open URL and send alerts every 5 minutes
             }
 
 
