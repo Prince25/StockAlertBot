@@ -30,9 +30,10 @@ export default async function amazon(url, interval, originalIntervalValue, first
 
         // Setup proxies
         if(PROXIES && PROXY_LIST.length > 0) {
-            if (badProxies.size == PROXY_LIST.length)   // If all proxies are used, start over
+            if (badProxies.size == PROXY_LIST.length) {   // If all proxies are used, start over
+                console.info(moment().format('LTS') + ': Tried all proxies in proxies.txt. Will try them again. Consider getting more proxies.')
                 badProxies = new Set()
-
+            }
             do {
                 proxy = 'http://' + PROXY_LIST[Math.floor(Math.random() * PROXY_LIST.length)];
             } while(badProxies.has(proxy))
@@ -51,7 +52,14 @@ export default async function amazon(url, interval, originalIntervalValue, first
         // Get Page
         res = await axios.get(url, options)
             .catch(async function (error) {
-                writeErrorToFile(store, error);
+                if (error.response.status == 503) {
+                    console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error for ' + url + '. Consider increasing invterval.')
+                    if(PROXIES) { 
+                        console.error('Proxy', proxy, 'might be banned from ' + store + '. Adding it to the bad list')
+                        badProxies.add(proxy)
+                    }
+                }
+                else writeErrorToFile(store, error);
             });
 
         
@@ -62,10 +70,12 @@ export default async function amazon(url, interval, originalIntervalValue, first
             // If bot Detected
             if (html.includes("we just need to make sure you're not a robot")) {
                 let message = moment().format('LTS') + ': ' + store + ' bot detected. '
-                if(PROXIES) message += 'For proxy: ' + proxy + '. Consider lowering interval.'
+                if(PROXIES) {
+                    message += 'For proxy: ' + proxy + '. Consider lowering interval.'
+                    badProxies.add(proxy)
+                }
                 else message += 'Consider using proxies or lowering interval.'
                 console.error(message)
-                badProxies.add(proxy)
                 resolve({interval: Math.floor(interval.value + Math.random() * originalIntervalValue), urlOpened: urlOpened})
                 return
             }
