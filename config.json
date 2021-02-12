@@ -29,8 +29,8 @@
         "slack"
     ],
     "PROXIES": false,
-    "AWS": false,
     "EMAIL": false,
-    "SMS":false,
-    "TWILIO": false
+    "SMS_EMAIL":false,
+    "SMS_AWS": false,
+    "SMS_TWILIO": false
 }

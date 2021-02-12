@@ -8,16 +8,19 @@ export default {
 		region: process.env.AWS_REGION,
 		phone: process.env.AWS_PHONE_NUMBER
 	},
+
 	email: {
 		service: process.env.EMAIL_SERVICE,
 		from: process.env.EMAIL_FROM,
 		pass: process.env.EMAIL_PASS,
 		to: process.env.EMAIL_TO
 	},
+
 	sms: {
 		carrier: process.env.PHONE_CARRIER,
 		number: process.env.PHONE_NUMBER
 	},
+	
 	twilio: {
 		sid: process.env.TWILIO_ACCOUNT_SID,
 		auth: process.env.TWILIO_AUTH_TOKEN, 

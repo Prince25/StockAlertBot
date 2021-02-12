@@ -2,12 +2,12 @@ import nodemailer from "nodemailer"
 import fs from "fs";
 import moment from "moment";
 import config from "../config.js";
-import { SMS } from '../../main.js'
+import { SMS_EMAIL } from '../../main.js'
 
 const { email, sms } = config;
 
 export default async function sendAlertToSMS(product_url, title, image, store) {
-	if (SMS) {
+	if (SMS_EMAIL) {
 		if (!fs.existsSync('.env')) {
 			console.error(moment().format('LTS') + ": Error sending sms alert, rename example.env file to .env")
 		}

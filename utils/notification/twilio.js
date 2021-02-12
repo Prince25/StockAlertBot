@@ -2,12 +2,12 @@ import Twilio from 'twilio';
 import fs from "fs";
 import moment from 'moment';
 import config from "../config.js";
-import { TWILIO } from '../../main.js'
+import { SMS_TWILIO } from '../../main.js'
 
 const twilio = config.twilio;
 
 export default async function sendAlertToTwilio(product_url, title, store) {
-	if (TWILIO) {
+	if (SMS_TWILIO) {
 		if (!fs.existsSync('.env')) {
 			console.error(moment().format('LTS') + ": Error sending twilio alert, rename example.env file to .env")
 		}

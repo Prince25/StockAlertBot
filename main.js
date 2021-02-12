@@ -24,15 +24,15 @@ export var {
     INTERVAL,
     OPEN_URL,
     ALARM,
-    PROXIES,
     AMAZON_DELAY,
     TARGET_ZIP_CODE,
     TARGET_KEY,
-    AWS,
+    WEBHOOK_URLS,
+    PROXIES,
     EMAIL,
-    SMS,
-    TWILIO,
-    WEBHOOK_URLS
+    SMS_EMAIL,
+    SMS_AWS,
+    SMS_TWILIO,
 } = require('./config.json')
 
 // For Testing

@@ -135,7 +135,7 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
     * ~~Tesco~~
     * ~~Argos~~
 * Add delay between items from the same store
-* Add ~~Email and Maybe~~ SMS Notifications
+* ~~ Add Email and SMS Notifications ~~ 
 * More OOP!!
 * ~~Fix~~ Find Bugs
 * ~~Add Proxies~~
