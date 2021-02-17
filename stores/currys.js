@@ -15,7 +15,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
         unit: 'seconds',    // seconds, m: minutes, h: hours
         value: 5           
     }
-	let url = 'https://www.currys.co.uk/gbuk/gaming/console-gaming/controllers/microsoft-xbox-wireless-controller-robot-white-10211569-pdt.html'
+	let url = 'https://www.currys.co.uk/gbuk/gaming/pc-gaming/gaming-laptops/alienware-m17-r2-17-3-gaming-laptop-intel-core-i7-rtx-2070-1-tb-ssd-10219996-pdt.html'
     currys(url, interval);
 }
 
@@ -56,11 +56,15 @@ export default async function currys(url, interval) {
 
             let parser = new DomParser();
             let doc = parser.parseFromString(html, 'text/html');
-			let title = doc.getElementsByClassName('product_name')
-			let inventory = doc.getElementsByClassName('space-b center')
+            let title = doc.getElementsByClassName('product_name')
+            let inventory = doc.getElementsByClassName('space-b center')
             let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')
             
             if (title.length > 0) title = title[0].textContent
+            else {
+                title = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:title')
+                if (title.length > 0) title = title[0].getAttribute('content')
+            }
 			if (inventory.length > 0) {
 				inventory = inventory[0].getAttribute('data-button-label')
 				if (inventory.length > 0) inventory = inventory.slice(29, 42)
