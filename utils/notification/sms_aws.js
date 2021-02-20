@@ -2,12 +2,12 @@ import aws from 'aws-sdk';
 import fs from "fs";
 import moment from 'moment';
 import config from "../config.js";
-import { SMS_AWS } from '../../main.js'
+import { SMS_METHOD } from '../../main.js'
 
-const service = config.aws;
+const service = config.sms_aws;
 
-export default async function sendAlertToAWS(product_url, title, store) {
-	if (SMS_AWS) {
+export default async function sendAlertToSMSViaAWS(product_url, title, store) {
+	if (SMS_METHOD == "Amazon Web Services") {
 		if (!fs.existsSync('.env')) {
 			console.error(moment().format('LTS') + ": Error sending AWS sms alert, rename example.env file to .env")
 		}

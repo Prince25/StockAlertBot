@@ -30,7 +30,5 @@
     ],
     "PROXIES": false,
     "EMAIL": false,
-    "SMS_EMAIL":false,
-    "SMS_AWS": false,
-    "SMS_TWILIO": false
+    "SMS_METHOD": "None"
 }

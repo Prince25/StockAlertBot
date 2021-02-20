@@ -2,16 +2,16 @@ import nodemailer from "nodemailer"
 import fs from "fs";
 import moment from "moment";
 import config from "../config.js";
-import { SMS_EMAIL } from '../../main.js'
+import { SMS_METHOD } from '../../main.js'
 
-const { email, sms } = config;
+const { email, sms_email } = config;
 
-export default async function sendAlertToSMS(product_url, title, image, store) {
-	if (SMS_EMAIL) {
+export default async function sendAlertToSMSViaEmail(product_url, title, image, store) {
+	if (SMS_METHOD == "Email") {
 		if (!fs.existsSync('.env')) {
 			console.error(moment().format('LTS') + ": Error sending sms alert, rename example.env file to .env")
 		}
-		else if (sms.number.length > 0 && (!email.from || !email.pass)) {
+		else if (sms_email.number.length > 0 && (!email.from || !email.pass)) {
 			console.error(moment().format('LTS') + ": For sms alerts to work, both email and sms must be configured")
 		} else {
 			console.info(moment().format('LTS') + ": Sending sms alert")
@@ -28,7 +28,7 @@ export default async function sendAlertToSMS(product_url, title, image, store) {
 				from: `"StockAlertBot" <${email.from}>`,
 				subject: '***** In Stock at ' + store + ' *****',
 				text: `${title} \n\n${product_url} \n\nStockAlertBot | ${moment().format('MMM Do YYYY - h:mm:ss A')}`,
-				to: sms.number + sms.carrier,
+				to: sms_email.number + sms_email.carrier,
 				attachments: [
 					{
 						filename: 'Product.jpg',

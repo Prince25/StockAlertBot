@@ -1,5 +1,7 @@
 
-### New in v2.0: :email: E-mail notification support and an user interface :iphone: !! (see [screenshots](#Screenshots))
+### New in v3.0: SMS (text) notification support :iphone: !! (see [screenshots](#Screenshots))
+
+#### New in v2.0: :email: E-mail notification support and an user interface :computer: (see [screenshots](#Screenshots))
 
 # StockAlertBot
 Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiculously high markup prices, I decided to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s).
