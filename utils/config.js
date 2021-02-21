@@ -17,6 +17,9 @@ export default {
 	},
 
 	sms_email: {
+		service: process.env.SMS_EMAIL_SERVICE,
+		from: process.env.SMS_EMAIL_FROM,
+		pass: process.env.SMS_EMAIL_PASS,
 		carrier: process.env.SMS_EMAIL_PHONE_CARRIER,
 		number: process.env.SMS_EMAIL_PHONE_NUMBER
 	},

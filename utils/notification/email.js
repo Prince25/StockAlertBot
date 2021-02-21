@@ -28,12 +28,11 @@ export default async function sendAlertToEmail(product_url, title, image, store)
 				from: `"StockAlertBot" <${email.from}>`,
 				to: email.to,
 				subject: '***** In Stock at ' + store + ' *****',
-				text: `${title}  \n ${product_url}`,
+				text: `${title} \n\n${product_url} \n\nStockAlertBot | ${moment().format('MMM Do YYYY - h:mm:ss A')}`,
 				attachments: [
 					{
 						filename: 'Product.jpg',
 						path: image
-
 					}
 				]
 			};

@@ -86,6 +86,9 @@
                                     v-on:update_sms_aws_key="updateAWSKey"
                                     v-on:update_sms_aws_secret="updateAWSSecret"
                                     v-on:update_sms_aws_phone="updateAWSPhone"
+                                    v-on:update_sms_email_service="updateSMSEmailService"
+                                    v-on:update_sms_email_from="updateSMSEmailFrom"
+                                    v-on:update_sms_email_pass="updateSMSEmailPass"
                                     v-on:update_sms_email_carrier="updateSMSEmailCarrier"
                                     v-on:update_sms_email_phone="updateSMSEmailPhone"
                                     v-on:update_sms_twilio_sid="updateSMSTwilioSID"
@@ -477,6 +480,9 @@
                                         v-on:update_aws_key="$emit('update_sms_aws_key', $event)"
                                         v-on:update_aws_secret="$emit('update_sms_aws_secret', $event)"
                                         v-on:update_aws_phone="$emit('update_sms_aws_phone', $event)"
+                                        v-on:update_service="$emit('update_sms_email_service', $event)"
+                                        v-on:update_from="$emit('update_sms_email_from', $event)"
+                                        v-on:update_pass="$emit('update_sms_email_pass', $event)"
                                         v-on:update_carrier="$emit('update_sms_email_carrier', $event)"
                                         v-on:update_phone="$emit('update_sms_email_phone', $event)"
                                         v-on:update_twilio_sid="$emit('update_sms_twilio_sid', $event)"
@@ -517,10 +523,12 @@
                         to: this.settings.EMAIL_TO,
                         showPass: false,
                         sameAsFromChecked: true,
-                        providers: [ "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
+                        providers: [ 
+                            "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
                             "FastMail", "GandiMail", "Godaddy", "GodaddyAsia", "GodaddyEurope", "hot.ee", "mail.ee", "Mail.ru", "Maildev", "Mailgun", "Mailjet", 
                             "Mailosaur", "Mandrill", "Naver", "OpenMailBox", "Postmark", "QQex", "SendCloud", "SendGrid", "SendinBlue", "SendPulse", "SES", 
-                            "SES-US-EAST-1", "SES-US-WEST-2", "SES-EU-WEST-1", "Sparkpost", "Yandex", "Zoho", "qiye.aliyun" ]
+                            "SES-US-EAST-1", "SES-US-WEST-2", "SES-EU-WEST-1", "Sparkpost", "Yandex", "Zoho", "qiye.aliyun" 
+                        ]
                     }
                 },
 
@@ -564,7 +572,7 @@
 
                                 <!--  From HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
-                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">From E-mail</p>
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">From Email</p>
                                     <div style="width: 34%;" class="ml-4 mr-4">
                                         <v-text-field v-model="from" single-line type="text" @change="updateFrom" dense solo clearable />
                                     </div>
@@ -596,7 +604,7 @@
 
                                 <!--  To HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
-                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">To E-mail</p>
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">To Email</p>
                                     <div style="width: 34%;" class="ml-4 mr-4">
                                         <v-text-field v-model="to" single-line type="text" @change="updateTo" :filled="sameAsFromChecked" :disabled="sameAsFromChecked" dense solo clearable />
                                     </div>
@@ -736,6 +744,9 @@
                                 <div v-if="method === 'Email'" style="width: 100%;">
                                     <email-sms 
                                         v-bind:settings="env_settings"
+                                        v-on:update_service="$emit('update_service', $event)"
+                                        v-on:update_from="$emit('update_from', $event)"
+                                        v-on:update_pass="$emit('update_pass', $event)"
                                         v-on:update_carrier="$emit('update_carrier', $event)"
                                         v-on:update_phone="$emit('update_phone', $event)"
                                         class="ma-4" 
@@ -756,8 +767,6 @@
                             </div>`
             });
             
-            
-
             Vue.component('aws-sms', {
                 props: ['settings'],
                 data: function() {
@@ -874,18 +883,123 @@
                 props: ['settings'],
                 data: function() {
                     return {
-                        carrier: this.settings.SMS_EMAIL_PHONE_CARRIER,
+                        service: this.settings.SMS_EMAIL_SERVICE,
+                        from: this.settings.SMS_EMAIL_FROM,
+                        pass: this.settings.SMS_EMAIL_PASS,
+                        carrier: '',
                         phone: this.settings.SMS_EMAIL_PHONE_NUMBER,
+                        showPass: false,
+                        providers: [ 
+                            "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
+                            "FastMail", "GandiMail", "Godaddy", "GodaddyAsia", "GodaddyEurope", "hot.ee", "mail.ee", "Mail.ru", "Maildev", "Mailgun", "Mailjet", 
+                            "Mailosaur", "Mandrill", "Naver", "OpenMailBox", "Postmark", "QQex", "SendCloud", "SendGrid", "SendinBlue", "SendPulse", "SES", 
+                            "SES-US-EAST-1", "SES-US-WEST-2", "SES-EU-WEST-1", "Sparkpost", "Yandex", "Zoho", "qiye.aliyun" 
+                        ],
+                        carriers: {
+                            "Alltel": "sms.alltelwireless.com",
+                            "AT&T": "txt.att.net",
+                            "Boost Mobile": "sms.myboostmobile.com",
+                            "Cricket Wireless": "mms.cricketwireless.net",
+                            "FirstNet": "txt.att.net",
+                            "Google Project Fi": "msg.fi.google.com",
+                            "MetroPCS": "mymetropcs.com",
+                            "Republic Wireless": "text.republicwireless.com",
+                            "Sprint": "messaging.sprintpcs.com",
+                            "Straight Talk": "vtext.com",
+                            "T-Mobile": "tmomail.net",
+                            "Ting": "message.ting.com",
+                            "U.S. Cellular": "email.uscc.net",
+                            "Verizon Wireless": "vtext.com",
+                            "Virgin Mobile": "vmobl.com",
+                        }
                     }
                 },
 
+                mounted() {
+                    this.carrier = Object.keys(this.carriers).find(key => this.carriers[key] === this.settings.SMS_EMAIL_PHONE_CARRIER)
+                },
+
                 methods: {
-                    updateCarrier() { this.$emit('update_carrier', this.carrier) },
+                    updateService() { this.$emit('update_service', this.service) },
+                    updateFrom() { this.$emit('update_from', this.from) },
+                    updatePass() { this.$emit('update_pass', this.pass) },
+                    updateCarrier() { this.$emit('update_carrier', this.carriers[this.carrier]) },
                     updatePhone() { this.$emit('update_phone', this.phone) },
                 },
 
                 template:   `<div style="margin: 0px !important">
+
+                                <!--  Service HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Email Provider</p>
+                                    <div style="width: 20%;" class="ml-4 mr-4">
+                                        <v-select :items="providers" v-model="service" @change="updateService" dense solo></v-select>
+                                    </div>
+                                </div>
+
+                                <!--  From HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Email Address</p>
+                                    <div style="width: 34%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="from" single-line type="text" @change="updateFrom" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Login email. Also the email to send notification from.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Pass HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Password</p>
+                                    <div style="width: 34%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="pass" single-line @change="updatePass" @click:append="showPass = !showPass" :type="showPass ? 'text' : 'password'" :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'" dense solo />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Login password.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Carrier HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Carrier</p>
+                                    <div style="width: 20%;" class="ml-4 mr-4">
+                                        <v-select :items="Object.keys(carriers)" v-model="carrier" @change="updateCarrier" dense solo></v-select>
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Carrier of the phone number.</span>
+                                    </v-tooltip>
+                                </div>
                                 
+                                <!--  Phone HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Number</p>
+                                    <div style="width: 15%;" class="ml-4 mr-4">
+                                        <v-text-field class="phoneNumber" v-model="phone" single-line type="number" @change="updatePhone" placeholder="999 999 999" dense solo />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Include area code (just digits, no special characters).</span>
+                                    </v-tooltip>
+                                </div>>
                             </div>`
             });
 
@@ -1082,6 +1196,21 @@
                     // Update AWS Phone
                     updateAWSPhone(phone) {
                         this.envSettings.SMS_AWS_PHONE_NUMBER = phone
+                    },
+
+                    // Update SMS Email service provider
+                    updateSMSEmailService(provider) {
+                        this.envSettings.SMS_EMAIL_SERVICE = provider
+                    },
+
+                    // Update SMS Email from
+                    updateSMSEmailFrom(from) {
+                        this.envSettings.SMS_EMAIL_FROM = from
+                    },
+
+                    // Update SMS Email password
+                    updateSMSEmailPass(pass) {
+                        this.envSettings.SMS_EMAIL_PASS = pass
                     },
 
                     // Update SMS Email Carrier
