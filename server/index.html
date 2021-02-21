@@ -865,7 +865,7 @@
                                 <div style="display: flex; align-items: center; justify-content: center;">
                                     <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Number</p>
                                     <div style="width: 15%;" class="ml-4 mr-4">
-                                        <v-text-field class="phoneNumber" v-model="phone" single-line type="number" @change="updatePhone" placeholder="1 999 999 999" dense solo />
+                                        <v-text-field class="phoneNumber" v-model="phone" single-line type="number" @change="updatePhone" placeholder="1 999 999 999" dense solo clearable />
                                     </div>
                                     <v-tooltip bottom>
                                         <template v-slot:activator="{ on, attrs }">
@@ -989,7 +989,7 @@
                                 <div style="display: flex; align-items: center; justify-content: center;">
                                     <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Number</p>
                                     <div style="width: 15%;" class="ml-4 mr-4">
-                                        <v-text-field class="phoneNumber" v-model="phone" single-line type="number" @change="updatePhone" placeholder="999 999 999" dense solo />
+                                        <v-text-field class="phoneNumber" v-model="phone" single-line type="number" @change="updatePhone" placeholder="999 999 999" dense solo clearable />
                                     </div>
                                     <v-tooltip bottom>
                                         <template v-slot:activator="{ on, attrs }">
@@ -1023,6 +1023,69 @@
 
                 template:   `<div style="margin: 0px !important">
 
+                                <!--  SID HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Account SID</p>
+                                    <div style="width: 40%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="sid" single-line type="text" @change="updateSID" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://www.twilio.com/console" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Twilio account SID. Click to go to Twilio Console.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Auth HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Auth Token</p>
+                                    <div style="width: 40%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="auth" single-line type="text" @change="updateAuth" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://www.twilio.com/console" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Twilio auth token. Click to go to Twilio Console.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  From HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Twilio Number</p>
+                                    <div style="width: 15%;" class="ml-4 mr-4">
+                                        <v-text-field class="phoneNumber" v-model="from" single-line type="number" @change="updateFrom" placeholder="1 999 999 999" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://www.twilio.com/console/phone-numbers" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Twilio phone number. Include country and area code (just digits, no special characters). Click to go to Twilio Console.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  To HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Number</p>
+                                    <div style="width: 15%;" class="ml-4 mr-4">
+                                        <v-text-field class="phoneNumber" v-model="to" single-line type="number" @change="updateTo" placeholder="1 999 999 999" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://countrycode.org/" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Include country and area code (just digits, no special characters). Click for country codes.</span>
+                                    </v-tooltip>
+                                </div>
                             </div>`
             });
 
