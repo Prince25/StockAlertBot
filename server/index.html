@@ -21,6 +21,17 @@
     </head>
 
     <body>
+        <style>
+            /* Hide up and down arrows on phone number inputs */
+            .phoneNumber input[type='number'] {
+                -moz-appearance:textfield;
+                }
+            .phoneNumber input::-webkit-outer-spin-button,
+            .phoneNumber input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                }
+        </style>
+
         <div id="app">
             <v-app>
                 <v-main>
@@ -34,6 +45,7 @@
                                 {{ tab }}
                             </v-tab>
 
+                            <!--  URL Tab  -->
                             <v-tab-item>
                                 <v-divider class="mb-4"></v-divider>
                                 <url-list 
@@ -43,6 +55,7 @@
                                 />
                             </v-tab-item>
 
+                            <!--  Settings Tab  -->
                             <v-tab-item>
                                 <v-divider class="mb-4"></v-divider>
                                 <settings 
@@ -58,21 +71,37 @@
                                 />
                             </v-tab-item>
 
+                            <!--  Optional Tab  -->
                             <v-tab-item>
                                 <v-divider class="mb-4"></v-divider>
                                 <optional
                                     v-bind:user_settings="userSettings"
-                                    v-bind:email_settings="envSettings"
+                                    v-bind:env_settings="envSettings"
                                     v-on:toggle_email="setEmail" 
                                     v-on:remove_webhook_url="removeWebhookURL" 
                                     v-on:add_webhook_url="addWebhookURL"
-                                    v-on:update_service="updateService"
-                                    v-on:update_from="updateFrom"
-                                    v-on:update_pass="updatePass"
-                                    v-on:update_to="updateTo"
+                                    v-on:update_email_service="updateEmailService"
+                                    v-on:update_email_from="updateEmailFrom"
+                                    v-on:update_email_pass="updateEmailPass"
+                                    v-on:update_email_to="updateEmailTo"
+                                    v-on:update_sms_method="updateSMSMethod"
+                                    v-on:update_sms_aws_region="updateAWSRegion"
+                                    v-on:update_sms_aws_key="updateAWSKey"
+                                    v-on:update_sms_aws_secret="updateAWSSecret"
+                                    v-on:update_sms_aws_phone="updateAWSPhone"
+                                    v-on:update_sms_email_service="updateSMSEmailService"
+                                    v-on:update_sms_email_from="updateSMSEmailFrom"
+                                    v-on:update_sms_email_pass="updateSMSEmailPass"
+                                    v-on:update_sms_email_carrier="updateSMSEmailCarrier"
+                                    v-on:update_sms_email_phone="updateSMSEmailPhone"
+                                    v-on:update_sms_twilio_sid="updateSMSTwilioSID"
+                                    v-on:update_sms_twilio_auth="updateSMSTwilioAuth"
+                                    v-on:update_sms_twilio_from="updateSMSTwilioFrom"
+                                    v-on:update_sms_twilio_to="updateSMSTwilioTo"
                                 />
                             </v-tab-item>
 
+                            <!--  Debug Tab  -->
                             <v-tab-item>
                                 <v-divider class="mb-4"></v-divider>
                                 <p v-for="(settings,key) in userSettings">
@@ -88,6 +117,7 @@
 
                         <v-divider class="mt-4 mb-4"></v-divider>
 
+                        <!--  Save Button  -->
                         <div style="text-align: center;">
                             <v-btn elevation="4" outlined v-on:click="sendSettings" :disabled="checkSaveButton">
                                 Save Settings 
@@ -311,7 +341,9 @@
                                                 <span>Enable support for proxies.</span>
                                             </v-tooltip>
                                         </div>
-                                        <p class="text-right red--text" v-if="proxies">Make sure to put proxies (one proxy per line) in the file, "proxies.txt" Argos, Best Buy, Costco and Tesco do not currently work with proxies.</p> 
+                                        <p class="text-right red--text" v-if="proxies">Make sure to put proxies (one proxy per line) in the file, "proxies.txt".<br>
+                                            Format: ip:port or username:password@ip:port.<br>
+                                            Argos, Best Buy, Costco and Tesco do not currently work with proxies.</p> 
                                     </v-col>
                                 </v-row>
                                 
@@ -380,7 +412,6 @@
 
 
 
-
             /*
                 Designed and coded by:
                 Prabhjot "Prince" Singh
@@ -391,16 +422,17 @@
 
             /*
                 Optional Component
-                optional, email, webhooks, webhook-item, add-webhook
+                optional, email, webhooks, webhook-item, add-webhook, sms, aws-sms, email-sms, twilio-sms
             */
             Vue.component('optional', {
-                props: ['user_settings', 'email_settings'],
+                props: ['user_settings', 'env_settings'],
                 data: function() {
                     return {
                         email: this.user_settings.EMAIL,
                         email_color: this.user_settings.EMAIL ? "green--text mb-0 ml-4" : "red--text mb-0 ml-4",
                         email_text_style: " mb-0 ml-4",
-                        webhook_expanded: this.user_settings.WEBHOOK_URLS.length > 0
+                        webhook_expanded: this.user_settings.WEBHOOK_URLS.length > 0,
+                        sms_expanded: this.user_settings.SMS_METHOD != "None" 
                     }
                 },
 
@@ -411,6 +443,7 @@
                         this.$emit('toggle_email', this.email)
                     },
                     toggleWebhooks() { this.webhook_expanded = !this.webhook_expanded },
+                    toggleSMS() { this.sms_expanded = !this.sms_expanded },
                 },
 
                 template:   `<div style="display: flex; flex-direction: column; align-items: center;">
@@ -433,6 +466,36 @@
                                     />
                                 </div>
 
+                                <!--  SMS HTML  -->
+                                <v-divider inset style="width: 50%; margin-right: 80px;"></v-divider>
+                                <v-btn class="mt-6 mb-8" color="primary" @click="toggleSMS">
+                                    SMS
+                                    <v-icon right>
+                                        {{this.sms_expanded ? "mdi-minus" : "mdi-plus" }}
+                                    </v-icon>
+                                </v-btn>
+
+                                <div style="width: 100%;" class="mb-4" v-if="sms_expanded">
+                                    <sms
+                                        v-bind:user_settings="user_settings" 
+                                        v-bind:env_settings="env_settings" 
+                                        v-on:update_method="$emit('update_sms_method', $event)"
+                                        v-on:update_aws_region="$emit('update_sms_aws_region', $event)"
+                                        v-on:update_aws_key="$emit('update_sms_aws_key', $event)"
+                                        v-on:update_aws_secret="$emit('update_sms_aws_secret', $event)"
+                                        v-on:update_aws_phone="$emit('update_sms_aws_phone', $event)"
+                                        v-on:update_service="$emit('update_sms_email_service', $event)"
+                                        v-on:update_from="$emit('update_sms_email_from', $event)"
+                                        v-on:update_pass="$emit('update_sms_email_pass', $event)"
+                                        v-on:update_carrier="$emit('update_sms_email_carrier', $event)"
+                                        v-on:update_phone="$emit('update_sms_email_phone', $event)"
+                                        v-on:update_twilio_sid="$emit('update_sms_twilio_sid', $event)"
+                                        v-on:update_twilio_auth="$emit('update_sms_twilio_auth', $event)"
+                                        v-on:update_twilio_from="$emit('update_sms_twilio_from', $event)"
+                                        v-on:update_twilio_to="$emit('update_sms_twilio_to', $event)"
+                                    />
+                                </div>
+
                                 <!--  Emails HTML  -->
                                 <v-divider inset style="width: 50%; margin-right: 80px;"></v-divider>
                                 <div class="mt-3" style="display: flex;align-items: center;">
@@ -442,11 +505,11 @@
 
                                 <div v-if="email" style="width: 100%;">
                                     <email 
-                                        v-bind:settings="email_settings"
-                                        v-on:update_service="$emit('update_service', $event)" 
-                                        v-on:update_from="$emit('update_from', $event)" 
-                                        v-on:update_pass="$emit('update_pass', $event)" 
-                                        v-on:update_to="$emit('update_to', $event)" 
+                                        v-bind:settings="env_settings"
+                                        v-on:update_service="$emit('update_email_service', $event)" 
+                                        v-on:update_from="$emit('update_email_from', $event)" 
+                                        v-on:update_pass="$emit('update_email_pass', $event)" 
+                                        v-on:update_to="$emit('update_email_to', $event)" 
                                         class="ma-4" 
                                     />
                                 </div>
@@ -464,10 +527,12 @@
                         to: this.settings.EMAIL_TO,
                         showPass: false,
                         sameAsFromChecked: true,
-                        providers: [ "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
+                        providers: [ 
+                            "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
                             "FastMail", "GandiMail", "Godaddy", "GodaddyAsia", "GodaddyEurope", "hot.ee", "mail.ee", "Mail.ru", "Maildev", "Mailgun", "Mailjet", 
                             "Mailosaur", "Mandrill", "Naver", "OpenMailBox", "Postmark", "QQex", "SendCloud", "SendGrid", "SendinBlue", "SendPulse", "SES", 
-                            "SES-US-EAST-1", "SES-US-WEST-2", "SES-EU-WEST-1", "Sparkpost", "Yandex", "Zoho", "qiye.aliyun" ]
+                            "SES-US-EAST-1", "SES-US-WEST-2", "SES-EU-WEST-1", "Sparkpost", "Yandex", "Zoho", "qiye.aliyun" 
+                        ]
                     }
                 },
 
@@ -511,9 +576,9 @@
 
                                 <!--  From HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
-                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">From E-mail</p>
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">From Email</p>
                                     <div style="width: 34%;" class="ml-4 mr-4">
-                                        <v-text-field v-model="from" single-line type="text" @change="updateFrom" dense solo />
+                                        <v-text-field v-model="from" single-line type="text" @change="updateFrom" dense solo clearable />
                                     </div>
                                     <v-tooltip bottom>
                                         <template v-slot:activator="{ on, attrs }">
@@ -543,9 +608,9 @@
 
                                 <!--  To HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
-                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">To E-mail</p>
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">To Email</p>
                                     <div style="width: 34%;" class="ml-4 mr-4">
-                                        <v-text-field v-model="to" single-line type="text" @change="updateTo" :filled="sameAsFromChecked" :disabled="sameAsFromChecked" dense solo />
+                                        <v-text-field v-model="to" single-line type="text" @change="updateTo" :filled="sameAsFromChecked" :disabled="sameAsFromChecked" dense solo clearable />
                                     </div>
                                     <v-checkbox class="mt-0 mr-4" label="Same as FROM" v-model="sameAsFromChecked" @change="updateToFromFrom" dense></v-checkbox>
                                     <v-tooltip bottom>
@@ -638,7 +703,405 @@
             });
 
 
+
+            /*
+                Designed and coded by:
+                Prabhjot "Prince" Singh
+                https://github.com/PrinceS25/StockAlertBot
+            */
+
+
+
+            Vue.component('sms', {
+                props: ['user_settings', 'env_settings'],
+                data: function() {
+                    return {
+                        method: this.user_settings.SMS_METHOD,
+                        methods: [
+                            "None",
+                            "Email",
+                            "Amazon Web Services",
+                            "Twilio"
+                        ]
+                    }
+                },
+
+                methods: {
+                    updateMethod() {
+                        this.$emit('update_method', this.method)
+                    },
+                    
+                },
+
+                template:   `<div>
+                                <!--  SMS METHOD HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">SMS Method</p>
+                                    <div style="width: 20%;" class="ml-4 mr-4">
+                                        <v-select :items="methods" v-model="method" @change="updateMethod" dense solo></v-select>
+                                    </div>
+                                </div>
+
+                                <!--  AWS SMS HTML  -->
+                                <div v-if="method === 'Amazon Web Services'" style="width: 100%;">
+                                    <aws-sms 
+                                        v-bind:settings="env_settings"
+                                        v-on:update_region="$emit('update_aws_region', $event)"
+                                        v-on:update_key="$emit('update_aws_key', $event)"
+                                        v-on:update_secret="$emit('update_aws_secret', $event)"
+                                        v-on:update_phone="$emit('update_aws_phone', $event)" 
+                                        class="ma-4" 
+                                    />
+                                </div>
+
+                                <!--  EMAIL SMS HTML  -->
+                                <div v-if="method === 'Email'" style="width: 100%;">
+                                    <email-sms 
+                                        v-bind:settings="env_settings"
+                                        v-on:update_service="$emit('update_service', $event)"
+                                        v-on:update_from="$emit('update_from', $event)"
+                                        v-on:update_pass="$emit('update_pass', $event)"
+                                        v-on:update_carrier="$emit('update_carrier', $event)"
+                                        v-on:update_phone="$emit('update_phone', $event)"
+                                        class="ma-4" 
+                                    />
+                                </div>
+
+                                <!--  TWILIO SMS HTML  -->
+                                <div v-if="method === 'Twilio'" style="width: 100%;">
+                                    <twilio-sms 
+                                        v-bind:settings="env_settings"
+                                        v-on:update_sid="$emit('update_twilio_sid', $event)"
+                                        v-on:update_auth="$emit('update_twilio_auth', $event)"
+                                        v-on:update_from="$emit('update_twilio_from', $event)"
+                                        v-on:update_to="$emit('update_twilio_to', $event)"
+                                        class="ma-4" 
+                                    />
+                                </div>
+                            </div>`
+            });
             
+            Vue.component('aws-sms', {
+                props: ['settings'],
+                data: function() {
+                    return {
+                        key: this.settings.SMS_AWS_ACCESS_KEY,
+                        secret: this.settings.SMS_AWS_SECRET_ACCESS,
+                        phone: this.settings.SMS_AWS_PHONE_NUMBER,
+                        regions: {  // https://docs.aws.amazon.com/sns/latest/dg/sns-supported-regions-countries.html
+                            "US East (Ohio)": "us-east-2",
+                            "US East (N. Virginia)": "us-east-1",
+                            "US West (N. California)": "us-west-1",
+                            "US West (Oregon)": "us-west-2",
+                            "Asia Pacific (Mumbai)": "ap-south-1",
+                            "Asia Pacific (Singapore)": "ap-southeast-1",
+                            "Asia Pacific (Sydney)": "ap-southeast-2",
+                            "Asia Pacific (Tokyo)": "ap-northeast-1",
+                            "Canada (Central)": "ca-central-1",
+                            "Europe (Frankfurt)": "eu-central-1",
+                            "Europe (Ireland)": "eu-west-1",
+                            "Europe (London)": "eu-west-2",
+                            "Europe (Paris)": "eu-west-3",
+                            "Europe (Stockholm)": "eu-north-1",
+                            "Middle East (Bahrain)": "me-south-1",
+                            "South America (São Paulo)": "sa-east-1",
+                            "AWS GovCloud (US-West)": "us-gov-west-1",
+                        },
+                        region: '',
+                    }
+                },
+
+                mounted() {
+                    this.region = Object.keys(this.regions).find(key => this.regions[key] === this.settings.SMS_AWS_REGION)
+                },
+                
+                methods: {
+                    updateRegion() { this.$emit('update_region', this.regions[this.region]) },
+                    updateKey() { this.$emit('update_key', this.key) },
+                    updateSecret() { this.$emit('update_secret', this.secret) },
+                    updatePhone() { this.$emit('update_phone', this.phone); },
+                },
+
+                template:   `<div style="margin: 0px !important">
+
+                                <!--  Region HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Region</p>
+                                    <div style="width: 25%;" class="ml-4 mr-4">
+                                        <v-select :items="Object.keys(regions)" v-model="region" @change="updateRegion" dense solo></v-select>
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://docs.aws.amazon.com/sns/latest/dg/sns-supported-regions-countries.html" target="_blank">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Click for region information.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Key HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Access Key</p>
+                                    <div style="width: 40%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="key" single-line type="text" @change="updateKey" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://medium.com/codephilics/how-to-send-a-sms-using-amazon-simple-notification-service-sns-46208d82abcc" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Click for instructions on how to obtain key.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Secret HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Secret Acesss Key</p>
+                                    <div style="width: 40%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="secret" single-line type="text" @change="updateSecret" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://medium.com/codephilics/how-to-send-a-sms-using-amazon-simple-notification-service-sns-46208d82abcc" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Click for instructions on how to obtain key.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Phone HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Number</p>
+                                    <div style="width: 15%;" class="ml-4 mr-4">
+                                        <v-text-field class="phoneNumber" v-model="phone" single-line type="number" @change="updatePhone" placeholder="1 999 999 999" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://countrycode.org/" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Include country and area code (just digits, no special characters). Click for country codes.</span>
+                                    </v-tooltip>
+                                </div>
+                            </div>`
+            });
+
+            Vue.component('email-sms', {
+                props: ['settings'],
+                data: function() {
+                    return {
+                        service: this.settings.SMS_EMAIL_SERVICE,
+                        from: this.settings.SMS_EMAIL_FROM,
+                        pass: this.settings.SMS_EMAIL_PASS,
+                        carrier: '',
+                        phone: this.settings.SMS_EMAIL_PHONE_NUMBER,
+                        showPass: false,
+                        providers: [ 
+                            "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
+                            "FastMail", "GandiMail", "Godaddy", "GodaddyAsia", "GodaddyEurope", "hot.ee", "mail.ee", "Mail.ru", "Maildev", "Mailgun", "Mailjet", 
+                            "Mailosaur", "Mandrill", "Naver", "OpenMailBox", "Postmark", "QQex", "SendCloud", "SendGrid", "SendinBlue", "SendPulse", "SES", 
+                            "SES-US-EAST-1", "SES-US-WEST-2", "SES-EU-WEST-1", "Sparkpost", "Yandex", "Zoho", "qiye.aliyun" 
+                        ],
+                        carriers: {
+                            "Alltel": "sms.alltelwireless.com",
+                            "AT&T": "txt.att.net",
+                            "Boost Mobile": "sms.myboostmobile.com",
+                            "Cricket Wireless": "mms.cricketwireless.net",
+                            "FirstNet": "txt.att.net",
+                            "Google Project Fi": "msg.fi.google.com",
+                            "MetroPCS": "mymetropcs.com",
+                            "Republic Wireless": "text.republicwireless.com",
+                            "Sprint": "messaging.sprintpcs.com",
+                            "Straight Talk": "vtext.com",
+                            "T-Mobile": "tmomail.net",
+                            "Ting": "message.ting.com",
+                            "U.S. Cellular": "email.uscc.net",
+                            "Verizon Wireless": "vtext.com",
+                            "Virgin Mobile": "vmobl.com",
+                        }
+                    }
+                },
+
+                mounted() {
+                    this.carrier = Object.keys(this.carriers).find(key => this.carriers[key] === this.settings.SMS_EMAIL_PHONE_CARRIER)
+                },
+
+                methods: {
+                    updateService() { this.$emit('update_service', this.service) },
+                    updateFrom() { this.$emit('update_from', this.from) },
+                    updatePass() { this.$emit('update_pass', this.pass) },
+                    updateCarrier() { this.$emit('update_carrier', this.carriers[this.carrier]) },
+                    updatePhone() { this.$emit('update_phone', this.phone) },
+                },
+
+                template:   `<div style="margin: 0px !important">
+
+                                <!--  Service HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Email Provider</p>
+                                    <div style="width: 20%;" class="ml-4 mr-4">
+                                        <v-select :items="providers" v-model="service" @change="updateService" dense solo></v-select>
+                                    </div>
+                                </div>
+
+                                <!--  From HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Email Address</p>
+                                    <div style="width: 34%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="from" single-line type="text" @change="updateFrom" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Login email. Also the email to send notification from.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Pass HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Password</p>
+                                    <div style="width: 34%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="pass" single-line @change="updatePass" @click:append="showPass = !showPass" :type="showPass ? 'text' : 'password'" :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'" dense solo />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Login password.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Carrier HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Carrier</p>
+                                    <div style="width: 20%;" class="ml-4 mr-4">
+                                        <v-select :items="Object.keys(carriers)" v-model="carrier" @change="updateCarrier" dense solo></v-select>
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Carrier of the phone number.</span>
+                                    </v-tooltip>
+                                </div>
+                                
+                                <!--  Phone HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Number</p>
+                                    <div style="width: 15%;" class="ml-4 mr-4">
+                                        <v-text-field class="phoneNumber" v-model="phone" single-line type="number" @change="updatePhone" placeholder="999 999 999" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Include area code (just digits, no special characters).</span>
+                                    </v-tooltip>
+                                </div>>
+                            </div>`
+            });
+
+            Vue.component('twilio-sms', {
+                props: ['settings'],
+                data: function() {
+                    return {
+                        sid: this.settings.SMS_TWILIO_ACCOUNT_SID,
+                        auth: this.settings.SMS_TWILIO_AUTH_TOKEN,
+                        from: this.settings.SMS_TWILIO_FROM_NUMBER,
+                        to: this.settings.SMS_TWILIO_TO_NUMBER,
+                    }
+                },
+
+                methods: {
+                    updateSID() { this.$emit('update_sid', this.sid) },
+                    updateAuth() { this.$emit('update_auth', this.auth) },
+                    updateFrom() { this.$emit('update_from', this.from) },
+                    updateTo() { this.$emit('update_to', this.to) },
+                },
+
+                template:   `<div style="margin: 0px !important">
+
+                                <!--  SID HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Account SID</p>
+                                    <div style="width: 40%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="sid" single-line type="text" @change="updateSID" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://www.twilio.com/console" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Twilio account SID. Click to go to Twilio Console.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  Auth HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Auth Token</p>
+                                    <div style="width: 40%;" class="ml-4 mr-4">
+                                        <v-text-field v-model="auth" single-line type="text" @change="updateAuth" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://www.twilio.com/console" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Twilio auth token. Click to go to Twilio Console.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  From HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Twilio Number</p>
+                                    <div style="width: 15%;" class="ml-4 mr-4">
+                                        <v-text-field class="phoneNumber" v-model="from" single-line type="number" @change="updateFrom" placeholder="1 999 999 999" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://www.twilio.com/console/phone-numbers" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Twilio phone number. Include country and area code (just digits, no special characters). Click to go to Twilio Console.</span>
+                                    </v-tooltip>
+                                </div>
+
+                                <!--  To HTML  -->
+                                <div style="display: flex; align-items: center; justify-content: center;">
+                                    <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Number</p>
+                                    <div style="width: 15%;" class="ml-4 mr-4">
+                                        <v-text-field class="phoneNumber" v-model="to" single-line type="number" @change="updateTo" placeholder="1 999 999 999" dense solo clearable />
+                                    </div>
+                                    <v-tooltip bottom>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on" href="https://countrycode.org/" target="_blank" >
+                                                <v-icon dark>mdi-help</v-icon>
+                                            </v-btn>
+                                        </template>
+                                        <span>Include country and area code (just digits, no special characters). Click for country codes.</span>
+                                    </v-tooltip>
+                                </div>
+                            </div>`
+            });
+
+
+
             /*
                 Main Component
             */
@@ -659,19 +1122,62 @@
                 },
 
                 computed: {
-                    // Disable Save Button if email is on but information is not provided
+                    // Disable Save Button if email is on or SMS method is chosen, but information is not provided
                     checkSaveButton: function() {
-                        this.disableSaveButton = ( 
-                            this.userSettings.EMAIL &&
+                        let error_message = ''
+
+                        // Check Email
+                        let email_invalid = this.userSettings.EMAIL &&
                             (
-                                this.envSettings.EMAIL_SERVICE == '' ||
-                                this.envSettings.EMAIL_FROM == '' ||
-                                this.envSettings.EMAIL_PASS == '' ||
-                                this.envSettings.EMAIL_TO == ''
+                                !this.envSettings.EMAIL_SERVICE ||
+                                !this.envSettings.EMAIL_FROM ||
+                                !this.envSettings.EMAIL_PASS ||
+                                !this.envSettings.EMAIL_TO
                             )
-                        );
-                        if(this.disableSaveButton) document.getElementById('save_button_error').textContent = 'Error: Email information not provided.'
+                            
+                        // Check 
+                        let sms_invalid = false
+                        switch(this.userSettings.SMS_METHOD) {
+                            case 'Amazon Web Services':
+                                if (
+                                    !this.envSettings.SMS_AWS_REGION ||
+                                    !this.envSettings.SMS_AWS_ACCESS_KEY ||
+                                    !this.envSettings.SMS_AWS_SECRET_ACCESS ||
+                                    !this.envSettings.SMS_AWS_PHONE_NUMBER
+                                ) sms_invalid = true
+                                break;
+
+                            case 'Email':
+                                if (
+                                    !this.envSettings.SMS_EMAIL_SERVICE ||
+                                    !this.envSettings.SMS_EMAIL_FROM ||
+                                    !this.envSettings.SMS_EMAIL_PASS ||
+                                    !this.envSettings.SMS_EMAIL_PHONE_CARRIER ||
+                                    !this.envSettings.SMS_EMAIL_PHONE_NUMBER
+                                ) sms_invalid = true
+                                break;
+
+                            case 'Twilio':
+                                if (
+                                    !this.envSettings.SMS_TWILIO_ACCOUNT_SID ||
+                                    !this.envSettings.SMS_TWILIO_AUTH_TOKEN ||
+                                    !this.envSettings.SMS_TWILIO_FROM_NUMBER ||
+                                    !this.envSettings.SMS_TWILIO_TO_NUMBER
+                                ) sms_invalid = true
+                                break;
+                        }
+                        
+                        // Update Message
+                        if (email_invalid && sms_invalid) error_message = "Error: Email & SMS information not provided."
+                        else if (email_invalid) error_message = 'Error: Email information not provided.'
+                        else if (sms_invalid) error_message = 'Error: SMS information not provided.'
+                        
+
+                        // Disable Button, Display Error Message
+                        this.disableSaveButton = email_invalid || sms_invalid
+                        if(this.disableSaveButton) document.getElementById('save_button_error').textContent = error_message
                         else document.getElementById('save_button_error').textContent = ''
+
                         return this.disableSaveButton
                     },
                 },
@@ -761,29 +1267,6 @@
                         this.userSettings.TARGET_KEY = target_info.key
                     },
 
-                    // Set Email Value
-                    setEmail(value) { this.userSettings.EMAIL = value },
-
-                    // Update service provider
-                    updateService(provider) {
-                        this.envSettings.EMAIL_SERVICE = provider
-                    },
-
-                    // Update from email
-                    updateFrom(from) {
-                        this.envSettings.EMAIL_FROM = from
-                    },
-
-                    // Update email password
-                    updatePass(pass) {
-                        this.envSettings.EMAIL_PASS = pass
-                    },
-
-                    // Update to email
-                    updateTo(to) {
-                        this.envSettings.EMAIL_TO = to
-                    },
-
                     // Add a webhook URL
                     addWebhookURL(urlToAdd) {
                         if(this.isValidHttpUrl(urlToAdd)) {
@@ -800,6 +1283,99 @@
                     // Removes a webhook URL
                     removeWebhookURL(urlToRemove) {
                         this.userSettings.WEBHOOK_URLS = this.userSettings.WEBHOOK_URLS.filter(url => url !== urlToRemove)
+                    },
+
+                    // Update SMS Method
+                    updateSMSMethod(method) {
+                        this.userSettings.SMS_METHOD = method
+                    },
+
+                    // Update AWS Region
+                    updateAWSRegion(region) {
+                        this.envSettings.SMS_AWS_REGION = region
+                    },
+
+                    // Update AWS Key
+                    updateAWSKey(key) {
+                        this.envSettings.SMS_AWS_ACCESS_KEY = key
+                    },
+
+                    // Update AWS Secret
+                    updateAWSSecret(secret) {
+                        this.envSettings.SMS_AWS_SECRET_ACCESS = secret
+                    },
+
+                    // Update AWS Phone
+                    updateAWSPhone(phone) {
+                        this.envSettings.SMS_AWS_PHONE_NUMBER = phone
+                    },
+
+                    // Update SMS Email service provider
+                    updateSMSEmailService(provider) {
+                        this.envSettings.SMS_EMAIL_SERVICE = provider
+                    },
+
+                    // Update SMS Email from
+                    updateSMSEmailFrom(from) {
+                        this.envSettings.SMS_EMAIL_FROM = from
+                    },
+
+                    // Update SMS Email password
+                    updateSMSEmailPass(pass) {
+                        this.envSettings.SMS_EMAIL_PASS = pass
+                    },
+
+                    // Update SMS Email Carrier
+                    updateSMSEmailCarrier(carrier) {
+                        this.envSettings.SMS_EMAIL_PHONE_CARRIER = carrier
+                    },
+
+                    // Update SMS Email Phone
+                    updateSMSEmailPhone(phone) {
+                        this.envSettings.SMS_EMAIL_PHONE_NUMBER = phone
+                    },
+
+                    // Update SMS Twilio SID
+                    updateSMSTwilioSID(sid) {
+                        this.envSettings.SMS_TWILIO_ACCOUNT_SID = sid
+                    },
+
+                    // Update SMS Twilio Auth
+                    updateSMSTwilioAuth(auth) {
+                        this.envSettings.SMS_TWILIO_AUTH_TOKEN = auth
+                    },
+
+                    // Update SMS Twilio From
+                    updateSMSTwilioFrom(from) {
+                        this.envSettings.SMS_TWILIO_FROM_NUMBER = from
+                    },
+
+                    // Update SMS Twilio To
+                    updateSMSTwilioTo(to) {
+                        this.envSettings.SMS_TWILIO_TO_NUMBER = to
+                    },
+
+                    // Set Email Value
+                    setEmail(value) { this.userSettings.EMAIL = value },
+
+                    // Update service provider
+                    updateEmailService(provider) {
+                        this.envSettings.EMAIL_SERVICE = provider
+                    },
+
+                    // Update from email
+                    updateEmailFrom(from) {
+                        this.envSettings.EMAIL_FROM = from
+                    },
+
+                    // Update email password
+                    updateEmailPass(pass) {
+                        this.envSettings.EMAIL_PASS = pass
+                    },
+
+                    // Update to email
+                    updateEmailTo(to) {
+                        this.envSettings.EMAIL_TO = to
                     },
 
                     // Send settings via a POST request to be saved

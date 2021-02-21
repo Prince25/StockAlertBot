@@ -24,12 +24,13 @@ export var {
     INTERVAL,
     OPEN_URL,
     ALARM,
-    PROXIES,
     AMAZON_DELAY,
     TARGET_ZIP_CODE,
     TARGET_KEY,
+    WEBHOOK_URLS,
+    PROXIES,
     EMAIL,
-    WEBHOOK_URLS
+    SMS_METHOD, // "None", "Amazon Web Services", "Email", "Twilio"
 } = require('./config.json')
 
 // For Testing

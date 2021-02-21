@@ -29,5 +29,6 @@
         "slack"
     ],
     "PROXIES": false,
-    "EMAIL": false
+    "EMAIL": false,
+    "SMS_METHOD": "None"
 }
