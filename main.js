@@ -30,7 +30,7 @@ export var {
     WEBHOOK_URLS,
     PROXIES,
     EMAIL,
-    SMS_METHOD, // "None", "Email", "Amazon Web Services", "Twilio"
+    SMS_METHOD, // "None", "Amazon Web Services", "Email", "Twilio"
 } = require('./config.json')
 
 // For Testing

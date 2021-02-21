@@ -22,7 +22,7 @@
 
     <body>
         <style>
-            /* Hide up and down arrows from phone numbers */
+            /* Hide up and down arrows on phone number inputs */
             .phoneNumber input[type='number'] {
                 -moz-appearance:textfield;
                 }
@@ -45,6 +45,7 @@
                                 {{ tab }}
                             </v-tab>
 
+                            <!--  URL Tab  -->
                             <v-tab-item>
                                 <v-divider class="mb-4"></v-divider>
                                 <url-list 
@@ -54,6 +55,7 @@
                                 />
                             </v-tab-item>
 
+                            <!--  Settings Tab  -->
                             <v-tab-item>
                                 <v-divider class="mb-4"></v-divider>
                                 <settings 
@@ -69,6 +71,7 @@
                                 />
                             </v-tab-item>
 
+                            <!--  Optional Tab  -->
                             <v-tab-item>
                                 <v-divider class="mb-4"></v-divider>
                                 <optional
@@ -98,6 +101,7 @@
                                 />
                             </v-tab-item>
 
+                            <!--  Debug Tab  -->
                             <v-tab-item>
                                 <v-divider class="mb-4"></v-divider>
                                 <p v-for="(settings,key) in userSettings">
@@ -113,6 +117,7 @@
 
                         <v-divider class="mt-4 mb-4"></v-divider>
 
+                        <!--  Save Button  -->
                         <div style="text-align: center;">
                             <v-btn elevation="4" outlined v-on:click="sendSettings" :disabled="checkSaveButton">
                                 Save Settings 
@@ -407,7 +412,6 @@
 
 
 
-
             /*
                 Designed and coded by:
                 Prabhjot "Prince" Singh
@@ -697,6 +701,16 @@
                                 <p class="pa-0 ma-0" style="color: red; text-align: center;" id="add_webhook_url_error"></p>
                             </div>`
             });
+
+
+
+            /*
+                Designed and coded by:
+                Prabhjot "Prince" Singh
+                https://github.com/PrinceS25/StockAlertBot
+            */
+
+
 
             Vue.component('sms', {
                 props: ['user_settings', 'env_settings'],
@@ -1111,19 +1125,62 @@
                 },
 
                 computed: {
-                    // Disable Save Button if email is on but information is not provided
+                    // Disable Save Button if email is on or SMS method is chosen, but information is not provided
                     checkSaveButton: function() {
-                        this.disableSaveButton = ( 
-                            this.userSettings.EMAIL &&
+                        let error_message = ''
+
+                        // Check Email
+                        let email_invalid = this.userSettings.EMAIL &&
                             (
-                                this.envSettings.EMAIL_SERVICE == '' ||
-                                this.envSettings.EMAIL_FROM == '' ||
-                                this.envSettings.EMAIL_PASS == '' ||
-                                this.envSettings.EMAIL_TO == ''
+                                !this.envSettings.EMAIL_SERVICE ||
+                                !this.envSettings.EMAIL_FROM ||
+                                !this.envSettings.EMAIL_PASS ||
+                                !this.envSettings.EMAIL_TO
                             )
-                        );
-                        if(this.disableSaveButton) document.getElementById('save_button_error').textContent = 'Error: Email information not provided.'
+                            
+                        // Check 
+                        let sms_invalid = false
+                        switch(this.userSettings.SMS_METHOD) {
+                            case 'Amazon Web Services':
+                                if (
+                                    !this.envSettings.SMS_AWS_REGION ||
+                                    !this.envSettings.SMS_AWS_ACCESS_KEY ||
+                                    !this.envSettings.SMS_AWS_SECRET_ACCESS ||
+                                    !this.envSettings.SMS_AWS_PHONE_NUMBER
+                                ) sms_invalid = true
+                                break;
+
+                            case 'Email':
+                                if (
+                                    !this.envSettings.SMS_EMAIL_SERVICE ||
+                                    !this.envSettings.SMS_EMAIL_FROM ||
+                                    !this.envSettings.SMS_EMAIL_PASS ||
+                                    !this.envSettings.SMS_EMAIL_PHONE_CARRIER ||
+                                    !this.envSettings.SMS_EMAIL_PHONE_NUMBER
+                                ) sms_invalid = true
+                                break;
+
+                            case 'Twilio':
+                                if (
+                                    !this.envSettings.SMS_TWILIO_ACCOUNT_SID ||
+                                    !this.envSettings.SMS_TWILIO_AUTH_TOKEN ||
+                                    !this.envSettings.SMS_TWILIO_FROM_NUMBER ||
+                                    !this.envSettings.SMS_TWILIO_TO_NUMBER
+                                ) sms_invalid = true
+                                break;
+                        }
+                        
+                        // Update Message
+                        if (email_invalid && sms_invalid) error_message = "Error: Email & SMS information not provided."
+                        else if (email_invalid) error_message = 'Error: Email information not provided.'
+                        else if (sms_invalid) error_message = 'Error: SMS information not provided.'
+                        
+
+                        // Disable Button, Display Error Message
+                        this.disableSaveButton = email_invalid || sms_invalid
+                        if(this.disableSaveButton) document.getElementById('save_button_error').textContent = error_message
                         else document.getElementById('save_button_error').textContent = ''
+
                         return this.disableSaveButton
                     },
                 },
@@ -1213,27 +1270,22 @@
                         this.userSettings.TARGET_KEY = target_info.key
                     },
 
-                    // Set Email Value
-                    setEmail(value) { this.userSettings.EMAIL = value },
-
-                    // Update service provider
-                    updateEmailService(provider) {
-                        this.envSettings.EMAIL_SERVICE = provider
+                    // Add a webhook URL
+                    addWebhookURL(urlToAdd) {
+                        if(this.isValidHttpUrl(urlToAdd)) {
+                            if(this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some(webhookDomain => urlToAdd.includes(webhookDomain)))
+                                if(!this.userSettings.WEBHOOK_URLS.includes(urlToAdd)) {
+                                    this.userSettings.WEBHOOK_URLS.push(urlToAdd)
+                                    document.getElementById('add_webhook_url_error').textContent = ''
+                                }
+                                else document.getElementById('add_webhook_url_error').textContent = 'Error: URL already included.'
+                            else document.getElementById('add_webhook_url_error').textContent = "Error: Webhook currently not supported."
+                        } else document.getElementById('add_webhook_url_error').textContent = "Error: Invalid URL format."
                     },
 
-                    // Update from email
-                    updateEmailFrom(from) {
-                        this.envSettings.EMAIL_FROM = from
-                    },
-
-                    // Update email password
-                    updateEmailPass(pass) {
-                        this.envSettings.EMAIL_PASS = pass
-                    },
-
-                    // Update to email
-                    updateEmailTo(to) {
-                        this.envSettings.EMAIL_TO = to
+                    // Removes a webhook URL
+                    removeWebhookURL(urlToRemove) {
+                        this.userSettings.WEBHOOK_URLS = this.userSettings.WEBHOOK_URLS.filter(url => url !== urlToRemove)
                     },
 
                     // Update SMS Method
@@ -1306,22 +1358,27 @@
                         this.envSettings.SMS_TWILIO_TO_NUMBER = to
                     },
 
-                    // Add a webhook URL
-                    addWebhookURL(urlToAdd) {
-                        if(this.isValidHttpUrl(urlToAdd)) {
-                            if(this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some(webhookDomain => urlToAdd.includes(webhookDomain)))
-                                if(!this.userSettings.WEBHOOK_URLS.includes(urlToAdd)) {
-                                    this.userSettings.WEBHOOK_URLS.push(urlToAdd)
-                                    document.getElementById('add_webhook_url_error').textContent = ''
-                                }
-                                else document.getElementById('add_webhook_url_error').textContent = 'Error: URL already included.'
-                            else document.getElementById('add_webhook_url_error').textContent = "Error: Webhook currently not supported."
-                        } else document.getElementById('add_webhook_url_error').textContent = "Error: Invalid URL format."
+                    // Set Email Value
+                    setEmail(value) { this.userSettings.EMAIL = value },
+
+                    // Update service provider
+                    updateEmailService(provider) {
+                        this.envSettings.EMAIL_SERVICE = provider
                     },
 
-                    // Removes a webhook URL
-                    removeWebhookURL(urlToRemove) {
-                        this.userSettings.WEBHOOK_URLS = this.userSettings.WEBHOOK_URLS.filter(url => url !== urlToRemove)
+                    // Update from email
+                    updateEmailFrom(from) {
+                        this.envSettings.EMAIL_FROM = from
+                    },
+
+                    // Update email password
+                    updateEmailPass(pass) {
+                        this.envSettings.EMAIL_PASS = pass
+                    },
+
+                    // Update to email
+                    updateEmailTo(to) {
+                        this.envSettings.EMAIL_TO = to
                     },
 
                     // Send settings via a POST request to be saved
