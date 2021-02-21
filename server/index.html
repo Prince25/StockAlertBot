@@ -819,10 +819,7 @@
                     updateRegion() { this.$emit('update_region', this.regions[this.region]) },
                     updateKey() { this.$emit('update_key', this.key) },
                     updateSecret() { this.$emit('update_secret', this.secret) },
-                    updatePhone() {
-                        this.phone = this.phone.replace(/ /g, '');  // Remove all spaces
-                        this.$emit('update_phone', this.phone);
-                    },
+                    updatePhone() { this.$emit('update_phone', this.phone); },
                 },
 
                 template:   `<div style="margin: 0px !important">
