@@ -7,7 +7,7 @@ import { SMS_METHOD } from '../../main.js'
 const twilio = config.sms_twilio;
 
 export default async function sendAlertToSMSViaTwilio(product_url, title, store) {
-	if (SMS_METHOD = "Twilio") {
+	if (SMS_METHOD == "Twilio") {
 		if (!fs.existsSync('.env')) {
 			console.error(moment().format('LTS') + ": Error sending twilio alert, rename example.env file to .env")
 		}

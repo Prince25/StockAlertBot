@@ -9,13 +9,13 @@ const service = config.sms_aws;
 export default async function sendAlertToSMSViaAWS(product_url, title, store) {
 	if (SMS_METHOD == "Amazon Web Services") {
 		if (!fs.existsSync('.env')) {
-			console.error(moment().format('LTS') + ": Error sending AWS sms alert, rename example.env file to .env")
+			console.error(moment().format('LTS') + ": Error sending AWS SMS alert, .env file not present.")
 		}
 		else if (service.region == "" || service.key == "" || service.secret == "" || service.phone == "") {
-			console.error(moment().format('LTS') + ": Error sending AWS sms alert, open and edit .env file")
+			console.error(moment().format('LTS') + ": Error sending AWS SMS alert, ensure AWS information is filled.")
 		} else {
-			console.info(moment().format('LTS') + ": Sending AWS sms alert")
-
+			console.info(moment().format('LTS') + ": Sending AWS SMS alert")
+			
 			aws.config.update({
 				region: service.region,
 				accessKeyId: service.key,
@@ -25,9 +25,9 @@ export default async function sendAlertToSMSViaAWS(product_url, title, store) {
 			var sns = new aws.SNS();
 
 			var params = {
-				Message: `${title} \n\n${product_url} \n\nStockAlertBot | ${moment().format('MMM Do YYYY - h:mm:ss A')}`,
+				Message: `${title} in stock at ${store}! \n\n${product_url} \n\nStockAlertBot | ${moment().format('MMM Do YYYY - h:mm:ss A')}`,
 				MessageStructure: 'string',
-				PhoneNumber: service.phone
+				PhoneNumber: '+' + service.phone
 			};
 
 			sns.publish(params, (err) => {

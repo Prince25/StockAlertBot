@@ -1,5 +1,5 @@
 
-### New in v3.0: SMS (text) notification support :iphone: !! (see [screenshots](#Screenshots))
+### New in v3.0: SMS (text) notification support :iphone: !!
 
 #### New in v2.0: :email: E-mail notification support and an user interface :computer: (see [screenshots](#Screenshots))
 
@@ -65,6 +65,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
         - If you have Target link(s), you will see additional options to put zip code and API Key. Only change the key if you get API key errors. Refer to the instructions in the following [section](#Via-Text-Editor).
     4. Configure notification options in Optional tab.
         - If you want notifications sent to Discord or Slack, expand WEBHOOKS and enter the URL(s) there.
+        - If you want notification sent via SMS/Text, expand SMS and choose a method: Amazon Web Services, Email, or Twilio. See [SMS](#SMS).
         - If you want notifications sent to Email, turn on email and enter your service provider information. Some providers (Yahoo, AOL, AT&T) cause problems. Refer to following [section](#Via-Text-Editor).
     5. Once you're happy with the settings, click `Save Settings`.\
     `config.json` and `.env` files should now reflect your settings.\
@@ -103,6 +104,22 @@ There are only two steps to use this program: 1) enter information and 2) launch
     You can use `CTRL + C` or `CMD + C` to stop the program.
 
 3. Consider [donating](https://www.paypal.com/donate?business=3Y9NEYR4TURT8&item_name=Making+software+and+hacking+the+world%21+%E2%99%A5&currency_code=USD) or buying me a [Pizza](https://buymeacoff.ee/PrinceSingh) or [PayPal](https://paypal.me/PrinceSingh25) me :smile:
+
+#### SMS
+SMS / Text support is now available via Amazon Web Services, Email, or Twilio. This, however, requires some setup on your part. Read below regarding setup for each method:
+
+    - [Amazon Web Services](https://aws.amazon.com/sns)\
+    First, read pricing information [here](https://aws.amazon.com/sns/faqs/#SMS_pricing). First 100 SMS are free for each month as long as you send them to a United States destination. For this method, you will need:
+        - Region
+        - Access Key
+        - Secret Access Key
+        - Phone Number
+    Region is Amazon server you want to send from. It's probably best to choose one closest to you. More information [here](https://docs.aws.amazon.com/sns/latest/dg/sns-supported-regions-countries.html).\
+    Access Key and Secret Access Key can be obtained following instructions in this [tutorial](https://medium.com/codephilics/how-to-send-a-sms-using-amazon-simple-notification-service-sns-46208d82abcc).\
+    Phone number is the number to send SMS to. You will need to include country code and area code. Country code information can be found [here](https://countrycode.org/).
+    - []()
+    - []()
+
 
 #### Proxies
 If you plan to use low interval rates OR track several items from one store, it is highly recommended that you use proxies such as ones from [Webshare](https://www.webshare.io/).<br>\
