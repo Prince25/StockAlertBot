@@ -50,7 +50,8 @@ export default async function amazon(url, interval, originalIntervalValue, first
         
 
         // Get Page
-        res = await axios.get(url, options)
+        let newUrl = url + '?m=ATVPDKIKX0DER'  // Add Amazon's seller ID
+        res = await axios.get(newUrl, options)
             .catch(async function (error) {
                 if (error.response.status == 503) {
                     console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error for ' + url + '. Consider increasing invterval.')
