@@ -1,5 +1,6 @@
 import axios from "axios";
 import moment from "moment";
+import writeErrorToFile from '../writeToFile.js'
 import { WEBHOOK_URLS } from '../../main.js'
 
 export default async function sendAlertToWebhooks(product_url, title, image, store) {
@@ -45,9 +46,10 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                         }]
                     }
                 })
-                .catch(error => 
-                    console.error(moment().format('LTS') + ": Error sending alert to discord", error)
-                )
+                .catch(error => {
+                    console.error(moment().format('LTS') + ": Error sending alert to Discord.")
+                    writeErrorToFile('Discord', error)
+                })
 
             // Notify Slack
             } else if (url.includes('slack')) {
@@ -80,9 +82,10 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                         }
                     ]
                 })
-                .catch(error => 
-                    console.error(moment().format('LTS') + ": Error sending alert to slack", error)
-                ) 
+                .catch(error => {
+                    console.error(moment().format('LTS') + ": Error sending alert to Slack.")
+                    writeErrorToFile('Slack', error)
+                }) 
             }    
         }   
     )

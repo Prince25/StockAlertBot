@@ -84,8 +84,8 @@ export default async function newegg(url, interval) {
                 doc = parser.parseFromString(html, 'text/html');
                 title = doc.getElementsByClassName('product-title')[0].innerHTML.trim().slice(0, 150)
                 inventory = doc.getElementsByClassName('btn btn-primary btn-wide')
-                image = doc.getElementsByClassName('image_url')
-                if (image.length > 0) image = image[0].textContent
+                image = doc.getElementsByClassName('product-view-img-original')
+                if (image.length > 0) image = image[0].getAttribute('src')
             }
             
             if (inventory.length > 0) {

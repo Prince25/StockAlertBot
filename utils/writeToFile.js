@@ -9,7 +9,7 @@ export default async function writeErrorToFile(name, error, html = null, status 
     fs.writeFile(dir + name + '.log', util.inspect(error), function(e, result) {
         if(e) console.error('File write error: ', e);
     });
-    console.error(moment().format('LTS') + ': Unhandled error for ' + name + '. Written to ' + dir + name + '.log')
+    console.error(moment().format('LTS') + ': Error occured for ' + name + '. Written to ' + dir + name + '.log')
     let message = 'This is usually not a problem but if this error appears frequently, please report the error (and the log) to GitHub.'
     
     if(html) {
