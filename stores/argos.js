@@ -20,9 +20,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 
 const store = 'Argos'
-let firstRun = new Set();
-let urlOpened = false;
+const runtimeData = {}
 export default async function argos(url, interval) {
+
+    // First run
+    if (!runtimeData.hasOwnProperty(url)) 
+        runtimeData[url] = {
+            firstRun: true,
+            urlOpened: false,
+        }
+
     try {
         let res = await axios.get(url)
         .catch(async function (error) {
@@ -49,17 +56,17 @@ export default async function argos(url, interval) {
                 if (image.length > 0) image = 'https:' + image[0].getAttribute('src')
             }
 
-            if ((!inventory || inventory != 'Add to trolley') && !firstRun.has(url)) {
+            if ((!inventory || inventory != 'Add to trolley') && runtimeData[url]['firstRun']) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
-                firstRun.add(url)
+                runtimeData[url]['firstRun'] = false;
             }
             else if (inventory && inventory == 'Add to trolley') {
                 if (ALARM) threeBeeps();
-                if (!urlOpened) { 
+                if (!runtimeData[url]['urlOpened']) { 
                     if (OPEN_URL) open(url) 
                     sendAlerts(url, title, image, store)
-                    urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
+                    runtimeData[url]['urlOpened'] = true; 
+                    setTimeout(() => runtimeData[url]['urlOpened'] = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);

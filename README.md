@@ -179,9 +179,10 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
     * ~~Argos~~
 * Add delay between items from the same store
 * More OOP!!
-    * Add way to track notification status independent of items in a store
+    * ~~Add way to track notification status independent of items in a store~~
+* Add tests
 * ~~Fix~~ Find Bugs
-    * Fix notifications relying on `OPEN_URL`
+    * ~~Fix notifications relying on `OPEN_URL`~~
 * ~~Add Email and SMS Notifications~~ 
 * ~~Add Proxies~~
 * ~~Add GUI - Make it easier to use~~ 

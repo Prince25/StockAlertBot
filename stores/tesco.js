@@ -24,10 +24,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 }
 
 
-let firstRun = new Set();
-let urlOpened = false;
-let store = 'Tesco'
+const store = 'Tesco'
+const runtimeData = {}
 export default async function tesco(url, interval) {
+    // First run
+    if (!runtimeData.hasOwnProperty(url)) 
+        runtimeData[url] = {
+            firstRun: true,
+            urlOpened: false,
+        }
+
     if (url.includes('tescopreorders')) tescoPS5Preorder(url, interval)
     else {
         try {
@@ -44,17 +50,17 @@ export default async function tesco(url, interval) {
                 let inventory = doc.getElementsByClassName('button small add-control button-secondary')[0].innerHTML
                 let image = doc.getElementsByClassName('product-image product-image-visible')[0].getAttribute('src')
                     
-                if ((!inventory || !inventory.includes('Add')) && !firstRun.has(url)) {
+                if ((!inventory || !inventory.includes('Add')) && runtimeData[url]['firstRun']) {
                     console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
-                    firstRun.add(url)
+                    runtimeData[url]['firstRun'] = false;
                 }
                 else if (inventory && inventory.includes('Add')) {
                     if (ALARM) threeBeeps();
-                    if (!urlOpened) { 
+                    if (!runtimeData[url]['urlOpened']) { 
                         if (OPEN_URL) open(url) 
                         sendAlerts(url, title, image, store)
-                        urlOpened = true; 
-                        setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
+                        runtimeData[url]['urlOpened'] = true; 
+                        setTimeout(() => runtimeData[url]['urlOpened'] = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                     }
                     console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                     console.info(url);
@@ -83,16 +89,16 @@ async function tescoPS5Preorder(url, interval) {
         
         if (res && res.status == 200) {
             let ps5PreorderPage = fs.readFileSync(ps5PreorderPagePath, 'utf-8');   
-            if (res.data.includes(ps5PreorderPage) && !firstRun.has(url)) {
+            if (res.data.includes(ps5PreorderPage) && runtimeData[url]['firstRun']) {
                 console.info(moment().format('LTS') + ': "PlayStation 5" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
-                firstRun.add(url)
+                runtimeData[url]['firstRun'] = false;
             }
             else if (!res.data.includes(ps5PreorderPage)) {
                 if (ALARM) threeBeeps();
-                if (!urlOpened) { 
+                if (!runtimeData[url]['urlOpened']) { 
                     if (OPEN_URL) open(url) 
-                    urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
+                    runtimeData[url]['urlOpened'] = true; 
+                    setTimeout(() => runtimeData[url]['urlOpened'] = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: PlayStation 5');
                 console.info(url);

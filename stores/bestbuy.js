@@ -21,9 +21,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 
 const store = 'Best Buy'
-let firstRun = new Set();
-let urlOpened = false;
+const runtimeData = {}
 export default async function bestbuy(url, interval) {
+
+    // First run
+    if (!runtimeData.hasOwnProperty(url)) 
+        runtimeData[url] = {
+            firstRun: true,
+            urlOpened: false,
+        }
+
     try {
         let res = await axios.get(url)
         .catch(async function (error) {
@@ -52,28 +59,28 @@ export default async function bestbuy(url, interval) {
             if (inventory.length > 0) inventory = inventory[0].textContent
             if (open_box && open_box.length > 0) {
                 if (ALARM) threeBeeps();
-                if (!urlOpened) { 
+                if (!runtimeData[url]['urlOpened']) { 
                     if (OPEN_URL) open(url) 
-                    urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
+                    runtimeData[url]['urlOpened'] = true; 
+                    setTimeout(() => runtimeData[url]['urlOpened'] = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** Open Box at ' + store + ' *****: ', title);
                 console.info(url);
             }
             if (inventory == 'Add to Cart') {
                 if (ALARM) threeBeeps();
-                if (!urlOpened) { 
+                if (!runtimeData[url]['urlOpened']) { 
                     if (OPEN_URL) open(url) 
                     sendAlerts(url, title, image, store)
-                    urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
+                    runtimeData[url]['urlOpened'] = true; 
+                    setTimeout(() => runtimeData[url]['urlOpened'] = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
             }
-            else if (inventory == 'Sold Out' && !firstRun.has(url)) {
+            else if (inventory == 'Sold Out' && runtimeData[url]['firstRun']) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
-                firstRun.add(url)
+                runtimeData[url]['firstRun'] = false;
             }    
         } else {
             console.info(moment().format('LTS') + ': Error occured checking ' + title + '. Retrying in', interval.value, interval.unit)

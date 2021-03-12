@@ -21,10 +21,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 
 const store = 'Gamestop'
-let firstRun = new Set();   // Used to show initial message, once for each product, that product isn't available but will keep checking in the background
-let urlOpened = false;
+const runtimeData = {}
 export default async function gamestop(url, interval) {
     let res = null, html = null, proxy = null
+
+    // First run
+    if (!runtimeData.hasOwnProperty(url)) 
+        runtimeData[url] = {
+            firstRun: true, // Used to show initial message, once for each product, that product isn't available but will keep checking in the background
+            urlOpened: false,
+        }
 
     try {
         let options = null
@@ -86,18 +92,18 @@ export default async function gamestop(url, interval) {
 
             if (inventory == 'Available') {
                 if (ALARM) threeBeeps();
-                if (!urlOpened) {
+                if (!runtimeData[url]['urlOpened']) {
                     if (OPEN_URL) open(url)
                     sendAlerts(url, title, image, store)
-                    urlOpened = true;
-                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
+                    runtimeData[url]['urlOpened'] = true;
+                    setTimeout(() => runtimeData[url]['urlOpened'] = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
             }
-            else if (inventory != 'Available' && !firstRun.has(url)) {
+            else if (inventory != 'Available' && runtimeData[url]['firstRun']) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
-                firstRun.add(url)
+                runtimeData[url]['firstRun'] = false;
             }
         }
 

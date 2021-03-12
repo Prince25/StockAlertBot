@@ -21,10 +21,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
 
 
 const store = 'Currys'
-let firstRun = new Set();
-let urlOpened = false;
+const runtimeData = {}
 export default async function currys(url, interval) {
     let res = null, html = null, proxy = null
+
+    // First run
+    if (!runtimeData.hasOwnProperty(url)) 
+        runtimeData[url] = {
+            firstRun: true,
+            urlOpened: false,
+        }
 
     try {
         let options = null
@@ -71,17 +77,17 @@ export default async function currys(url, interval) {
             }
             if (image.length > 0) image = image[0].getAttribute('content')
 
-            if (inventory != 'Add to basket' && !firstRun.has(url)) {
+            if (inventory != 'Add to basket' && runtimeData[url]['firstRun']) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
-                firstRun.add(url)
+                runtimeData[url]['firstRun'] = false;
             }
 			else if (inventory == 'Add to basket') {
                 if (ALARM) threeBeeps();
-                if (!urlOpened) { 
+                if (!runtimeData[url]['urlOpened']) { 
                     if (OPEN_URL) open(url) 
                     sendAlerts(url, title, image, store)
-                    urlOpened = true; 
-                    setTimeout(() => urlOpened = false, 1000 * 295) // Open URL and send alerts every 5 minutes
+                    runtimeData[url]['urlOpened'] = true; 
+                    setTimeout(() => runtimeData[url]['urlOpened'] = false, 1000 * 295) // Open URL and send alerts every 5 minutes
                 }
                 console.info(moment().format('LTS') + ': ***** In Stock at ' + store + ' *****: ', title);
                 console.info(url);
