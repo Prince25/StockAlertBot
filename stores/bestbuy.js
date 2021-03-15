@@ -46,14 +46,14 @@ export default async function bestbuy(url, interval) {
             if (url.includes('combo')) {
                 doc = parser.parseFromString(res.data, 'text/html');
                 inventory = doc.getElementsByClassName('add-to-cart-button')
-                title = doc.getElementsByClassName('sku-title')[0].textContent
-                image = doc.getElementsByClassName('picture-wrapper')[0].getElementsByTagName('img')[0].getAttribute('src');
+                try { title = doc.getElementsByClassName('sku-title')[0].textContent } catch {}
+                try { image = doc.getElementsByClassName('picture-wrapper')[0].getElementsByTagName('img')[0].getAttribute('src') } catch {}
             } else { // Check normal products
                 doc = parser.parseFromString(res.data, 'text/html');
-                title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent.trim().slice(0, 150)
+                try { title = doc.getElementsByClassName('sku-title')[0].childNodes[0].textContent.trim().slice(0, 150) } catch {}
                 inventory = doc.getElementsByClassName('add-to-cart-button')
                 open_box = doc.getElementsByClassName('open-box-option__label')
-                image = doc.getElementsByClassName('primary-image')[0].getAttribute('src')
+                try { image = doc.getElementsByClassName('primary-image')[0].getAttribute('src') } catch {}
             } 
 
             if (inventory.length > 0) inventory = inventory[0].textContent
