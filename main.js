@@ -16,6 +16,7 @@ import microcenter from './stores/microcenter.js'
 import newegg from './stores/newegg.js'
 import target from './stores/target.js'
 import tesco from './stores/tesco.js'
+import walmart from './stores/walmart.js'
 
 
 // Import configs
@@ -44,6 +45,7 @@ const ADDITIONAL_URLS = [
     // "https://www.target.com/p/playstation-5-console/-/A-81114595",
     // "https://www.tescopreorders.com/uk/ps5",
     // "https://www.tesco.com/groceries/en-GB/products/306276176",
+    // "https://www.walmart.com/ip/PlayStation-5-Console/363472942"
 ]
 if (ADDITIONAL_URLS.length > 0) URLS = URLS.concat(ADDITIONAL_URLS)
 
@@ -188,6 +190,10 @@ function main() {
             case 'tesco':
             case 'tescopreorders':
                 checkStore(tesco, url);
+                break;
+
+            case 'walmart':
+                checkStore(walmart, url);
                 break;
 
             default:
