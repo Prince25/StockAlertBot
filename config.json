@@ -12,7 +12,8 @@
         "newegg",
         "target",
         "tesco",
-        "tescopreorders"
+        "tescopreorders",
+        "walmart"
     ],
     "INTERVAL": {
         "unit": "seconds",

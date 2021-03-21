@@ -167,8 +167,8 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 
 ## Things to work on
 * Add more stores
-    * Walmart
     * B&H Photo Video
+    * ~~Walmart~~
     * ~~Gamestop~~
     * ~~Currys~~
     * ~~Newegg Combos~~
