@@ -65,9 +65,10 @@ export default async function microcenter(url, interval) {
             let parser = new DomParser();
             let doc = parser.parseFromString(html, 'text/html');
             let title = doc.getElementsByClassName('ProductLink_' + productID)
-            let image = doc.getElementsByTagName('meta').filter(meta => meta.getAttribute('property') == 'og:image')[0].getAttribute('content')
+            let image = doc.getElementsByClassName('productImageZoom')
             
             if (title.length > 0) title = title[0].textContent.trim().slice(0, 150)
+            if (image.length > 0) image = image[0].getAttribute('src')
             
             if (!html.includes('in stock') && runtimeData[url]['firstRun']) {
                 console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
