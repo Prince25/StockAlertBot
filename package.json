@@ -1,12 +1,17 @@
 {
     "name": "stock-alert-bot",
-    "version": "3.0.0",
+    "version": "3.5.0",
     "description": "Get alerts when items come in stock",
     "type": "module",
     "main": "main.js",
     "scripts": {
         "start": "node main.js",
-        "settings": "node server/index.js"
+        "settings": "node server/index.js",
+        "eslint": "eslint",
+        "eslintFix": "eslint --fix",
+        "eslintFixAll": "eslint --fix .",
+        "prettier": "prettier",
+        "prettierAll": "prettier --write ."
     },
     "dependencies": {
         "@types/express": "^4.17.11",
@@ -28,12 +33,19 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/PrinceS25/StockAlertBot.git"
+        "url": "git+https://github.com/Prince25/StockAlertBot.git"
     },
     "author": "Prabhjot Singh",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/PrinceS25/StockAlertBot/issues"
+        "url": "https://github.com/Prince25/StockAlertBot/issues"
     },
-    "homepage": "https://github.com/PrinceS25/StockAlertBot#readme"
+    "homepage": "https://github.com/Prince25/StockAlertBot#readme",
+    "devDependencies": {
+        "eslint": "^7.22.0",
+        "eslint-config-prettier": "^8.1.0",
+        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-unicorn": "^29.0.0",
+        "prettier": "^2.2.1"
+    }
 }
