@@ -1,147 +1,154 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <!-- 
+	<head>
+		<!-- 
             Designed and coded by:
             Prabhjot "Prince" Singh
             https://github.com/Prince25/StockAlertBot 
         -->
-        <title>StockAlertBot Settings</title>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        
-        <!--  Vue.js CDN  -->
-        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
-        
-        <!--  Vuetify.js CDN  -->
-        <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-        <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-    </head>
+		<title>StockAlertBot Settings</title>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-    <body>
-        <style>
-            /* Hide up and down arrows on phone number inputs */
-            .phoneNumber input[type='number'] {
-                -moz-appearance:textfield;
-                }
-            .phoneNumber input::-webkit-outer-spin-button,
-            .phoneNumber input::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                }
-        </style>
+		<!--  Vue.js CDN  -->
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
 
-        <div id="app">
-            <v-app>
-                <v-main>
-                    <v-container>
+		<!--  Vuetify.js CDN  -->
+		<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+		<link
+			href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css"
+			rel="stylesheet"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+		/>
+	</head>
 
-                        <p class="text-h4 font-weight-medium text-center ">StockAlertBot SETTINGS</p>
-                        <v-divider></v-divider>
-                                           
-                        <v-tabs v-model="current_tab" fixed-tabs>
-                            <v-tab v-for="tab in tabs" :key="tab">
-                                {{ tab }}
-                            </v-tab>
+	<body>
+		<style>
+			/* Hide up and down arrows on phone number inputs */
+			.phoneNumber input[type="number"] {
+				-moz-appearance: textfield;
+			}
+			.phoneNumber input::-webkit-outer-spin-button,
+			.phoneNumber input::-webkit-inner-spin-button {
+				-webkit-appearance: none;
+			}
+		</style>
 
-                            <!--  URL Tab  -->
-                            <v-tab-item>
-                                <v-divider class="mb-4"></v-divider>
-                                <url-list 
-                                    v-bind:urls="userSettings.URLS" 
-                                    v-on:remove_url="removeURL" 
-                                    v-on:add_url="addURL" 
-                                />
-                            </v-tab-item>
+		<div id="app">
+			<v-app>
+				<v-main>
+					<v-container>
+						<p class="text-h4 font-weight-medium text-center">StockAlertBot SETTINGS</p>
+						<v-divider></v-divider>
 
-                            <!--  Settings Tab  -->
-                            <v-tab-item>
-                                <v-divider class="mb-4"></v-divider>
-                                <settings 
-                                    v-bind:user_settings="userSettings" 
-                                    v-bind:has_amazon="has_amazon" 
-                                    v-bind:has_target="has_target" 
-                                    v-on:update_interval="updateInterval" 
-                                    v-on:update_open_url="updateOpenURL" 
-                                    v-on:update_alarm="updateAlarm" 
-                                    v-on:update_proxies="updateProxies" 
-                                    v-on:update_amazon_merchant="updateAmazonMerchant" 
-                                    v-on:update_amazon_delay="updateAmazonDelay" 
-                                    v-on:update_target="updateTarget" 
-                                />
-                            </v-tab-item>
+						<v-tabs v-model="current_tab" fixed-tabs>
+							<v-tab v-for="tab in tabs" :key="tab"> {{ tab }} </v-tab>
 
-                            <!--  Optional Tab  -->
-                            <v-tab-item>
-                                <v-divider class="mb-4"></v-divider>
-                                <optional
-                                    v-bind:user_settings="userSettings"
-                                    v-bind:env_settings="envSettings"
-                                    v-on:toggle_email="setEmail" 
-                                    v-on:remove_webhook_url="removeWebhookURL" 
-                                    v-on:add_webhook_url="addWebhookURL"
-                                    v-on:update_email_service="updateEmailService"
-                                    v-on:update_email_from="updateEmailFrom"
-                                    v-on:update_email_pass="updateEmailPass"
-                                    v-on:update_email_to="updateEmailTo"
-                                    v-on:update_sms_method="updateSMSMethod"
-                                    v-on:update_sms_aws_region="updateAWSRegion"
-                                    v-on:update_sms_aws_key="updateAWSKey"
-                                    v-on:update_sms_aws_secret="updateAWSSecret"
-                                    v-on:update_sms_aws_phone="updateAWSPhone"
-                                    v-on:update_sms_email_service="updateSMSEmailService"
-                                    v-on:update_sms_email_from="updateSMSEmailFrom"
-                                    v-on:update_sms_email_pass="updateSMSEmailPass"
-                                    v-on:update_sms_email_carrier="updateSMSEmailCarrier"
-                                    v-on:update_sms_email_phone="updateSMSEmailPhone"
-                                    v-on:update_sms_twilio_sid="updateSMSTwilioSID"
-                                    v-on:update_sms_twilio_auth="updateSMSTwilioAuth"
-                                    v-on:update_sms_twilio_from="updateSMSTwilioFrom"
-                                    v-on:update_sms_twilio_to="updateSMSTwilioTo"
-                                />
-                            </v-tab-item>
+							<!--  URL Tab  -->
+							<v-tab-item>
+								<v-divider class="mb-4"></v-divider>
+								<url-list
+									v-bind:urls="userSettings.URLS"
+									v-on:remove_url="removeURL"
+									v-on:add_url="addURL"
+								/>
+							</v-tab-item>
 
-                            <!--  Debug Tab  -->
-                            <v-tab-item>
-                                <v-divider class="mb-4"></v-divider>
-                                <p v-for="(settings,key) in userSettings">
-                                    {{key}}:{{settings}}
-                                </p>
-                                <p v-for="(settings,key) in envSettings">
-                                    {{key}}:{{settings}}
-                                </p>
-                                <p>has_amazon: {{has_amazon}}</p>
-                                <p>has_target: {{has_target}}</p>
-                            </v-tab-item>
-                        </v-tabs>
+							<!--  Settings Tab  -->
+							<v-tab-item>
+								<v-divider class="mb-4"></v-divider>
+								<settings
+									v-bind:user_settings="userSettings"
+									v-bind:has_amazon="has_amazon"
+									v-bind:has_target="has_target"
+									v-on:update_interval="updateInterval"
+									v-on:update_open_url="updateOpenURL"
+									v-on:update_alarm="updateAlarm"
+									v-on:update_proxies="updateProxies"
+									v-on:update_amazon_merchant="updateAmazonMerchant"
+									v-on:update_amazon_delay="updateAmazonDelay"
+									v-on:update_target="updateTarget"
+								/>
+							</v-tab-item>
 
-                        <v-divider class="mt-4 mb-4"></v-divider>
+							<!--  Optional Tab  -->
+							<v-tab-item>
+								<v-divider class="mb-4"></v-divider>
+								<optional
+									v-bind:user_settings="userSettings"
+									v-bind:env_settings="envSettings"
+									v-on:toggle_email="setEmail"
+									v-on:remove_webhook_url="removeWebhookURL"
+									v-on:add_webhook_url="addWebhookURL"
+									v-on:update_email_service="updateEmailService"
+									v-on:update_email_from="updateEmailFrom"
+									v-on:update_email_pass="updateEmailPass"
+									v-on:update_email_to="updateEmailTo"
+									v-on:update_sms_method="updateSMSMethod"
+									v-on:update_sms_aws_region="updateAWSRegion"
+									v-on:update_sms_aws_key="updateAWSKey"
+									v-on:update_sms_aws_secret="updateAWSSecret"
+									v-on:update_sms_aws_phone="updateAWSPhone"
+									v-on:update_sms_email_service="updateSMSEmailService"
+									v-on:update_sms_email_from="updateSMSEmailFrom"
+									v-on:update_sms_email_pass="updateSMSEmailPass"
+									v-on:update_sms_email_carrier="updateSMSEmailCarrier"
+									v-on:update_sms_email_phone="updateSMSEmailPhone"
+									v-on:update_sms_twilio_sid="updateSMSTwilioSID"
+									v-on:update_sms_twilio_auth="updateSMSTwilioAuth"
+									v-on:update_sms_twilio_from="updateSMSTwilioFrom"
+									v-on:update_sms_twilio_to="updateSMSTwilioTo"
+								/>
+							</v-tab-item>
 
-                        <!--  Save Button  -->
-                        <div style="text-align: center;">
-                            <v-btn elevation="4" outlined v-on:click="sendSettings" :disabled="checkSaveButton">
-                                Save Settings 
-                                <v-icon right dark>mdi-content-save</v-icon>
-                            </v-btn>
-                            <p class="pa-0 ma-0 mt-2" style="color: red;" id="save_button_error"></p>
-                        </div>
+							<!--  Debug Tab  -->
+							<v-tab-item>
+								<v-divider class="mb-4"></v-divider>
+								<p v-for="(settings,key) in userSettings">{{key}}:{{settings}}</p>
+								<p v-for="(settings,key) in envSettings">{{key}}:{{settings}}</p>
+								<p>has_amazon: {{has_amazon}}</p>
+								<p>has_target: {{has_target}}</p>
+							</v-tab-item>
+						</v-tabs>
 
-                    </v-container>
-                </v-main>
-            </v-app>
-        </div>
-    
+						<v-divider class="mt-4 mb-4"></v-divider>
 
-        <script>
+						<!--  Save Button  -->
+						<div style="text-align: center">
+							<v-btn
+								elevation="4"
+								outlined
+								v-on:click="sendSettings"
+								:disabled="checkSaveButton"
+							>
+								Save Settings
+								<v-icon right dark>mdi-content-save</v-icon>
+							</v-btn>
+							<p class="pa-0 ma-0 mt-2" style="color: red" id="save_button_error"></p>
+						</div>
+					</v-container>
+				</v-main>
+			</v-app>
+		</div>
 
-            /*
+		<script>
+			/*
                 URL Components
                 url-list, url-item, add-url
             */
-            Vue.component('url-list', {
-                props: ['urls'],
-                template:   `<div>
+			Vue.component("url-list", {
+				props: ["urls"],
+				template: `<div>
                                 <v-row dense>
                                     <v-col v-for="(url, index) in urls" :key="index" md="6" class="ma-0 pa-3 pl-8 pr-8">
                                         <url-item v-bind:url="url" v-bind:key="url" v-on:remove_url="$emit('remove_url', $event)" />
@@ -149,17 +156,17 @@
                                 </v-row>
                                 <v-divider inset class="ma-7 mb-0"></v-divider>
                                 <add-url class="ma-0 pa-3" v-on:add_url="$emit('add_url', $event)" />
-                            </div>`
-            });
+                            </div>`,
+			});
 
-            Vue.component('url-item', {
-                props: ['url'],
-                methods: {
-                    remove() {
-                        this.$emit('remove_url', this.url)
-                    }
-                },
-                template:   `<v-text-field
+			Vue.component("url-item", {
+				props: ["url"],
+				methods: {
+					remove() {
+						this.$emit("remove_url", this.url);
+					},
+				},
+				template: `<v-text-field
                                 dense
                                 solo
                                 readonly
@@ -168,24 +175,24 @@
                                 :value="url"
                                 :append-outer-icon="'mdi-close'"
                                 @click:append-outer="remove"
-                            ></v-text-field>`
-            });
+                            ></v-text-field>`,
+			});
 
-            Vue.component('add-url', {
-                data: function() {
-                    return {
-                        url: '',
-                    }
-                },
-                methods: {
-                    add() {
-                        if(this.url) {
-                            this.$emit('add_url', this.url)
-                            this.url = ''
-                        }
-                    }
-                },
-                template:   `<div>
+			Vue.component("add-url", {
+				data: function () {
+					return {
+						url: "",
+					};
+				},
+				methods: {
+					add() {
+						if (this.url) {
+							this.$emit("add_url", this.url);
+							this.url = "";
+						}
+					},
+				},
+				template: `<div>
                                 <p style="font-size: 1.075rem!important;" class="text-button ma-0 text-center">Add URL</p>
                                 <div class="ma-0 pa-0" style="max-width: 65%; display: flex; align-items: baseline;margin: auto !important;">
                                     <v-text-field
@@ -211,111 +218,121 @@
                                     </v-tooltip>
                                 </div>
                                 <p class="pa-0 ma-0" style="color: red; text-align: center;" id="add_url_error"></p>
-                            </div>`
-            });
+                            </div>`,
+			});
 
-
-
-            /*
+			/*
                 Settings Component
                 settings
             */
-            Vue.component('settings', {
-                props: ["user_settings", "has_amazon", "has_target"],
-                data: function() {
-                    return {
-                        // Interval variables
-                        interval_value: this.user_settings.INTERVAL.value,
-                        interval_value_rule: value => parseInt(value) > 0 || 'Must be more than 0',
-                        interval_unit: this.user_settings.INTERVAL.unit,
-                        interval_units: ['seconds', 'minutes', 'hours'],
+			Vue.component("settings", {
+				props: ["user_settings", "has_amazon", "has_target"],
+				data: function () {
+					return {
+						// Interval variables
+						interval_value: this.user_settings.INTERVAL.value,
+						interval_value_rule: (value) =>
+							parseInt(value) > 0 || "Must be more than 0",
+						interval_unit: this.user_settings.INTERVAL.unit,
+						interval_units: ["seconds", "minutes", "hours"],
 
-                        // Boolean: Open URL, Alarm, Proxies
-                        open_url: this.user_settings.OPEN_URL,
-                        sound_alarm: this.user_settings.ALARM,
-                        proxies: this.user_settings.PROXIES,
+						// Boolean: Open URL, Alarm, Proxies
+						open_url: this.user_settings.OPEN_URL,
+						sound_alarm: this.user_settings.ALARM,
+						proxies: this.user_settings.PROXIES,
 
-                        // Amazon delay and merchant
-                        amazon_delay: this.user_settings.AMAZON_DELAY,
-                        amazon_merchant_id: '',
-                        custom_merchant_id: '',
-                        amazon_merchants: {
-                            "None": "None",
-                            "Canada": "A3DWYIK6Y9EEQB",
-                            "France": "A1X6FK5RDHNB96",
-                            "Italy": "A11IL2PNWYJU7H",
-                            "Japan": "AN1VRQENFRJN5",
-                            "Netherlands": "A3V701XPD7PSWM",
-                            "Germany": "A3JWKAKR8XB7XF",
-                            "Spain": "A1AT7YVPFBWXBL",
-                            "United Kingdom": "A3P5ROKL5A1OLE",
-                            "United States": "ATVPDKIKX0DER",
-                            "Custom": ""
-                        },
+						// Amazon delay and merchant
+						amazon_delay: this.user_settings.AMAZON_DELAY,
+						amazon_merchant_id: "",
+						custom_merchant_id: "",
+						amazon_merchants: {
+							None: "None",
+							Canada: "A3DWYIK6Y9EEQB",
+							France: "A1X6FK5RDHNB96",
+							Italy: "A11IL2PNWYJU7H",
+							Japan: "AN1VRQENFRJN5",
+							Netherlands: "A3V701XPD7PSWM",
+							Germany: "A3JWKAKR8XB7XF",
+							Spain: "A1AT7YVPFBWXBL",
+							"United Kingdom": "A3P5ROKL5A1OLE",
+							"United States": "ATVPDKIKX0DER",
+							Custom: "",
+						},
 
-                        // Target Zip Code and API KEY
-                        target_zip: this.user_settings.TARGET_ZIP_CODE,
-                        target_key: this.user_settings.TARGET_KEY,
-                        target_zip_rule: value => (parseInt(value) > 9999 && value.toString().length == 5) || 'Zip code must be postive and have length of 5'
-                    }
-                },
+						// Target Zip Code and API KEY
+						target_zip: this.user_settings.TARGET_ZIP_CODE,
+						target_key: this.user_settings.TARGET_KEY,
+						target_zip_rule: (value) =>
+							(parseInt(value) > 9999 && value.toString().length == 5) ||
+							"Zip code must be postive and have length of 5",
+					};
+				},
 
-                mounted() {
-                    this.amazon_merchant_id = Object.keys(this.amazon_merchants).find(key => this.amazon_merchants[key] === this.user_settings.AMAZON_MERCHANT_ID)
-                    if (!this.amazon_merchant_id) {
-                        this.amazon_merchant_id = "Custom"
-                        this.custom_merchant_id = this.user_settings.AMAZON_MERCHANT_ID
-                    }
-                },
+				mounted() {
+					this.amazon_merchant_id = Object.keys(this.amazon_merchants).find(
+						(key) =>
+							this.amazon_merchants[key] === this.user_settings.AMAZON_MERCHANT_ID
+					);
+					if (!this.amazon_merchant_id) {
+						this.amazon_merchant_id = "Custom";
+						this.custom_merchant_id = this.user_settings.AMAZON_MERCHANT_ID;
+					}
+				},
 
-                methods: {
-                    updateInterval() {
-                        if(this.interval_value > 0) {
-                            this.$emit('update_interval', {
-                                unit: this.interval_unit,
-                                value: parseInt(this.interval_value)
-                            })
-                        }
-                    },
+				methods: {
+					updateInterval() {
+						if (this.interval_value > 0) {
+							this.$emit("update_interval", {
+								unit: this.interval_unit,
+								value: parseInt(this.interval_value),
+							});
+						}
+					},
 
-                    updateOpenURL() {
-                        this.$emit('update_open_url', this.open_url)
-                    },
+					updateOpenURL() {
+						this.$emit("update_open_url", this.open_url);
+					},
 
-                    updateAlarm() {
-                        this.$emit('update_alarm', this.sound_alarm)
-                    },
+					updateAlarm() {
+						this.$emit("update_alarm", this.sound_alarm);
+					},
 
-                    updateProxies() {
-                        this.$emit('update_proxies', this.proxies)
-                    },
+					updateProxies() {
+						this.$emit("update_proxies", this.proxies);
+					},
 
-                    updateAmazonDelay() {
-                        if(this.amazon_delay > 0) this.$emit('update_amazon_delay', parseInt(this.amazon_delay))
-                    },
+					updateAmazonDelay() {
+						if (this.amazon_delay > 0)
+							this.$emit("update_amazon_delay", parseInt(this.amazon_delay));
+					},
 
-                    updateAmazonMerchant() {
-                        let merchant_id;
-                        if (this.amazon_merchant_id === "Custom") merchant_id = this.custom_merchant_id
-                        else merchant_id = this.amazon_merchants[this.amazon_merchant_id]
-                        this.$emit('update_amazon_merchant', merchant_id)
-                    },
+					updateAmazonMerchant() {
+						let merchant_id;
+						if (this.amazon_merchant_id === "Custom")
+							merchant_id = this.custom_merchant_id;
+						else merchant_id = this.amazon_merchants[this.amazon_merchant_id];
+						this.$emit("update_amazon_merchant", merchant_id);
+					},
 
-                    updateTarget() {
-                        if(this.target_zip > 9999 && this.target_zip.toString().length == 5 && this.target_key != '')
-                            this.$emit('update_target', {
-                                zip: this.target_zip,
-                                key: this.target_key
-                            })
-                    },
+					updateTarget() {
+						if (
+							this.target_zip > 9999 &&
+							this.target_zip.toString().length == 5 &&
+							this.target_key != ""
+						)
+							this.$emit("update_target", {
+								zip: this.target_zip,
+								key: this.target_key,
+							});
+					},
 
-                    resetTargetKey() {
-                        this.target_key = "ff457966e64d5e877fdbad070f276d18ecec4a01"
-                        this.updateTarget()
-                    }
-                },
+					resetTargetKey() {
+						this.target_key = "ff457966e64d5e877fdbad070f276d18ecec4a01";
+						this.updateTarget();
+					},
+				},
 
-                template:   `<div>
+				template: `<div>
                                 <v-row dense>
 
                                     <!--  Interval HTML  -->
@@ -465,46 +482,48 @@
                                     </div>
                                 </div>
 
-                            </div>`
-            });
+                            </div>`,
+			});
 
-
-
-            /*
+			/*
                 Designed and coded by:
                 Prabhjot "Prince" Singh
                 https://github.com/Prince25/StockAlertBot
             */
 
-
-
-            /*
+			/*
                 Optional Component
                 optional, email, webhooks, webhook-item, add-webhook, sms, aws-sms, email-sms, twilio-sms
             */
-            Vue.component('optional', {
-                props: ['user_settings', 'env_settings'],
-                data: function() {
-                    return {
-                        email: this.user_settings.EMAIL,
-                        email_color: this.user_settings.EMAIL ? "green--text mb-0 ml-4" : "red--text mb-0 ml-4",
-                        email_text_style: " mb-0 ml-4",
-                        webhook_expanded: this.user_settings.WEBHOOK_URLS.length > 0,
-                        sms_expanded: this.user_settings.SMS_METHOD != "None" 
-                    }
-                },
+			Vue.component("optional", {
+				props: ["user_settings", "env_settings"],
+				data: function () {
+					return {
+						email: this.user_settings.EMAIL,
+						email_color: this.user_settings.EMAIL
+							? "green--text mb-0 ml-4"
+							: "red--text mb-0 ml-4",
+						email_text_style: " mb-0 ml-4",
+						webhook_expanded: this.user_settings.WEBHOOK_URLS.length > 0,
+						sms_expanded: this.user_settings.SMS_METHOD != "None",
+					};
+				},
 
-                methods: {
-                    toggleEmail() { 
-                        this.email_color = this.email ? "green--text" : "red--text"
-                        this.email_color += this.email_text_style;
-                        this.$emit('toggle_email', this.email)
-                    },
-                    toggleWebhooks() { this.webhook_expanded = !this.webhook_expanded },
-                    toggleSMS() { this.sms_expanded = !this.sms_expanded },
-                },
+				methods: {
+					toggleEmail() {
+						this.email_color = this.email ? "green--text" : "red--text";
+						this.email_color += this.email_text_style;
+						this.$emit("toggle_email", this.email);
+					},
+					toggleWebhooks() {
+						this.webhook_expanded = !this.webhook_expanded;
+					},
+					toggleSMS() {
+						this.sms_expanded = !this.sms_expanded;
+					},
+				},
 
-                template:   `<div style="display: flex; flex-direction: column; align-items: center;">
+				template: `<div style="display: flex; flex-direction: column; align-items: center;">
                                 <p class="ma-4 mb-1 text-h6 text-center font-weight-medium">Notifications</p>
                                 <v-divider inset style="width: 90%; margin-right: 80px;"></v-divider>
 
@@ -572,57 +591,94 @@
                                     />
                                 </div>
 
-                            </div>`
-            });
+                            </div>`,
+			});
 
-            Vue.component('email', {
-                props: ['settings'],
-                data: function() {
-                    return {
-                        service: this.settings.EMAIL_SERVICE,
-                        from: this.settings.EMAIL_FROM,
-                        pass: this.settings.EMAIL_PASS,
-                        to: this.settings.EMAIL_TO,
-                        showPass: false,
-                        sameAsFromChecked: true,
-                        providers: [ 
-                            "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
-                            "FastMail", "GandiMail", "Godaddy", "GodaddyAsia", "GodaddyEurope", "hot.ee", "mail.ee", "Mail.ru", "Maildev", "Mailgun", "Mailjet", 
-                            "Mailosaur", "Mandrill", "Naver", "OpenMailBox", "Postmark", "QQex", "SendCloud", "SendGrid", "SendinBlue", "SendPulse", "SES", 
-                            "SES-US-EAST-1", "SES-US-WEST-2", "SES-EU-WEST-1", "Sparkpost", "Yandex", "Zoho", "qiye.aliyun" 
-                        ]
-                    }
-                },
+			Vue.component("email", {
+				props: ["settings"],
+				data: function () {
+					return {
+						service: this.settings.EMAIL_SERVICE,
+						from: this.settings.EMAIL_FROM,
+						pass: this.settings.EMAIL_PASS,
+						to: this.settings.EMAIL_TO,
+						showPass: false,
+						sameAsFromChecked: true,
+						providers: [
+							"Gmail",
+							"Yahoo",
+							"iCloud",
+							"Hotmail",
+							"Outlook365",
+							"QQ",
+							"126",
+							"163",
+							"1und1",
+							"AOL",
+							"DebugMail",
+							"DynectEmail",
+							"FastMail",
+							"GandiMail",
+							"Godaddy",
+							"GodaddyAsia",
+							"GodaddyEurope",
+							"hot.ee",
+							"mail.ee",
+							"Mail.ru",
+							"Maildev",
+							"Mailgun",
+							"Mailjet",
+							"Mailosaur",
+							"Mandrill",
+							"Naver",
+							"OpenMailBox",
+							"Postmark",
+							"QQex",
+							"SendCloud",
+							"SendGrid",
+							"SendinBlue",
+							"SendPulse",
+							"SES",
+							"SES-US-EAST-1",
+							"SES-US-WEST-2",
+							"SES-EU-WEST-1",
+							"Sparkpost",
+							"Yandex",
+							"Zoho",
+							"qiye.aliyun",
+						],
+					};
+				},
 
-                methods: {
-                    updateService() {
-                        this.$emit('update_service', this.service)
-                    },
+				methods: {
+					updateService() {
+						this.$emit("update_service", this.service);
+					},
 
-                    updateFrom() {
-                        if(this.sameAsFromChecked) {
-                            this.to = this.from
-                            this.updateTo()
-                        }
-                        this.$emit('update_from', this.from)
-                    },
+					updateFrom() {
+						if (this.sameAsFromChecked) {
+							this.to = this.from;
+							this.updateTo();
+						}
+						this.$emit("update_from", this.from);
+					},
 
-                    updatePass() {
-                        this.$emit('update_pass', this.pass)
-                    },
+					updatePass() {
+						this.$emit("update_pass", this.pass);
+					},
 
-                    updateTo() {
-                        this.$emit('update_to', this.to)
-                    },
+					updateTo() {
+						this.$emit("update_to", this.to);
+					},
 
-                    updateToFromFrom() {
-                        if(this.sameAsFromChecked) this.to = this.from
-                        else this.to = ''
-                        this.updateTo()
-                    }
-                },
+					updateToFromFrom() {
+						if (this.sameAsFromChecked) this.to = this.from;
+						else this.to = "";
+						this.updateTo();
+					},
+				},
 
-                template:   `<div style="margin: 0px !important">
+				template: `<div style="margin: 0px !important">
 
                                 <!--  Service HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
@@ -680,12 +736,12 @@
                                         <span>Email to send stock notification to.</span>
                                     </v-tooltip>
                                 </div>
-                            </div>`
-            });
-            
-            Vue.component('webhooks', {
-                props: ['webhook_urls'],
-                template:   `<div>
+                            </div>`,
+			});
+
+			Vue.component("webhooks", {
+				props: ["webhook_urls"],
+				template: `<div>
                                 <v-row dense>
                                     <v-col v-for="(url, index) in webhook_urls" :key="index" md="6" class="ma-0 pa-3 pl-8 pr-8">
                                         <webhook-item v-bind:webhook_url="url" v-bind:key="url" v-on:remove_webhook_url="$emit('remove_webhook_url', $event)" />
@@ -695,17 +751,17 @@
                                     <v-divider inset class="ma-7 mb-0"></v-divider>
                                 </div>
                                 <add-webhook class="ma-0 pa-3" style="text-align: center;" v-on:add_webhook_url="$emit('add_webhook_url', $event)" />
-                            </div>`
-            });
+                            </div>`,
+			});
 
-            Vue.component('webhook-item', {
-                props: ['webhook_url'],
-                methods: {
-                    remove() {
-                        this.$emit('remove_webhook_url', this.webhook_url)
-                    }
-                },
-                template:   `<v-text-field
+			Vue.component("webhook-item", {
+				props: ["webhook_url"],
+				methods: {
+					remove() {
+						this.$emit("remove_webhook_url", this.webhook_url);
+					},
+				},
+				template: `<v-text-field
                                 dense
                                 solo
                                 readonly
@@ -714,24 +770,24 @@
                                 :value="webhook_url"
                                 :append-outer-icon="'mdi-close'"
                                 @click:append-outer="remove"
-                            ></v-text-field>`
-            });
+                            ></v-text-field>`,
+			});
 
-            Vue.component('add-webhook', {
-                data: function() {
-                    return {
-                        webhook_url: '',
-                    }
-                },
-                methods: {
-                    add() {
-                        if(this.webhook_url) {
-                            this.$emit('add_webhook_url', this.webhook_url)
-                            this.webhook_url = ''
-                        }
-                    }
-                },
-                template:   `<div class="ma-0 pa-0">
+			Vue.component("add-webhook", {
+				data: function () {
+					return {
+						webhook_url: "",
+					};
+				},
+				methods: {
+					add() {
+						if (this.webhook_url) {
+							this.$emit("add_webhook_url", this.webhook_url);
+							this.webhook_url = "";
+						}
+					},
+				},
+				template: `<div class="ma-0 pa-0">
                                 <p style="font-size: 1.075rem!important" class="text-button ma-0">Add Discord or Slack Webhook</p>
                                 <div class="ma-0 pa-0" style="max-width: 65%;display: flex;align-items: baseline;margin: auto !important;">
                                     <v-text-field
@@ -757,41 +813,31 @@
                                     </v-tooltip>
                                 </div>
                                 <p class="pa-0 ma-0" style="color: red; text-align: center;" id="add_webhook_url_error"></p>
-                            </div>`
-            });
+                            </div>`,
+			});
 
-
-
-            /*
+			/*
                 Designed and coded by:
                 Prabhjot "Prince" Singh
                 https://github.com/Prince25/StockAlertBot
             */
 
+			Vue.component("sms", {
+				props: ["user_settings", "env_settings"],
+				data: function () {
+					return {
+						method: this.user_settings.SMS_METHOD,
+						methods: ["None", "Email", "Amazon Web Services", "Twilio"],
+					};
+				},
 
+				methods: {
+					updateMethod() {
+						this.$emit("update_method", this.method);
+					},
+				},
 
-            Vue.component('sms', {
-                props: ['user_settings', 'env_settings'],
-                data: function() {
-                    return {
-                        method: this.user_settings.SMS_METHOD,
-                        methods: [
-                            "None",
-                            "Email",
-                            "Amazon Web Services",
-                            "Twilio"
-                        ]
-                    }
-                },
-
-                methods: {
-                    updateMethod() {
-                        this.$emit('update_method', this.method)
-                    },
-                    
-                },
-
-                template:   `<div>
+				template: `<div>
                                 <!--  SMS METHOD HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
                                     <p class="text-overline mb-5" style="font-size: 1rem!important;">SMS Method</p>
@@ -836,51 +882,62 @@
                                         class="ma-4" 
                                     />
                                 </div>
-                            </div>`
-            });
-            
-            Vue.component('aws-sms', {
-                props: ['settings'],
-                data: function() {
-                    return {
-                        key: this.settings.SMS_AWS_ACCESS_KEY,
-                        secret: this.settings.SMS_AWS_SECRET_ACCESS,
-                        phone: this.settings.SMS_AWS_PHONE_NUMBER,
-                        regions: {  // https://docs.aws.amazon.com/sns/latest/dg/sns-supported-regions-countries.html
-                            "US East (Ohio)": "us-east-2",
-                            "US East (N. Virginia)": "us-east-1",
-                            "US West (N. California)": "us-west-1",
-                            "US West (Oregon)": "us-west-2",
-                            "Asia Pacific (Mumbai)": "ap-south-1",
-                            "Asia Pacific (Singapore)": "ap-southeast-1",
-                            "Asia Pacific (Sydney)": "ap-southeast-2",
-                            "Asia Pacific (Tokyo)": "ap-northeast-1",
-                            "Canada (Central)": "ca-central-1",
-                            "Europe (Frankfurt)": "eu-central-1",
-                            "Europe (Ireland)": "eu-west-1",
-                            "Europe (London)": "eu-west-2",
-                            "Europe (Paris)": "eu-west-3",
-                            "Europe (Stockholm)": "eu-north-1",
-                            "Middle East (Bahrain)": "me-south-1",
-                            "South America (São Paulo)": "sa-east-1",
-                            "AWS GovCloud (US-West)": "us-gov-west-1",
-                        },
-                        region: '',
-                    }
-                },
+                            </div>`,
+			});
 
-                mounted() {
-                    this.region = Object.keys(this.regions).find(key => this.regions[key] === this.settings.SMS_AWS_REGION)
-                },
-                
-                methods: {
-                    updateRegion() { this.$emit('update_region', this.regions[this.region]) },
-                    updateKey() { this.$emit('update_key', this.key) },
-                    updateSecret() { this.$emit('update_secret', this.secret) },
-                    updatePhone() { this.$emit('update_phone', this.phone); },
-                },
+			Vue.component("aws-sms", {
+				props: ["settings"],
+				data: function () {
+					return {
+						key: this.settings.SMS_AWS_ACCESS_KEY,
+						secret: this.settings.SMS_AWS_SECRET_ACCESS,
+						phone: this.settings.SMS_AWS_PHONE_NUMBER,
+						regions: {
+							// https://docs.aws.amazon.com/sns/latest/dg/sns-supported-regions-countries.html
+							"US East (Ohio)": "us-east-2",
+							"US East (N. Virginia)": "us-east-1",
+							"US West (N. California)": "us-west-1",
+							"US West (Oregon)": "us-west-2",
+							"Asia Pacific (Mumbai)": "ap-south-1",
+							"Asia Pacific (Singapore)": "ap-southeast-1",
+							"Asia Pacific (Sydney)": "ap-southeast-2",
+							"Asia Pacific (Tokyo)": "ap-northeast-1",
+							"Canada (Central)": "ca-central-1",
+							"Europe (Frankfurt)": "eu-central-1",
+							"Europe (Ireland)": "eu-west-1",
+							"Europe (London)": "eu-west-2",
+							"Europe (Paris)": "eu-west-3",
+							"Europe (Stockholm)": "eu-north-1",
+							"Middle East (Bahrain)": "me-south-1",
+							"South America (São Paulo)": "sa-east-1",
+							"AWS GovCloud (US-West)": "us-gov-west-1",
+						},
+						region: "",
+					};
+				},
 
-                template:   `<div style="margin: 0px !important">
+				mounted() {
+					this.region = Object.keys(this.regions).find(
+						(key) => this.regions[key] === this.settings.SMS_AWS_REGION
+					);
+				},
+
+				methods: {
+					updateRegion() {
+						this.$emit("update_region", this.regions[this.region]);
+					},
+					updateKey() {
+						this.$emit("update_key", this.key);
+					},
+					updateSecret() {
+						this.$emit("update_secret", this.secret);
+					},
+					updatePhone() {
+						this.$emit("update_phone", this.phone);
+					},
+				},
+
+				template: `<div style="margin: 0px !important">
 
                                 <!--  Region HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
@@ -945,58 +1002,107 @@
                                         <span>Include country and area code (just digits, no special characters). Click for country codes.</span>
                                     </v-tooltip>
                                 </div>
-                            </div>`
-            });
+                            </div>`,
+			});
 
-            Vue.component('email-sms', {
-                props: ['settings'],
-                data: function() {
-                    return {
-                        service: this.settings.SMS_EMAIL_SERVICE,
-                        from: this.settings.SMS_EMAIL_FROM,
-                        pass: this.settings.SMS_EMAIL_PASS,
-                        carrier: '',
-                        phone: this.settings.SMS_EMAIL_PHONE_NUMBER,
-                        showPass: false,
-                        providers: [ 
-                            "Gmail", "Yahoo", "iCloud", "Hotmail", "Outlook365", "QQ", "126", "163", "1und1", "AOL", "DebugMail", "DynectEmail", 
-                            "FastMail", "GandiMail", "Godaddy", "GodaddyAsia", "GodaddyEurope", "hot.ee", "mail.ee", "Mail.ru", "Maildev", "Mailgun", "Mailjet", 
-                            "Mailosaur", "Mandrill", "Naver", "OpenMailBox", "Postmark", "QQex", "SendCloud", "SendGrid", "SendinBlue", "SendPulse", "SES", 
-                            "SES-US-EAST-1", "SES-US-WEST-2", "SES-EU-WEST-1", "Sparkpost", "Yandex", "Zoho", "qiye.aliyun" 
-                        ],
-                        carriers: {
-                            "Alltel": "sms.alltelwireless.com",
-                            "AT&T": "txt.att.net",
-                            "Boost Mobile": "sms.myboostmobile.com",
-                            "Cricket Wireless": "mms.cricketwireless.net",
-                            "FirstNet": "txt.att.net",
-                            "Google Project Fi": "msg.fi.google.com",
-                            "MetroPCS": "mymetropcs.com",
-                            "Republic Wireless": "text.republicwireless.com",
-                            "Sprint": "messaging.sprintpcs.com",
-                            "Straight Talk": "vtext.com",
-                            "T-Mobile": "tmomail.net",
-                            "Ting": "message.ting.com",
-                            "U.S. Cellular": "email.uscc.net",
-                            "Verizon Wireless": "vtext.com",
-                            "Virgin Mobile": "vmobl.com",
-                        }
-                    }
-                },
+			Vue.component("email-sms", {
+				props: ["settings"],
+				data: function () {
+					return {
+						service: this.settings.SMS_EMAIL_SERVICE,
+						from: this.settings.SMS_EMAIL_FROM,
+						pass: this.settings.SMS_EMAIL_PASS,
+						carrier: "",
+						phone: this.settings.SMS_EMAIL_PHONE_NUMBER,
+						showPass: false,
+						providers: [
+							"Gmail",
+							"Yahoo",
+							"iCloud",
+							"Hotmail",
+							"Outlook365",
+							"QQ",
+							"126",
+							"163",
+							"1und1",
+							"AOL",
+							"DebugMail",
+							"DynectEmail",
+							"FastMail",
+							"GandiMail",
+							"Godaddy",
+							"GodaddyAsia",
+							"GodaddyEurope",
+							"hot.ee",
+							"mail.ee",
+							"Mail.ru",
+							"Maildev",
+							"Mailgun",
+							"Mailjet",
+							"Mailosaur",
+							"Mandrill",
+							"Naver",
+							"OpenMailBox",
+							"Postmark",
+							"QQex",
+							"SendCloud",
+							"SendGrid",
+							"SendinBlue",
+							"SendPulse",
+							"SES",
+							"SES-US-EAST-1",
+							"SES-US-WEST-2",
+							"SES-EU-WEST-1",
+							"Sparkpost",
+							"Yandex",
+							"Zoho",
+							"qiye.aliyun",
+						],
+						carriers: {
+							Alltel: "sms.alltelwireless.com",
+							"AT&T": "txt.att.net",
+							"Boost Mobile": "sms.myboostmobile.com",
+							"Cricket Wireless": "mms.cricketwireless.net",
+							FirstNet: "txt.att.net",
+							"Google Project Fi": "msg.fi.google.com",
+							MetroPCS: "mymetropcs.com",
+							"Republic Wireless": "text.republicwireless.com",
+							Sprint: "messaging.sprintpcs.com",
+							"Straight Talk": "vtext.com",
+							"T-Mobile": "tmomail.net",
+							Ting: "message.ting.com",
+							"U.S. Cellular": "email.uscc.net",
+							"Verizon Wireless": "vtext.com",
+							"Virgin Mobile": "vmobl.com",
+						},
+					};
+				},
 
-                mounted() {
-                    this.carrier = Object.keys(this.carriers).find(key => this.carriers[key] === this.settings.SMS_EMAIL_PHONE_CARRIER)
-                },
+				mounted() {
+					this.carrier = Object.keys(this.carriers).find(
+						(key) => this.carriers[key] === this.settings.SMS_EMAIL_PHONE_CARRIER
+					);
+				},
 
-                methods: {
-                    updateService() { this.$emit('update_service', this.service) },
-                    updateFrom() { this.$emit('update_from', this.from) },
-                    updatePass() { this.$emit('update_pass', this.pass) },
-                    updateCarrier() { this.$emit('update_carrier', this.carriers[this.carrier]) },
-                    updatePhone() { this.$emit('update_phone', this.phone) },
-                },
+				methods: {
+					updateService() {
+						this.$emit("update_service", this.service);
+					},
+					updateFrom() {
+						this.$emit("update_from", this.from);
+					},
+					updatePass() {
+						this.$emit("update_pass", this.pass);
+					},
+					updateCarrier() {
+						this.$emit("update_carrier", this.carriers[this.carrier]);
+					},
+					updatePhone() {
+						this.$emit("update_phone", this.phone);
+					},
+				},
 
-                template:   `<div style="margin: 0px !important">
+				template: `<div style="margin: 0px !important">
 
                                 <!--  Service HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
@@ -1069,28 +1175,36 @@
                                         <span>Include area code (just digits, no special characters).</span>
                                     </v-tooltip>
                                 </div>>
-                            </div>`
-            });
+                            </div>`,
+			});
 
-            Vue.component('twilio-sms', {
-                props: ['settings'],
-                data: function() {
-                    return {
-                        sid: this.settings.SMS_TWILIO_ACCOUNT_SID,
-                        auth: this.settings.SMS_TWILIO_AUTH_TOKEN,
-                        from: this.settings.SMS_TWILIO_FROM_NUMBER,
-                        to: this.settings.SMS_TWILIO_TO_NUMBER,
-                    }
-                },
+			Vue.component("twilio-sms", {
+				props: ["settings"],
+				data: function () {
+					return {
+						sid: this.settings.SMS_TWILIO_ACCOUNT_SID,
+						auth: this.settings.SMS_TWILIO_AUTH_TOKEN,
+						from: this.settings.SMS_TWILIO_FROM_NUMBER,
+						to: this.settings.SMS_TWILIO_TO_NUMBER,
+					};
+				},
 
-                methods: {
-                    updateSID() { this.$emit('update_sid', this.sid) },
-                    updateAuth() { this.$emit('update_auth', this.auth) },
-                    updateFrom() { this.$emit('update_from', this.from) },
-                    updateTo() { this.$emit('update_to', this.to) },
-                },
+				methods: {
+					updateSID() {
+						this.$emit("update_sid", this.sid);
+					},
+					updateAuth() {
+						this.$emit("update_auth", this.auth);
+					},
+					updateFrom() {
+						this.$emit("update_from", this.from);
+					},
+					updateTo() {
+						this.$emit("update_to", this.to);
+					},
+				},
 
-                template:   `<div style="margin: 0px !important">
+				template: `<div style="margin: 0px !important">
 
                                 <!--  SID HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
@@ -1155,338 +1269,391 @@
                                         <span>Include country and area code (just digits, no special characters). Click for country codes.</span>
                                     </v-tooltip>
                                 </div>
-                            </div>`
-            });
+                            </div>`,
+			});
 
-
-
-            /*
+			/*
                 Main Component
             */
-            var app = new Vue({
-                el: '#app',
-                vuetify: new Vuetify(),
+			var app = new Vue({
+				el: "#app",
+				vuetify: new Vuetify(),
 
-                data: function() {
-                    return {
-                        current_tab: null,
-                        tabs: ["URLs", "Settings", "Optional", "DEBUG"],
-                        userSettings: {},
-                        envSettings: {},
-                        has_amazon: false,
-                        has_target: false,
-                        disableSaveButton: false
-                    }
-                },
+				data: function () {
+					return {
+						current_tab: null,
+						tabs: ["URLs", "Settings", "Optional", "DEBUG"],
+						userSettings: {},
+						envSettings: {},
+						has_amazon: false,
+						has_target: false,
+						disableSaveButton: false,
+					};
+				},
 
-                computed: {
-                    // Disable Save Button if email is on or SMS method is chosen, but information is not provided
-                    checkSaveButton: function() {
-                        let error_message = ''
+				computed: {
+					// Disable Save Button if email is on or SMS method is chosen, but information is not provided
+					checkSaveButton: function () {
+						let error_message = "";
 
-                        // Check Email
-                        let email_invalid = this.userSettings.EMAIL &&
-                            (
-                                !this.envSettings.EMAIL_SERVICE ||
-                                !this.envSettings.EMAIL_FROM ||
-                                !this.envSettings.EMAIL_PASS ||
-                                !this.envSettings.EMAIL_TO
-                            )
-                            
-                        // Check 
-                        let sms_invalid = false
-                        switch(this.userSettings.SMS_METHOD) {
-                            case 'Amazon Web Services':
-                                if (
-                                    !this.envSettings.SMS_AWS_REGION ||
-                                    !this.envSettings.SMS_AWS_ACCESS_KEY ||
-                                    !this.envSettings.SMS_AWS_SECRET_ACCESS ||
-                                    !this.envSettings.SMS_AWS_PHONE_NUMBER
-                                ) sms_invalid = true
-                                break;
+						// Check Email
+						let email_invalid =
+							this.userSettings.EMAIL &&
+							(!this.envSettings.EMAIL_SERVICE ||
+								!this.envSettings.EMAIL_FROM ||
+								!this.envSettings.EMAIL_PASS ||
+								!this.envSettings.EMAIL_TO);
 
-                            case 'Email':
-                                if (
-                                    !this.envSettings.SMS_EMAIL_SERVICE ||
-                                    !this.envSettings.SMS_EMAIL_FROM ||
-                                    !this.envSettings.SMS_EMAIL_PASS ||
-                                    !this.envSettings.SMS_EMAIL_PHONE_CARRIER ||
-                                    !this.envSettings.SMS_EMAIL_PHONE_NUMBER
-                                ) sms_invalid = true
-                                break;
+						// Check
+						let sms_invalid = false;
+						switch (this.userSettings.SMS_METHOD) {
+							case "Amazon Web Services":
+								if (
+									!this.envSettings.SMS_AWS_REGION ||
+									!this.envSettings.SMS_AWS_ACCESS_KEY ||
+									!this.envSettings.SMS_AWS_SECRET_ACCESS ||
+									!this.envSettings.SMS_AWS_PHONE_NUMBER
+								)
+									sms_invalid = true;
+								break;
 
-                            case 'Twilio':
-                                if (
-                                    !this.envSettings.SMS_TWILIO_ACCOUNT_SID ||
-                                    !this.envSettings.SMS_TWILIO_AUTH_TOKEN ||
-                                    !this.envSettings.SMS_TWILIO_FROM_NUMBER ||
-                                    !this.envSettings.SMS_TWILIO_TO_NUMBER
-                                ) sms_invalid = true
-                                break;
-                        }
-                        
-                        // Update Message
-                        if (email_invalid && sms_invalid) error_message = "Error: Email & SMS information not provided."
-                        else if (email_invalid) error_message = 'Error: Email information not provided.'
-                        else if (sms_invalid) error_message = 'Error: SMS information not provided.'
-                        
+							case "Email":
+								if (
+									!this.envSettings.SMS_EMAIL_SERVICE ||
+									!this.envSettings.SMS_EMAIL_FROM ||
+									!this.envSettings.SMS_EMAIL_PASS ||
+									!this.envSettings.SMS_EMAIL_PHONE_CARRIER ||
+									!this.envSettings.SMS_EMAIL_PHONE_NUMBER
+								)
+									sms_invalid = true;
+								break;
 
-                        // Disable Button, Display Error Message
-                        this.disableSaveButton = email_invalid || sms_invalid
-                        if(this.disableSaveButton) document.getElementById('save_button_error').textContent = error_message
-                        else document.getElementById('save_button_error').textContent = ''
+							case "Twilio":
+								if (
+									!this.envSettings.SMS_TWILIO_ACCOUNT_SID ||
+									!this.envSettings.SMS_TWILIO_AUTH_TOKEN ||
+									!this.envSettings.SMS_TWILIO_FROM_NUMBER ||
+									!this.envSettings.SMS_TWILIO_TO_NUMBER
+								)
+									sms_invalid = true;
+								break;
+						}
 
-                        return this.disableSaveButton
-                    },
-                },
+						// Update Message
+						if (email_invalid && sms_invalid)
+							error_message = "Error: Email & SMS information not provided.";
+						else if (email_invalid)
+							error_message = "Error: Email information not provided.";
+						else if (sms_invalid)
+							error_message = "Error: SMS information not provided.";
 
-                methods: {
+						// Disable Button, Display Error Message
+						this.disableSaveButton = email_invalid || sms_invalid;
+						if (this.disableSaveButton)
+							document.getElementById(
+								"save_button_error"
+							).textContent = error_message;
+						else document.getElementById("save_button_error").textContent = "";
 
-                    // Gets the domain from an URL
-                    getDomainName(url) {
-                        let hostName = new URL(url).hostname;
-                        let host = hostName.split('.');
-                        return host[1];
-                    },
+						return this.disableSaveButton;
+					},
+				},
 
-                    // Check for valid URLs
-                    isValidHttpUrl(string) {
-                        let url;
-                        try {
-                            url = new URL(string);
-                        } catch (_) {
-                            return false;  
-                        }
-                        return url.protocol === "http:" || url.protocol === "https:";
-                    },
+				methods: {
+					// Gets the domain from an URL
+					getDomainName(url) {
+						let hostName = new URL(url).hostname;
+						let host = hostName.split(".");
+						return host[1];
+					},
 
-                    // Add an URL
-                    addURL(urlToAdd) {
-                        if(this.isValidHttpUrl(urlToAdd)) {
-                            let storeName = this.getDomainName(urlToAdd)
-                            if(this.userSettings.SUPPORTED_STORES_DOMAINS.includes(storeName))
-                                if(!this.userSettings.URLS.includes(urlToAdd)) {
-                                    this.userSettings.URLS.push(urlToAdd)
-                                    document.getElementById('add_url_error').textContent = ''
+					// Check for valid URLs
+					isValidHttpUrl(string) {
+						let url;
+						try {
+							url = new URL(string);
+						} catch (_) {
+							return false;
+						}
+						return url.protocol === "http:" || url.protocol === "https:";
+					},
 
-                                    // Check for Amazon or Target linnks
-                                    if (!this.has_amazon || !this.has_target) {
-                                        if(storeName == 'amazon') this.has_amazon = true
-                                        if(storeName == 'target') this.has_target = true
-                                    }
-                                }
-                                else document.getElementById('add_url_error').textContent = 'Error: URL already included.'
-                            else document.getElementById('add_url_error').textContent = "Error: Store currently not supported."
-                        } else document.getElementById('add_url_error').textContent = "Error: Invalid URL format."
-                    },
+					// Add an URL
+					addURL(urlToAdd) {
+						if (this.isValidHttpUrl(urlToAdd)) {
+							let storeName = this.getDomainName(urlToAdd);
+							if (this.userSettings.SUPPORTED_STORES_DOMAINS.includes(storeName))
+								if (!this.userSettings.URLS.includes(urlToAdd)) {
+									this.userSettings.URLS.push(urlToAdd);
+									document.getElementById("add_url_error").textContent = "";
 
-                    // Removes an URL
-                    removeURL(urlToRemove) {
-                        this.userSettings.URLS = this.userSettings.URLS.filter(url => url !== urlToRemove)
+									// Check for Amazon or Target linnks
+									if (!this.has_amazon || !this.has_target) {
+										if (storeName == "amazon") this.has_amazon = true;
+										if (storeName == "target") this.has_target = true;
+									}
+								} else
+									document.getElementById("add_url_error").textContent =
+										"Error: URL already included.";
+							else
+								document.getElementById("add_url_error").textContent =
+									"Error: Store currently not supported.";
+						} else
+							document.getElementById("add_url_error").textContent =
+								"Error: Invalid URL format.";
+					},
 
-                        // Check for Amazon URL
-                        if (!this.userSettings.URLS.some(url => this.getDomainName(url) == 'amazon'))
-                            this.has_amazon = false;
+					// Removes an URL
+					removeURL(urlToRemove) {
+						this.userSettings.URLS = this.userSettings.URLS.filter(
+							(url) => url !== urlToRemove
+						);
 
-                        // Check for Target URL
-                        if (!this.userSettings.URLS.some(url => this.getDomainName(url) == 'target'))
-                            this.has_target = false;
-                    },
+						// Check for Amazon URL
+						if (
+							!this.userSettings.URLS.some(
+								(url) => this.getDomainName(url) == "amazon"
+							)
+						)
+							this.has_amazon = false;
 
-                    // Update check interval
-                    updateInterval(interval) {
-                        this.userSettings.INTERVAL.unit = interval.unit
-                        this.userSettings.INTERVAL.value = interval.value
-                    },
+						// Check for Target URL
+						if (
+							!this.userSettings.URLS.some(
+								(url) => this.getDomainName(url) == "target"
+							)
+						)
+							this.has_target = false;
+					},
 
-                    // Update open URL boolean
-                    updateOpenURL(boolean) {
-                        this.userSettings.OPEN_URL = boolean
-                    },
+					// Update check interval
+					updateInterval(interval) {
+						this.userSettings.INTERVAL.unit = interval.unit;
+						this.userSettings.INTERVAL.value = interval.value;
+					},
 
-                    // Update alarm boolean
-                    updateAlarm(boolean) {
-                        this.userSettings.ALARM = boolean
-                    },
+					// Update open URL boolean
+					updateOpenURL(boolean) {
+						this.userSettings.OPEN_URL = boolean;
+					},
 
-                    // Update proxies boolean
-                    updateProxies(boolean) {
-                        this.userSettings.PROXIES = boolean
-                    },
+					// Update alarm boolean
+					updateAlarm(boolean) {
+						this.userSettings.ALARM = boolean;
+					},
 
-                    // Update Amazon Delay
-                    updateAmazonDelay(delay) {
-                        this.userSettings.AMAZON_DELAY = delay
-                    },
+					// Update proxies boolean
+					updateProxies(boolean) {
+						this.userSettings.PROXIES = boolean;
+					},
 
-                    // Update Amazon Delay
-                    updateAmazonMerchant(merchant_id) {
-                        this.userSettings.AMAZON_MERCHANT_ID = merchant_id
-                    },
+					// Update Amazon Delay
+					updateAmazonDelay(delay) {
+						this.userSettings.AMAZON_DELAY = delay;
+					},
 
-                    // Update Target settings
-                    updateTarget(target_info) {
-                        this.userSettings.TARGET_ZIP_CODE = target_info.zip
-                        this.userSettings.TARGET_KEY = target_info.key
-                    },
+					// Update Amazon Delay
+					updateAmazonMerchant(merchant_id) {
+						this.userSettings.AMAZON_MERCHANT_ID = merchant_id;
+					},
 
-                    // Add a webhook URL
-                    addWebhookURL(urlToAdd) {
-                        if(this.isValidHttpUrl(urlToAdd)) {
-                            if(this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some(webhookDomain => urlToAdd.includes(webhookDomain)))
-                                if(!this.userSettings.WEBHOOK_URLS.includes(urlToAdd)) {
-                                    this.userSettings.WEBHOOK_URLS.push(urlToAdd)
-                                    document.getElementById('add_webhook_url_error').textContent = ''
-                                }
-                                else document.getElementById('add_webhook_url_error').textContent = 'Error: URL already included.'
-                            else document.getElementById('add_webhook_url_error').textContent = "Error: Webhook currently not supported."
-                        } else document.getElementById('add_webhook_url_error').textContent = "Error: Invalid URL format."
-                    },
+					// Update Target settings
+					updateTarget(target_info) {
+						this.userSettings.TARGET_ZIP_CODE = target_info.zip;
+						this.userSettings.TARGET_KEY = target_info.key;
+					},
 
-                    // Removes a webhook URL
-                    removeWebhookURL(urlToRemove) {
-                        this.userSettings.WEBHOOK_URLS = this.userSettings.WEBHOOK_URLS.filter(url => url !== urlToRemove)
-                    },
+					// Add a webhook URL
+					addWebhookURL(urlToAdd) {
+						if (this.isValidHttpUrl(urlToAdd)) {
+							if (
+								this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some((webhookDomain) =>
+									urlToAdd.includes(webhookDomain)
+								)
+							)
+								if (!this.userSettings.WEBHOOK_URLS.includes(urlToAdd)) {
+									this.userSettings.WEBHOOK_URLS.push(urlToAdd);
+									document.getElementById("add_webhook_url_error").textContent =
+										"";
+								} else
+									document.getElementById("add_webhook_url_error").textContent =
+										"Error: URL already included.";
+							else
+								document.getElementById("add_webhook_url_error").textContent =
+									"Error: Webhook currently not supported.";
+						} else
+							document.getElementById("add_webhook_url_error").textContent =
+								"Error: Invalid URL format.";
+					},
 
-                    // Update SMS Method
-                    updateSMSMethod(method) {
-                        this.userSettings.SMS_METHOD = method
-                    },
+					// Removes a webhook URL
+					removeWebhookURL(urlToRemove) {
+						this.userSettings.WEBHOOK_URLS = this.userSettings.WEBHOOK_URLS.filter(
+							(url) => url !== urlToRemove
+						);
+					},
 
-                    // Update AWS Region
-                    updateAWSRegion(region) {
-                        this.envSettings.SMS_AWS_REGION = region
-                    },
+					// Update SMS Method
+					updateSMSMethod(method) {
+						this.userSettings.SMS_METHOD = method;
+					},
 
-                    // Update AWS Key
-                    updateAWSKey(key) {
-                        this.envSettings.SMS_AWS_ACCESS_KEY = key
-                    },
+					// Update AWS Region
+					updateAWSRegion(region) {
+						this.envSettings.SMS_AWS_REGION = region;
+					},
 
-                    // Update AWS Secret
-                    updateAWSSecret(secret) {
-                        this.envSettings.SMS_AWS_SECRET_ACCESS = secret
-                    },
+					// Update AWS Key
+					updateAWSKey(key) {
+						this.envSettings.SMS_AWS_ACCESS_KEY = key;
+					},
 
-                    // Update AWS Phone
-                    updateAWSPhone(phone) {
-                        this.envSettings.SMS_AWS_PHONE_NUMBER = phone
-                    },
+					// Update AWS Secret
+					updateAWSSecret(secret) {
+						this.envSettings.SMS_AWS_SECRET_ACCESS = secret;
+					},
 
-                    // Update SMS Email service provider
-                    updateSMSEmailService(provider) {
-                        this.envSettings.SMS_EMAIL_SERVICE = provider
-                    },
+					// Update AWS Phone
+					updateAWSPhone(phone) {
+						this.envSettings.SMS_AWS_PHONE_NUMBER = phone;
+					},
 
-                    // Update SMS Email from
-                    updateSMSEmailFrom(from) {
-                        this.envSettings.SMS_EMAIL_FROM = from
-                    },
+					// Update SMS Email service provider
+					updateSMSEmailService(provider) {
+						this.envSettings.SMS_EMAIL_SERVICE = provider;
+					},
 
-                    // Update SMS Email password
-                    updateSMSEmailPass(pass) {
-                        this.envSettings.SMS_EMAIL_PASS = pass
-                    },
+					// Update SMS Email from
+					updateSMSEmailFrom(from) {
+						this.envSettings.SMS_EMAIL_FROM = from;
+					},
 
-                    // Update SMS Email Carrier
-                    updateSMSEmailCarrier(carrier) {
-                        this.envSettings.SMS_EMAIL_PHONE_CARRIER = carrier
-                    },
+					// Update SMS Email password
+					updateSMSEmailPass(pass) {
+						this.envSettings.SMS_EMAIL_PASS = pass;
+					},
 
-                    // Update SMS Email Phone
-                    updateSMSEmailPhone(phone) {
-                        this.envSettings.SMS_EMAIL_PHONE_NUMBER = phone
-                    },
+					// Update SMS Email Carrier
+					updateSMSEmailCarrier(carrier) {
+						this.envSettings.SMS_EMAIL_PHONE_CARRIER = carrier;
+					},
 
-                    // Update SMS Twilio SID
-                    updateSMSTwilioSID(sid) {
-                        this.envSettings.SMS_TWILIO_ACCOUNT_SID = sid
-                    },
+					// Update SMS Email Phone
+					updateSMSEmailPhone(phone) {
+						this.envSettings.SMS_EMAIL_PHONE_NUMBER = phone;
+					},
 
-                    // Update SMS Twilio Auth
-                    updateSMSTwilioAuth(auth) {
-                        this.envSettings.SMS_TWILIO_AUTH_TOKEN = auth
-                    },
+					// Update SMS Twilio SID
+					updateSMSTwilioSID(sid) {
+						this.envSettings.SMS_TWILIO_ACCOUNT_SID = sid;
+					},
 
-                    // Update SMS Twilio From
-                    updateSMSTwilioFrom(from) {
-                        this.envSettings.SMS_TWILIO_FROM_NUMBER = from
-                    },
+					// Update SMS Twilio Auth
+					updateSMSTwilioAuth(auth) {
+						this.envSettings.SMS_TWILIO_AUTH_TOKEN = auth;
+					},
 
-                    // Update SMS Twilio To
-                    updateSMSTwilioTo(to) {
-                        this.envSettings.SMS_TWILIO_TO_NUMBER = to
-                    },
+					// Update SMS Twilio From
+					updateSMSTwilioFrom(from) {
+						this.envSettings.SMS_TWILIO_FROM_NUMBER = from;
+					},
 
-                    // Set Email Value
-                    setEmail(value) { this.userSettings.EMAIL = value },
+					// Update SMS Twilio To
+					updateSMSTwilioTo(to) {
+						this.envSettings.SMS_TWILIO_TO_NUMBER = to;
+					},
 
-                    // Update service provider
-                    updateEmailService(provider) {
-                        this.envSettings.EMAIL_SERVICE = provider
-                    },
+					// Set Email Value
+					setEmail(value) {
+						this.userSettings.EMAIL = value;
+					},
 
-                    // Update from email
-                    updateEmailFrom(from) {
-                        this.envSettings.EMAIL_FROM = from
-                    },
+					// Update service provider
+					updateEmailService(provider) {
+						this.envSettings.EMAIL_SERVICE = provider;
+					},
 
-                    // Update email password
-                    updateEmailPass(pass) {
-                        this.envSettings.EMAIL_PASS = pass
-                    },
+					// Update from email
+					updateEmailFrom(from) {
+						this.envSettings.EMAIL_FROM = from;
+					},
 
-                    // Update to email
-                    updateEmailTo(to) {
-                        this.envSettings.EMAIL_TO = to
-                    },
+					// Update email password
+					updateEmailPass(pass) {
+						this.envSettings.EMAIL_PASS = pass;
+					},
 
-                    // Send settings via a POST request to be saved
-                    sendSettings() {
-                        axios.post('http://localhost:3250/config', this.userSettings)
-                            .then(function (response) {
-                                console.log('User settings successfully written!', response);
-                            }).catch(function (error) {   // Handle error
-                                console.log('Error writing user settings', error);
-                            })
+					// Update to email
+					updateEmailTo(to) {
+						this.envSettings.EMAIL_TO = to;
+					},
 
-                        axios.post('http://localhost:3250/env', this.envSettings)
-                            .then(function (response) {
-                                console.log('.env settings successfully written!', response);
-                            }).catch(function (error) {   // Handle error
-                                console.log('Error writing .env settings', error);
-                            })
-                    },
-                },
+					// Send settings via a POST request to be saved
+					sendSettings() {
+						axios
+							.post("http://localhost:3250/config", this.userSettings)
+							.then(function (response) {
+								console.log("User settings successfully written!", response);
+							})
+							.catch(function (error) {
+								// Handle error
+								console.log("Error writing user settings", error);
+							});
 
-                mounted() {
-                    // Get settings already saved in file
-                    axios.get('http://localhost:3250/config')
-                        .then(res => {
-                            this.userSettings = res.data
-                            console.log('User settings successfully fetched!')
+						axios
+							.post("http://localhost:3250/env", this.envSettings)
+							.then(function (response) {
+								console.log(".env settings successfully written!", response);
+							})
+							.catch(function (error) {
+								// Handle error
+								console.log("Error writing .env settings", error);
+							});
+					},
+				},
 
-                            // Check for Amazon URL
-                            if (this.userSettings.URLS.some(url => this.getDomainName(url) == 'amazon'))
-                                this.has_amazon = true;
+				mounted() {
+					// Get settings already saved in file
+					axios
+						.get("http://localhost:3250/config")
+						.then((res) => {
+							this.userSettings = res.data;
+							console.log("User settings successfully fetched!");
 
-                            // Check for Target URL
-                            if (this.userSettings.URLS.some(url => this.getDomainName(url) == 'target'))
-                                this.has_target = true;
-                        }).catch(function (error) {   // Handle error
-                            console.log('Error fetching user settings', error);
-                        })
+							// Check for Amazon URL
+							if (
+								this.userSettings.URLS.some(
+									(url) => this.getDomainName(url) == "amazon"
+								)
+							)
+								this.has_amazon = true;
 
-                    // Get .env data
-                    axios.get('http://localhost:3250/env')
-                        .then(res => {
-                            this.envSettings = res.data
-                            console.log('.env settings successfully fetched!')
-                        }).catch(function (error) {   // Handle error
-                            console.log('Error fetching .env settings', error);
-                        })
-                }
-            })
-        </script>
-    </body>
+							// Check for Target URL
+							if (
+								this.userSettings.URLS.some(
+									(url) => this.getDomainName(url) == "target"
+								)
+							)
+								this.has_target = true;
+						})
+						.catch(function (error) {
+							// Handle error
+							console.log("Error fetching user settings", error);
+						});
+
+					// Get .env data
+					axios
+						.get("http://localhost:3250/env")
+						.then((res) => {
+							this.envSettings = res.data;
+							console.log(".env settings successfully fetched!");
+						})
+						.catch(function (error) {
+							// Handle error
+							console.log("Error fetching .env settings", error);
+						});
+				},
+			});
+		</script>
+	</body>
 </html>

@@ -1,36 +1,33 @@
 {
-    "URLS": [],
-    "SUPPORTED_STORES_DOMAINS": [
-        "amazon",
-        "antonline",
-        "argos",
-        "bestbuy",
-        "costco",
-        "currys",
-        "gamestop",
-        "microcenter",
-        "newegg",
-        "target",
-        "tesco",
-        "tescopreorders",
-        "walmart"
-    ],
-    "INTERVAL": {
-        "unit": "seconds",
-        "value": 10
-    },
-    "OPEN_URL": true,
-    "ALARM": true,
-    "AMAZON_DELAY": 10,
-    "AMAZON_MERCHANT_ID": "None",
-    "TARGET_ZIP_CODE": "90024",
-    "TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01",
-    "WEBHOOK_URLS": [],
-    "SUPPORTED_WEBHOOK_DOMAINS": [
-        "discord",
-        "slack"
-    ],
-    "PROXIES": false,
-    "EMAIL": false,
-    "SMS_METHOD": "None"
+	"URLS": [],
+	"SUPPORTED_STORES_DOMAINS": [
+		"amazon",
+		"antonline",
+		"argos",
+		"bestbuy",
+		"costco",
+		"currys",
+		"gamestop",
+		"microcenter",
+		"newegg",
+		"target",
+		"tesco",
+		"tescopreorders",
+		"walmart"
+	],
+	"INTERVAL": {
+		"unit": "seconds",
+		"value": 10
+	},
+	"OPEN_URL": true,
+	"ALARM": true,
+	"AMAZON_DELAY": 10,
+	"AMAZON_MERCHANT_ID": "None",
+	"TARGET_ZIP_CODE": "90024",
+	"TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01",
+	"WEBHOOK_URLS": [],
+	"SUPPORTED_WEBHOOK_DOMAINS": ["discord", "slack"],
+	"PROXIES": false,
+	"EMAIL": false,
+	"SMS_METHOD": "None"
 }
