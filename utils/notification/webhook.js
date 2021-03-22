@@ -1,6 +1,6 @@
 import axios from "axios";
 import moment from "moment";
-import writeErrorToFile from '../writeToFile.js'
+import writeErrorToFile from '../log-error.js'
 import { WEBHOOK_URLS } from '../../main.js'
 
 export default async function sendAlertToWebhooks(product_url, title, image, store) {

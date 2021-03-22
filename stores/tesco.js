@@ -7,7 +7,7 @@ import open from "open"
 import { ALARM, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
-import writeErrorToFile from "../utils/writeToFile.js"
+import writeErrorToFile from "../utils/log-error.js"
 
 
 var ps5PreorderPagePath;

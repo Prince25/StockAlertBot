@@ -2,7 +2,7 @@ import { fileURLToPath } from "url";
 import { ALARM, AMAZON_MERCHANT_ID, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
-import writeErrorToFile from "../utils/writeToFile.js"
+import writeErrorToFile from "../utils/log-error.js"
 import open from "open"
 import axios from "axios";
 import moment from "moment"
