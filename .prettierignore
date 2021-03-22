@@ -1,4 +1,4 @@
-# Ignore this files and folders when using ESLint
+# Ignore this files and folders when using Prettier
 .github/
 logs/
 node_modules/

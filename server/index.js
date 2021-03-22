@@ -103,5 +103,5 @@ function postSettings(request, response) {
 	});
 }
 
-console.log("Opening settings page...");
+console.log("Opening settings page on http://localhost:3250/...");
 open("http://localhost:3250/");

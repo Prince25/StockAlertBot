@@ -5,9 +5,9 @@ import moment from "moment";
 import DomParser from "dom-parser"; // https://www.npmjs.com/package/dom-parser
 import open from "open";
 import { ALARM, OPEN_URL, USER_AGENTS } from "../main.js";
-import threeBeeps from "../utils/notification/beep.js";
-import sendAlerts from "../utils/notification/alerts.js";
-import writeErrorToFile from "../utils/log-error.js";
+import threeBeeps from "../src/utils/notification/beep.js.js";
+import sendAlerts from "../src/utils/notification/alerts.js.js";
+import writeErrorToFile from "../src/utils/log-error.js";
 
 var ps5PreorderPagePath;
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

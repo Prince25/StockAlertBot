@@ -4,18 +4,18 @@ const require = createRequire(import.meta.url);
 
 import { fileURLToPath } from "url";
 import fs from "fs";
-import antonline from "./stores/antonline.js";
-import amazon from "./stores/amazon.js";
-import argos from "./stores/argos.js";
-import bestbuy from "./stores/bestbuy.js";
-import costco from "./stores/costco.js";
-import currys from "./stores/currys.js";
-import gamestop from "./stores/gamestop.js";
-import microcenter from "./stores/microcenter.js";
-import newegg from "./stores/newegg.js";
-import target from "./stores/target.js";
-import tesco from "./stores/tesco.js";
-import walmart from "./stores/walmart.js";
+import antonline from "../stores/antonline.js";
+import amazon from "../stores/amazon.js";
+import argos from "../stores/argos.js";
+import bestbuy from "../stores/bestbuy.js";
+import costco from "../stores/costco.js";
+import currys from "../stores/currys.js";
+import gamestop from "../stores/gamestop.js";
+import microcenter from "../stores/microcenter.js";
+import newegg from "../stores/newegg.js";
+import target from "../stores/target.js";
+import tesco from "../stores/tesco.js";
+import walmart from "../stores/walmart.js";
 
 // Import configs
 export var {
@@ -31,7 +31,7 @@ export var {
 	PROXIES,
 	EMAIL,
 	SMS_METHOD, // "None", "Amazon Web Services", "Email", "Twilio"
-} = require("./config.json");
+} = require("../config.json");
 
 // For Testing
 const ADDITIONAL_URLS = [
@@ -42,7 +42,6 @@ const ADDITIONAL_URLS = [
 	// "https://www.microcenter.com/product/630283/Ryzen_9_5900X_Vermeer_37GHz_12-Core_AM4_Boxed_Processor",
 	// "https://www.newegg.com/amd-ryzen-9-5900x/p/N82E16819113664?Item=N82E16819113664",
 	// "https://www.target.com/p/playstation-5-console/-/A-81114595",
-	// "https://www.tescopreorders.com/uk/ps5",
 	// "https://www.tesco.com/groceries/en-GB/products/306276176",
 	// "https://www.walmart.com/ip/PlayStation-5-Console/363472942"
 ];

@@ -1,5 +1,7 @@
 import * as dotenv from "dotenv";
-dotenv.config();
+dotenv.config({
+	path: '../../data/.env'
+});
 
 export default {
 	email: {

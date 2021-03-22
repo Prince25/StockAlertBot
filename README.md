@@ -34,7 +34,7 @@ Currently, the following stores are supported:
 * Microcenter
 * Newegg (including combo deals)
 * Target (Works but may require additional setup)
-* Tesco (UK. Does not currently work with proxies) (For PS5, use this link: https://www.tescopreorders.com/uk/ps5)
+* Tesco (UK. Does not currently work with proxies)
 * Walmart
 
 ![Console Screenshot](https://i.imgur.com/po6GtU6.png)
