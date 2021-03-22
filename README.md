@@ -62,7 +62,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
     2. Enter the links of the items you want to track in the URLs tab.
     3. Go to Settings tab and change to your heart's content.
         - If you want to use Proxies, turn it on and create a file called `proxies.txt` in the root directory and fill it with one proxy per line. See [proxies](#Proxies).
-        - If you have Amazon link(s), you will see an option to put delay between Amazon items.
+        - If you have Amazon link(s), you will see a options to put delay between Amazon items and pick a region. Select a region if you want to only monitor items sold by Amazon and not third party sellers. If you want to use a particular seller or if your region is not in the list, select `Custom` and provide the merchant ID. See [Feedback and Support](#Feedback-and-Support) if you'd like to request a region.
         - If you have Target link(s), you will see additional options to put zip code and API Key. Only change the key if you get API key errors. Refer to the instructions in the following [section](#Via-Text-Editor).
     4. Configure notification options in Optional tab.
         - If you want notifications sent to Discord or Slack, expand WEBHOOKS and enter the URL(s) there.
@@ -81,7 +81,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
     4. Set `ALARM` to false if you want to disable the audible warning
     5. Optional Settings.
         1. **If** you're planning to track more than one Amazon item, set the delay (in seconds) between items by editing `AMAZON_DELAY`.
-        Otherwise, Amazon may flag the program's requests as a bot.
+        Otherwise, Amazon may flag the program's requests as a bot. You can also set a merchant ID in `AMAZON_MERCHANT_ID` to only get prices from a ceratin merchant. The other [method](#Via-Browser) allows you to select pre-configured IDs items only sold by Amazon depending on the region.
         2. **If** you're planning to track Target item(s), enter your zip code in `TARGET_ZIP_CODE`.\
         **NOTE:** If you encounter an error relating to API Key, you need to get this key yourself:
             1. Go to target.com with the DevTools (Chrome) or Developer Tools (Firefox) open (Google or ask if you're unsure how)
@@ -149,6 +149,7 @@ First, read pricing information [here](https://www.twilio.com/sms/pricing). You 
 ### Proxies
 If you plan to use low interval rates OR track several items from one store, it is highly recommended that you use proxies such as ones from [Webshare](https://www.webshare.io/) in the format `ip:port` for IP-based authentication or `username:password@ip:port`.<br>\
 **NOTE:** The following stores do not currently with proxies due to them blocking some connections/headers which results in inconsistent connection: Argos, Best Buy, Costco, and Tesco. Thus we thought it'd be best if we take off proxy support for now until we can do some further research or find an alternative way.
+<br><br>
 
 
 ## Screenshots
@@ -184,6 +185,7 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 * Add tests
 * ~~Fix~~ Find Bugs
     * ~~Fix notifications relying on `OPEN_URL`~~
+* ~~Add Ability to use certain Amazon Merchants~~
 * ~~Add Email and SMS Notifications~~ 
 * ~~Add Proxies~~
 * ~~Add GUI - Make it easier to use~~ 

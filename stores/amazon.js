@@ -1,5 +1,5 @@
 import { fileURLToPath } from "url";
-import { ALARM, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
+import { ALARM, AMAZON_MERCHANT_ID, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from '../main.js'
 import threeBeeps from "../utils/notification/beep.js"
 import sendAlerts from "../utils/notification/alerts.js"
 import writeErrorToFile from "../utils/writeToFile.js"
@@ -50,7 +50,11 @@ export default async function amazon(url, interval, originalIntervalValue, first
         
 
         // Get Page
-        let newUrl = url + '?m=ATVPDKIKX0DER'  // Add Amazon's seller ID
+        let newUrl;
+        if (AMAZON_MERCHANT_ID !== "None") {
+            newUrl = url + '?m=' + AMAZON_MERCHANT_ID  // Add Amazon's seller ID
+        } else newUrl = url;
+
         res = await axios.get(newUrl, options)
             .catch(async function (error) {
                 if (error.response.status == 503) {

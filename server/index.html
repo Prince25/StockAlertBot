@@ -66,7 +66,8 @@
                                     v-on:update_open_url="updateOpenURL" 
                                     v-on:update_alarm="updateAlarm" 
                                     v-on:update_proxies="updateProxies" 
-                                    v-on:update_amazon="updateAmazon" 
+                                    v-on:update_amazon_merchant="updateAmazonMerchant" 
+                                    v-on:update_amazon_delay="updateAmazonDelay" 
                                     v-on:update_target="updateTarget" 
                                 />
                             </v-tab-item>
@@ -234,13 +235,36 @@
                         sound_alarm: this.user_settings.ALARM,
                         proxies: this.user_settings.PROXIES,
 
-                        // Amazon delay
+                        // Amazon delay and merchant
                         amazon_delay: this.user_settings.AMAZON_DELAY,
+                        amazon_merchant_id: '',
+                        custom_merchant_id: '',
+                        amazon_merchants: {
+                            "None": "None",
+                            "Canada": "A3DWYIK6Y9EEQB",
+                            "France": "A1X6FK5RDHNB96",
+                            "Italy": "A11IL2PNWYJU7H",
+                            "Japan": "AN1VRQENFRJN5",
+                            "Netherlands": "A3V701XPD7PSWM",
+                            "Germany": "A3JWKAKR8XB7XF",
+                            "Spain": "A1AT7YVPFBWXBL",
+                            "United Kingdom": "A3P5ROKL5A1OLE",
+                            "United States": "ATVPDKIKX0DER",
+                            "Custom": ""
+                        },
 
                         // Target Zip Code and API KEY
                         target_zip: this.user_settings.TARGET_ZIP_CODE,
                         target_key: this.user_settings.TARGET_KEY,
                         target_zip_rule: value => (parseInt(value) > 9999 && value.toString().length == 5) || 'Zip code must be postive and have length of 5'
+                    }
+                },
+
+                mounted() {
+                    this.amazon_merchant_id = Object.keys(this.amazon_merchants).find(key => this.amazon_merchants[key] === this.user_settings.AMAZON_MERCHANT_ID)
+                    if (!this.amazon_merchant_id) {
+                        this.amazon_merchant_id = "Custom"
+                        this.custom_merchant_id = this.user_settings.AMAZON_MERCHANT_ID
                     }
                 },
 
@@ -266,8 +290,15 @@
                         this.$emit('update_proxies', this.proxies)
                     },
 
-                    updateAmazon() {
-                        if(this.amazon_delay > 0) this.$emit('update_amazon', parseInt(this.amazon_delay))
+                    updateAmazonDelay() {
+                        if(this.amazon_delay > 0) this.$emit('update_amazon_delay', parseInt(this.amazon_delay))
+                    },
+
+                    updateAmazonMerchant() {
+                        let merchant_id;
+                        if (this.amazon_merchant_id === "Custom") merchant_id = this.custom_merchant_id
+                        else merchant_id = this.amazon_merchants[this.amazon_merchant_id]
+                        this.$emit('update_amazon_merchant', merchant_id)
                     },
 
                     updateTarget() {
@@ -347,14 +378,16 @@
                                     </v-col>
                                 </v-row>
                                 
-                                <!--  Amazon Delay HTML  -->
+                                <!--  Amazon HTML  -->
                                 <div v-if="has_amazon">
                                     <v-divider inset></v-divider>
                                     <p class="ma-4 mb-1 text.subtitle-2 text-center font-weight-medium">Amazon Settings</p>
+
+                                    <!--  Amazon Delay HTML  -->
                                     <div style="display: flex; align-items: center; justify-content: center;">
                                         <p class="text-overline mb-5" style="font-size: 1.1rem!important;">Delay Between URLs</p>
                                         <div style="max-width: 8%" class="ml-4 mr-4">
-                                            <v-text-field v-model="amazon_delay" single-line type="number" :rules="[interval_value_rule]" @change="updateAmazon" dense solo />
+                                            <v-text-field v-model="amazon_delay" single-line type="number" :rules="[interval_value_rule]" @change="updateAmazonDelay" dense solo />
                                         </div>
                                         <v-tooltip bottom>
                                             <template v-slot:activator="{ on, attrs }">
@@ -364,6 +397,31 @@
                                             </template>
                                             <span>Separates the check between Amazon items by this value (seconds).</span>
                                         </v-tooltip>
+                                    </div>
+
+                                    <!--  Amazon Merchant HTML  -->
+                                    <div style="display: flex; align-items: center; justify-content: center;">
+                                        <p class="text-overline mb-5" style="font-size: 1rem!important;">Region</p>
+                                        <div style="width: 20%;" class="ml-4 mr-4">
+                                            <v-select :items="Object.keys(amazon_merchants)" v-model="amazon_merchant_id" @change="updateAmazonMerchant" dense solo></v-select>
+                                        </div>
+                                        <v-tooltip bottom>
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+                                                    <v-icon dark>mdi-help</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <span>
+                                                If you want to only track prices of items sold by Amazon and no third party sellers, pick your region.
+                                                If you want to use a particular Merchant, choose "Custom" and type their merchant ID.
+                                            </span>
+                                        </v-tooltip>
+                                    </div>
+                                    <div v-if="amazon_merchant_id === 'Custom'" style="display: flex; align-items: center; justify-content: center;">
+                                        <p class="text-overline mb-5" style="font-size: 1rem!important;">Merchant ID</p>
+                                        <div style="max-width: 20%" class="ml-4 mr-4">
+                                            <v-text-field v-model="custom_merchant_id" single-line type="text" @change="updateAmazonMerchant" dense solo />
+                                        </div>
                                     </div>
                                 </div>
 
@@ -1257,8 +1315,13 @@
                     },
 
                     // Update Amazon Delay
-                    updateAmazon(delay) {
+                    updateAmazonDelay(delay) {
                         this.userSettings.AMAZON_DELAY = delay
+                    },
+
+                    // Update Amazon Delay
+                    updateAmazonMerchant(merchant_id) {
+                        this.userSettings.AMAZON_MERCHANT_ID = merchant_id
                     },
 
                     // Update Target settings

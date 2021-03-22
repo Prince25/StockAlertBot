@@ -26,6 +26,7 @@ export var {
     OPEN_URL,
     ALARM,
     AMAZON_DELAY,
+    AMAZON_MERCHANT_ID,
     TARGET_ZIP_CODE,
     TARGET_KEY,
     WEBHOOK_URLS,
