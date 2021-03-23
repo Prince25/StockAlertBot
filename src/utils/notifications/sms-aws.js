@@ -1,7 +1,7 @@
 import aws from "aws-sdk";
 import fs from "fs";
 import moment from "moment";
-import config from "../config.js";
+import config from "./config.js";
 import { SMS_METHOD } from "../../main.js";
 
 const service = config.sms_aws;

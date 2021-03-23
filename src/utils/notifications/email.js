@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import fs from "fs";
 import moment from "moment";
-import config from "../config.js";
+import config from "./config.js";
 import { EMAIL } from "../../main.js";
 
 const email = config.email;

@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config({
-	path: '../../data/.env'
+	path: "../../config/.env",
 });
 
 export default {

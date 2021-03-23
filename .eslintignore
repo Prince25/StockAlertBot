@@ -2,7 +2,5 @@
 .github/
 logs/
 node_modules/
-stores/html/
-stores/logs/
 package-lock.json
 README.md

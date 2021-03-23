@@ -1,8 +1,8 @@
 import { fileURLToPath } from "url";
 import { ALARM, AMAZON_MERCHANT_ID, PROXIES, PROXY_LIST, OPEN_URL, USER_AGENTS } from "../main.js";
-import threeBeeps from "../src/utils/notification/beep.js.js";
-import sendAlerts from "../src/utils/notification/alerts.js.js";
-import writeErrorToFile from "../src/utils/log-error.js";
+import { writeErrorToFile } from "../src/utils/log.js";
+import threeBeeps from "../src/utils/notifications/beep.js.js.js";
+import sendAlerts from "../src/utils/notifications/alerts.js.js.js";
 import open from "open";
 import axios from "axios";
 import moment from "moment";

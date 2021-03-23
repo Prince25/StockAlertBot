@@ -1,7 +1,7 @@
 import { fileURLToPath } from "url";
-import threeBeeps from "../src/utils/notification/beep.js.js";
-import sendAlerts from "../src/utils/notification/alerts.js.js";
-import writeErrorToFile from "../src/utils/log-error.js";
+import threeBeeps from "../src/utils/notifications/beep.js.js.js";
+import sendAlerts from "../src/utils/notifications/alerts.js.js.js";
+import { writeErrorToFile } from "../src/utils/log.js";
 import open from "open";
 import axios from "axios";
 import moment from "moment";

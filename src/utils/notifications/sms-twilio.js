@@ -1,7 +1,7 @@
 import Twilio from "twilio";
 import fs from "fs";
 import moment from "moment";
-import config from "../config.js";
+import config from "./config.js";
 import { SMS_METHOD } from "../../main.js";
 
 const twilio = config.sms_twilio;

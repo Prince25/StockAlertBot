@@ -30,7 +30,6 @@ console.log("Importing important stuff...");
 const { parse, stringify } = require("envfile");
 var open = require("open");
 var express = require("express");
-var bodyParser = require("body-parser");
 var path = require("path");
 var cors = require("cors");
 var app = express();
@@ -46,8 +45,8 @@ function listening() {
 }
 
 app.use(express.static("public"));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 /*
   Setup routes
