@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 import rand from 'random-seed'
+import * as log from './log.js'
 import ua from 'random-useragent'
 import HttpsProxyAgent from 'https-proxy-agent';
 import { PROXIES, PROXY_LIST } from '../main.js'
@@ -18,8 +19,7 @@ export function getProxy(badProxies) {
     let proxy;
     if (PROXIES.length == badProxies.size) {
         badProxies = new Set()
-        // TODO: console
-        console.info('All proxies used. Resetting bad proxy list.')
+        log.toConsole('info', 'All proxies used. Resetting bad proxy list.')
     }
     do {
         proxy = 'http://' + PROXY_LIST[rand.create()(PROXY_LIST.length)];
@@ -40,22 +40,22 @@ export function fetchPage(url, badProxies) {
 		"upgrade-insecure-requests": 1
     }
 
-    const options = { headers }
+    const options = { 
+        headers,
+        timeout: 15000 // TODO Put timeout in CONFIG
+    }
     if (PROXIES) Object.assign(
         options,
         { agent: new HttpsProxyAgent( getProxy(badProxies) ) }
     )
 
-    return fetch(url, {
-        headers: getHeaders(),
-        agent: new HttpsProxyAgent(proxy),
-        timeout: workerData.CONFIG.WAIT_TIMEOUT * 1000
-     })
-     .then(response => {
-        // TODO
-     })
-     .catch(error => {
-        // TODO console
+    return fetch(url, options)
+    .then(response => {
+        if (response && response.ok) return response.text()
+        else throw new Error(response.status + " - " + response.statusText)
+    })
+    .catch(error => {
+        log.toConsole('error', 'Error getting page for url: ' + url + '. ' + error)
         return false
-     })
+    })
 }

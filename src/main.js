@@ -2,6 +2,7 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 
+/*
 import { fileURLToPath } from "url";
 import fs from "fs";
 import antonline from "../stores/antonline.js";
@@ -16,6 +17,7 @@ import newegg from "../stores/newegg.js";
 import target from "../stores/target.js";
 import tesco from "../stores/tesco.js";
 import walmart from "../stores/walmart.js";
+*/
 
 // Import configs
 export var {
@@ -31,8 +33,9 @@ export var {
 	PROXIES,
 	EMAIL,
 	SMS_METHOD, // "None", "Amazon Web Services", "Email", "Twilio"
-} = require("../config.json");
+} = require("../config/config.json");
 
+/*
 // For Testing
 const ADDITIONAL_URLS = [
 	// "https://www.amazon.com/PlayStation-5-Console/dp/B08FC5L3RG",
@@ -46,11 +49,13 @@ const ADDITIONAL_URLS = [
 	// "https://www.walmart.com/ip/PlayStation-5-Console/363472942"
 ];
 if (ADDITIONAL_URLS.length > 0) URLS = URLS.concat(ADDITIONAL_URLS);
+*/
 
 // Read proxies.txt
 export var PROXY_LIST = PROXIES ? fs.readFileSync("proxies.txt", "UTF-8").split(/\r?\n/) : [];
 if (PROXY_LIST.length > 0) PROXY_LIST = PROXY_LIST.filter((proxy) => proxy != "");
 
+/*
 // Runs main only if this file is executed
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();
 
@@ -283,3 +288,4 @@ export const USER_AGENTS = [
 	"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:46.0) Gecko/20120121 Firefox/46.0",
 	"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.66.18) Gecko/20177177 Firefox/45.66.18",
 ];
+*/
