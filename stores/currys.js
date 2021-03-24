@@ -52,7 +52,14 @@ export default async function currys(url, interval) {
         // Get Page
         res = await axios.get(url, options)
             .catch(async function (error) {
-                writeErrorToFile(store, error);
+                if (error.response && error.response.status == 503 && typeof(error.response.data) == "string" && error.response.data.includes('getting waaaay more traffic than usual')) {
+                    console.error(moment().format('LTS') + ': High traffic redirect page at', store + '! This probably means a hot item might getting restocked.')
+                    if (!runtimeData[url]['urlOpened']) {
+                        if (OPEN_URL) open(url)
+                        runtimeData[url]['urlOpened'] = true; 
+                        setTimeout(() => runtimeData[url]['urlOpened'] = false, 1000 * 295) // Open URL and send alerts every 5 minutes
+                    }
+                } else writeErrorToFile(store, error);
             });
 
 
@@ -95,6 +102,6 @@ export default async function currys(url, interval) {
         }
 
     } catch (e) {
-        writeErrorToFile(store, e, html, res.status)
+        writeErrorToFile(store, e, html)
     }
 };
