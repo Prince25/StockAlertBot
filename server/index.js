@@ -12,13 +12,13 @@ var firstRun = true;
 function readEnvironmentFile(firstRun) {
 	let environmentFile = "";
 	try {
-		environmentFile = fs.readFileSync(".env", { encoding: "utf8", flag: "r" });
+		environmentFile = fs.readFileSync("config/.env", { encoding: "utf8", flag: "r" });
 		if (environmentFile == "") throw new Error(".env file empty!");
 		if (firstRun) console.log(".env file found! Attempting to read...");
 	} catch {
 		if (firstRun) console.log(".env file not found! Creating a new one...");
-		environmentFile = fs.readFileSync("example.env", { encoding: "utf8", flag: "r" });
-		fs.writeFileSync(".env", environmentFile);
+		environmentFile = fs.readFileSync("config/example.env", { encoding: "utf8", flag: "r" });
+		fs.writeFileSync("../config/.env", environmentFile);
 	}
 	return environmentFile;
 }
@@ -72,7 +72,7 @@ function postEnvironment(request, response) {
 	console.log("Settings received! Saving to .env...");
 	let environmentSettings = stringify(request.body);
 
-	fs.writeFile(".env", environmentSettings, "utf8", function (error) {
+	fs.writeFile("config/.env", environmentSettings, "utf8", function (error) {
 		if (error) {
 			response.status(400).send({ error: "Error writing .env" });
 		} else {
@@ -84,7 +84,7 @@ function postEnvironment(request, response) {
 // GET config.json: https://localhost:3250/config
 app.get("/config", getSettings);
 function getSettings(request, response) {
-	response.sendFile(path.join(path.resolve() + "/config.json"));
+	response.sendFile(path.join(path.resolve() + "/config/config.json"));
 }
 
 // POST config.json: https://localhost:3250/config
@@ -93,7 +93,7 @@ function postSettings(request, response) {
 	console.log("Settings received! Saving to config.json...");
 	let settings = JSON.stringify(request.body, undefined, 4);
 
-	fs.writeFile("config.json", settings, "utf8", function (error) {
+	fs.writeFile("config/config.json", settings, "utf8", function (error) {
 		if (error) {
 			response.status(400).send({ error: "Error writing config.json" });
 		} else {

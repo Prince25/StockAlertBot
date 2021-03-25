@@ -61,8 +61,9 @@ There are only two steps to use this program: 1) enter information and 2) launch
         A browser window should open up. If it doesn't and the console says `Server started!`, go to: `http://localhost:3250/` in your browser.
     2. Enter the links of the items you want to track in the URLs tab.
     3. Go to Settings tab and change to your heart's content.
+        - Set how often you want to check the stores for given URLs and how much to space out the checks between items. It's not recommended to set it to 0 as you may be flagged as a bot. If you have 3 items (call them A, B, C) for Amazon and 2 items for Walmart (call them D, E) at 10 second interval spaced out at 2 seconds, for example, Items A and D will be checked first. 2 seconds later, items B and E will be checked. 2 seconds later, item C will be checked. The checks will start again in 8 seconds for Walmart and 10 seconds for Amazon.
         - If you want to use Proxies, turn it on and create a file called `proxies.txt` in the root directory and fill it with one proxy per line. See [proxies](#Proxies).
-        - If you have Amazon link(s), you will see a options to put delay between Amazon items and pick a region. Select a region if you want to only monitor items sold by Amazon and not third party sellers. If you want to use a particular seller or if your region is not in the list, select `Custom` and provide the merchant ID. See [Feedback and Support](#Feedback-and-Support) if you'd like to request a region.
+        - If you have Amazon link(s), you will see an option to pick a region. Select a region if you want to only monitor items sold by Amazon and not third party sellers. If you want to use a particular seller or if your region is not in the list, select `Custom` and provide the merchant ID. See [Feedback and Support](#Feedback-and-Support) if you'd like to request a region.
         - If you have Target link(s), you will see additional options to put zip code and API Key. Only change the key if you get API key errors. Refer to the instructions in the following [section](#Via-Text-Editor).
     4. Configure notification options in Optional tab.
         - If you want notifications sent to Discord or Slack, expand WEBHOOKS and enter the URL(s) there.
@@ -76,12 +77,11 @@ There are only two steps to use this program: 1) enter information and 2) launch
     Open and edit `config.json`
     1. Add urls of products in the `URLS` array
     2. Change the `INTERVAL` to suit your desires.\
-    **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot (Amazon), or blocking your IP from accessing the website. See [proxies](#Proxies).
+    **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot or blocking your IP from accessing the website entirely. See [proxies](#Proxies). Setting `TIME_BETWEEN_CHECKS` might help prevent this. See step 3a from the other [method](#Via-Browser) for a detailed explanation and an example.
     3. Set `OPEN_URL` to false if you don't want the application to automatically open urls when item is in stock
     4. Set `ALARM` to false if you want to disable the audible warning
     5. Optional Settings.
-        1. **If** you're planning to track more than one Amazon item, set the delay (in seconds) between items by editing `AMAZON_DELAY`.
-        Otherwise, Amazon may flag the program's requests as a bot. You can also set a merchant ID in `AMAZON_MERCHANT_ID` to only get prices from a ceratin merchant. The other [method](#Via-Browser) allows you to select pre-configured IDs items only sold by Amazon depending on the region.
+        1. **If** you're planning to track Amazon item(s), you can also set a merchant ID in `AMAZON_MERCHANT_ID` to only get prices from a ceratin merchant. The other [method](#Via-Browser) allows you to select pre-configured IDs items only sold by Amazon depending on the region.
         2. **If** you're planning to track Target item(s), enter your zip code in `TARGET_ZIP_CODE`.\
         **NOTE:** If you encounter an error relating to API Key, you need to get this key yourself:
             1. Go to target.com with the DevTools (Chrome) or Developer Tools (Firefox) open (Google or ask if you're unsure how)

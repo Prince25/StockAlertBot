@@ -23,6 +23,7 @@ import walmart from "../stores/walmart.js";
 export var {
 	URLS,
 	INTERVAL,
+	STORE_INTERVALS,
 	OPEN_URL,
 	ALARM,
 	AMAZON_DELAY,

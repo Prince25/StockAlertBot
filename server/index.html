@@ -7,6 +7,8 @@
             https://github.com/Prince25/StockAlertBot 
         -->
 		<title>StockAlertBot Settings</title>
+
+		<!--  Axios CDN  -->
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 		<!--  Vue.js CDN  -->
@@ -69,14 +71,16 @@
 								<v-divider class="mb-4"></v-divider>
 								<settings
 									v-bind:user_settings="userSettings"
+									v-bind:store_names="getStoreNames"
 									v-bind:has_amazon="has_amazon"
 									v-bind:has_target="has_target"
 									v-on:update_interval="updateInterval"
+									v-on:update_delay="updateDelay"
 									v-on:update_open_url="updateOpenURL"
 									v-on:update_alarm="updateAlarm"
 									v-on:update_proxies="updateProxies"
+									v-on:update_store_intervals="updateStoreIntervals"
 									v-on:update_amazon_merchant="updateAmazonMerchant"
-									v-on:update_amazon_delay="updateAmazonDelay"
 									v-on:update_target="updateTarget"
 								/>
 							</v-tab-item>
@@ -118,6 +122,7 @@
 								<p v-for="(settings,key) in envSettings">{{key}}:{{settings}}</p>
 								<p>has_amazon: {{has_amazon}}</p>
 								<p>has_target: {{has_target}}</p>
+								<p>stores: {{[...stores]}}</p>
 							</v-tab-item>
 						</v-tabs>
 
@@ -226,7 +231,7 @@
                 settings
             */
 			Vue.component("settings", {
-				props: ["user_settings", "has_amazon", "has_target"],
+				props: ["user_settings", "store_names", "has_amazon", "has_target"],
 				data: function () {
 					return {
 						// Interval variables
@@ -236,13 +241,22 @@
 						interval_unit: this.user_settings.INTERVAL.unit,
 						interval_units: ["seconds", "minutes", "hours"],
 
+						// Delay variables
+						delay_value: this.user_settings.TIME_BETWEEN_CHECKS.value,
+						delay_value_rule: (value) =>
+							parseInt(value) >= 0 || "Must be more than or equal to 0",
+						delay_unit: this.user_settings.TIME_BETWEEN_CHECKS.unit,
+						delay_units: ["milliseconds", "seconds", "minutes", "hours"],
+
 						// Boolean: Open URL, Alarm, Proxies
 						open_url: this.user_settings.OPEN_URL,
 						sound_alarm: this.user_settings.ALARM,
 						proxies: this.user_settings.PROXIES,
 
-						// Amazon delay and merchant
-						amazon_delay: this.user_settings.AMAZON_DELAY,
+						// Store Intervals
+						store_intervals: [],
+
+						// Amazon merchant
 						amazon_merchant_id: "",
 						custom_merchant_id: "",
 						amazon_merchants: {
@@ -268,7 +282,32 @@
 					};
 				},
 
+				computed: {
+					// Store Intervals
+					updateStores: function() {
+						this.store_intervals = []
+						const stores = Object.keys(this.user_settings.STORE_INTERVALS)
+						this.store_names.forEach(store => {
+							if(this.user_settings.STORE_INTERVALS.hasOwnProperty(store)) {
+								this.store_intervals.push({
+									name: store,
+									on: true,
+									...this.user_settings.STORE_INTERVALS[store]
+								})
+							} else {
+								this.store_intervals.push({
+									name: store,
+									on: false,
+									...this.user_settings.INTERVAL
+								})
+							}
+						})
+						return this.store_intervals
+					}
+				},
+
 				mounted() {
+					// Amazon Merchants
 					this.amazon_merchant_id = Object.keys(this.amazon_merchants).find(
 						(key) =>
 							this.amazon_merchants[key] === this.user_settings.AMAZON_MERCHANT_ID
@@ -301,9 +340,17 @@
 						this.$emit("update_proxies", this.proxies);
 					},
 
-					updateAmazonDelay() {
-						if (this.amazon_delay > 0)
-							this.$emit("update_amazon_delay", parseInt(this.amazon_delay));
+					updateStoreIntervals() {
+						this.$emit("update_store_intervals", this.store_intervals);
+					},
+
+					updateDelay() {
+						if (this.interval_value >= 0) {
+							this.$emit("update_delay", {
+								unit: this.delay_unit,
+								value: parseInt(this.delay_value),
+							});
+						}
 					},
 
 					updateAmazonMerchant() {
@@ -338,11 +385,11 @@
                                     <!--  Interval HTML  -->
                                     <v-col md="6" class="ma-0 pa-3 pl-8 pr-8">
                                         <div style="display: flex; align-items: center; justify-content: center;">
-                                            <p class="text-overline mb-5" style="font-size: 1.1rem!important;">Interval</p>
+                                            <p class="text-overline mb-5" style="font-size: 1.1rem!important;">Default Interval</p>
                                             <div style="max-width: 15%" class="ml-4 mr-4">
                                                 <v-text-field v-model="interval_value" single-line type="number" :rules="[interval_value_rule]" @change="updateInterval" dense solo />
                                             </div>
-                                            <div style="max-width: 30%">
+                                            <div style="max-width: 32%">
                                                 <v-select :items="interval_units" v-model="interval_unit" @change="updateInterval" dense solo></v-select>
                                             </div>
                                             <v-tooltip bottom>
@@ -354,6 +401,25 @@
                                                 <span>How often to check for products. Too often may be dangerous, especially for Amazon.</span>
                                             </v-tooltip>
                                         </div>
+
+										<!--  Delay HTML  -->
+										<div style="display: flex; align-items: center; justify-content: center;">
+											<p class="text-overline mb-5" style="font-size: 1.1rem!important;">Spread out item checks</p>
+											<div style="max-width: 15%" class="ml-4 mr-4">
+                                                <v-text-field v-model="delay_value" single-line type="number" :rules="[delay_value_rule]" @change="updateDelay" dense solo />
+                                            </div>
+                                            <div style="max-width: 32%">
+                                                <v-select :items="delay_units" v-model="delay_unit" @change="updateDelay" dense solo></v-select>
+                                            </div>
+											<v-tooltip bottom>
+												<template v-slot:activator="{ on, attrs }">
+													<v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
+														<v-icon dark>mdi-help</v-icon>
+													</v-btn>
+												</template>
+												<span>Space out the checks between products for each store by this value.</span>
+											</v-tooltip>
+										</div>
                                     </v-col>
                                     
                                     <!--  Open URL, Sound Alarm HTML  -->
@@ -394,27 +460,40 @@
                                             Argos, Best Buy, Costco and Tesco do not currently work with proxies.</p> 
                                     </v-col>
                                 </v-row>
+
+								<!--  Store Intervals HTML  -->
+								<div v-if="store_names.length > 0">
+                                    <v-divider inset></v-divider>
+									<p style="font-size: 1.075rem!important;" class="text-button ma-0 mt-3 text-center">Interval Override</p>
+                                    <div v-for="store in updateStores">
+										<div style="display: flex; align-items: center; justify-content: center;">
+											<p class="text-overline mb-0" style="font-size: 1.1rem!important;">{{store.name}} Interval</p>
+											<v-switch class="ml-3" v-model="store.on" @change="updateStoreIntervals" inset></v-switch>
+
+											<v-tooltip bottom>
+												<template v-slot:activator="{ on, attrs }">
+													<v-btn class="ml-3 mb-2" color="primary" fab x-small v-bind="attrs" v-on="on">
+														<v-icon dark>mdi-help</v-icon>
+													</v-btn>
+												</template>
+												<span>Override interval for {{store.name}}</span>
+											</v-tooltip>
+										</div>
+										<div v-if="store.on" class="mt-0" style="display: flex; align-items: center; justify-content: center;">
+											<div style="max-width: 10%" class="ml-4 mr-4">
+												<v-text-field v-model="store.value" single-line type="number" :rules="[interval_value_rule]" @change="updateStoreIntervals" dense solo />
+											</div>
+											<div style="max-width: 15%">
+												<v-select :items="interval_units" v-model="store.unit" @change="updateStoreIntervals" dense solo></v-select>
+											</div>
+										</div>
+                                    </div>
+                                </div>
                                 
                                 <!--  Amazon HTML  -->
                                 <div v-if="has_amazon">
                                     <v-divider inset></v-divider>
-                                    <p class="ma-4 mb-1 text.subtitle-2 text-center font-weight-medium">Amazon Settings</p>
-
-                                    <!--  Amazon Delay HTML  -->
-                                    <div style="display: flex; align-items: center; justify-content: center;">
-                                        <p class="text-overline mb-5" style="font-size: 1.1rem!important;">Delay Between URLs</p>
-                                        <div style="max-width: 8%" class="ml-4 mr-4">
-                                            <v-text-field v-model="amazon_delay" single-line type="number" :rules="[interval_value_rule]" @change="updateAmazonDelay" dense solo />
-                                        </div>
-                                        <v-tooltip bottom>
-                                            <template v-slot:activator="{ on, attrs }">
-                                                <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
-                                                    <v-icon dark>mdi-help</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <span>Separates the check between Amazon items by this value (seconds).</span>
-                                        </v-tooltip>
-                                    </div>
+									<p style="font-size: 1.075rem!important;" class="text-button ma-4 mt-3 text-center">Amazon Settings</p>
 
                                     <!--  Amazon Merchant HTML  -->
                                     <div style="display: flex; align-items: center; justify-content: center;">
@@ -429,7 +508,7 @@
                                                 </v-btn>
                                             </template>
                                             <span>
-                                                If you want to only track prices of items sold by Amazon and no third party sellers, pick your region.
+                                                If you want to only track prices of products sold by Amazon and no third party sellers, pick your region.
                                                 If you want to use a particular Merchant, choose "Custom" and type their merchant ID.
                                             </span>
                                         </v-tooltip>
@@ -445,7 +524,7 @@
                                 <!--  Target HTML  -->
                                 <div v-if="has_target">
                                     <v-divider inset></v-divider>
-                                    <p class="ma-4 mb-1 text.subtitle-2 text-center font-weight-medium">Target Settings</p>
+									<p style="font-size: 1.075rem!important;" class="text-button ma-4 mt-3 text-center">Target Settings</p>
                                     <div style="display: flex; align-items: center; justify-content: center;">
                                         <p class="text-overline mb-5" style="font-size: 1.1rem!important;">Zip Code</p>
                                         <div style="max-width: 8%" class="ml-4 mr-4">
@@ -524,7 +603,7 @@
 				},
 
 				template: `<div style="display: flex; flex-direction: column; align-items: center;">
-                                <p class="ma-4 mb-1 text-h6 text-center font-weight-medium">Notifications</p>
+								<p style="font-size: 1.075rem!important;" class="text-button ma-0 mt-3 text-center">Notifications</p>
                                 <v-divider inset style="width: 90%; margin-right: 80px;"></v-divider>
 
                                 <!--  Webhook HTML  -->
@@ -1285,6 +1364,7 @@
 						tabs: ["URLs", "Settings", "Optional", "DEBUG"],
 						userSettings: {},
 						envSettings: {},
+						stores: new Set(),
 						has_amazon: false,
 						has_target: false,
 						disableSaveButton: false,
@@ -1356,6 +1436,22 @@
 						else document.getElementById("save_button_error").textContent = "";
 
 						return this.disableSaveButton;
+					},
+
+					// Gets all the store names provided in the URLs
+					getStoreNames: function () {
+						if (this.userSettings.URLS && this.userSettings.URLS.length > 0) {
+							this.stores = new Set();
+							this.userSettings.URLS.forEach(url => {
+								const storeName = this.getDomainName(url);
+								this.stores.add(storeName)
+							})
+							return [...this.stores];
+						}
+						else {
+							this.stores = new Set();
+							return []
+						}
 					},
 				},
 
@@ -1432,6 +1528,12 @@
 						this.userSettings.INTERVAL.value = interval.value;
 					},
 
+					// Update Delay
+					updateDelay(delay) {
+						this.userSettings.TIME_BETWEEN_CHECKS.unit = delay.unit;
+						this.userSettings.TIME_BETWEEN_CHECKS.value = delay.value;
+					},
+
 					// Update open URL boolean
 					updateOpenURL(boolean) {
 						this.userSettings.OPEN_URL = boolean;
@@ -1447,12 +1549,20 @@
 						this.userSettings.PROXIES = boolean;
 					},
 
-					// Update Amazon Delay
-					updateAmazonDelay(delay) {
-						this.userSettings.AMAZON_DELAY = delay;
+					// Update store intervals
+					updateStoreIntervals(store_intervals) {
+						this.userSettings.STORE_INTERVALS = {}
+						store_intervals.forEach(store => {
+							if (store.on && this.stores.has(store.name)) {
+								this.userSettings.STORE_INTERVALS[store.name] = {
+									unit: store.unit,
+									value: store.value
+								};
+							}
+						})
 					},
 
-					// Update Amazon Delay
+					// Update Amazon Merchant
 					updateAmazonMerchant(merchant_id) {
 						this.userSettings.AMAZON_MERCHANT_ID = merchant_id;
 					},
