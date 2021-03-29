@@ -55,12 +55,14 @@ export default async function bestbuy(url, interval) {
                             title = productInfo.product.name
                             image = productInfo.product.productImage
                             if (productInfo.availability.shipping.purchasable) inventory = "Add to Cart"
+                            else inventory = 'Sold Out'
                         } catch {}
                     }
                 } else {
                     inventory = doc.getElementsByClassName('addToCartButton')
                     if (inventory.length > 0) inventory = inventory[0].getAttribute('disabled')
                     if (inventory === null) inventory = "Add to Cart"
+                    else inventory = 'Sold Out'
                     try { title = doc.getElementsByTagName('title')[0].textContent.replace(" | Best Buy Canada", "") } catch {}
                     try { image = doc.getElementsByTagName('link').filter(
                         link => link.getAttribute('rel') && link.getAttribute('rel') == "preload" &&

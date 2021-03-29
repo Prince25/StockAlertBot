@@ -58,9 +58,9 @@ export default async function amazon(url, interval, originalIntervalValue, first
         res = await axios.get(newUrl, options)
             .catch(async function (error) {
                 if (error.response.status == 503) {
-                    console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error for ' + url + '. Consider increasing invterval.')
+                    console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error for ' + url + '. Nothing to worry about unless you get this all the time!')
                     if(PROXIES) { 
-                        console.error('Proxy', proxy, 'might be banned from ' + store + '. Adding it to the bad list')
+                        console.error('Proxy', proxy, 'might be banned from ' + store + '. Adding it to the bad list.')
                         badProxies.add(proxy)
                     }
                 }
