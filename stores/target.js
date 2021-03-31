@@ -66,7 +66,13 @@ export default async function target(url, interval, key, zip_code) {
 
             let parser = new DomParser();
             let doc = parser.parseFromString(html, 'text/html');
-            let productInfo = JSON.parse(doc.getElementsByTagName('script').filter(script => script.getAttribute('type') == 'application/ld+json')[0].textContent)
+            let productInfo = doc.getElementsByTagName('script').filter(script => script.getAttribute('type') == 'application/ld+json')
+            if (productInfo) productInfo = JSON.parse(productInfo[0].textContent)
+            else {
+                writeErrorToFile(store, 'Unable to get product info for url: ' + url)
+                return
+            }
+
             let title = productInfo['@graph'][0]['name']
             let tcin = productInfo['@graph'][0]['sku']
             let image = productInfo['@graph'][0]['image']
