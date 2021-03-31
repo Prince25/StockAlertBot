@@ -110,6 +110,6 @@ export default async function amazon(url, interval, originalIntervalValue, first
         else resolve({interval: Math.floor(interval.value + Math.random() * originalIntervalValue), urlOpened: urlOpened})
 
     } catch (e) {
-        writeErrorToFile(store, e, html, res.status)
+        writeErrorToFile(store, e, html, res ? res.status : undefined)
     }
 };

@@ -96,6 +96,6 @@ export default async function antonline(url, interval) {
         }
 
     } catch (e) {
-        writeErrorToFile(store.replace(' ', ''), e, html, res.status)
+        writeErrorToFile(store.replace(' ', ''), e, html, res ? res.status : undefined)
     }
 };

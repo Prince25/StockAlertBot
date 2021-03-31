@@ -108,6 +108,6 @@ export default async function gamestop(url, interval) {
         }
 
     } catch (e) {
-        writeErrorToFile(store, e, html, res.status)
+        writeErrorToFile(store, e, html, res ? res.status : undefined)
     }
 };

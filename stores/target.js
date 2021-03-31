@@ -128,6 +128,6 @@ export default async function target(url, interval, key, zip_code) {
         }
 
     } catch (e) {
-        writeErrorToFile(store, e, html, res.status)
+        writeErrorToFile(store, e, html, res ? res.status : undefined)
     }
 };

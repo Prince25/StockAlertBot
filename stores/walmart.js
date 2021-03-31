@@ -109,6 +109,6 @@ export default async function walmart(url, interval) {
 		}
 
 	} catch (e) {
-		writeErrorToFile(store, e, html, res.status)
+		writeErrorToFile(store, e, html, res ? res.status : undefined)
 	}
 };
