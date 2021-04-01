@@ -17,7 +17,7 @@ import newegg from './stores/newegg.js'
 import target from './stores/target.js'
 import tesco from './stores/tesco.js'
 import walmart from './stores/walmart.js'
-
+import scan from './stores/scan.js'
 
 // Import configs
 export var {
@@ -196,7 +196,10 @@ function main() {
             case 'walmart':
                 checkStore(walmart, url);
                 break;
-
+                
+            case 'scan':
+                checkStore(scan, url);
+                break;
             default:
                 console.error('This store is not supported:', storeName)
         }
