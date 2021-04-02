@@ -1163,6 +1163,7 @@
             /*
                 Main Component
             */
+            var SERVER_NAME = 'http://localhost:3250';
             var app = new Vue({
                 el: '#app',
                 vuetify: new Vuetify(),
@@ -1440,7 +1441,7 @@
                     updateEmailTo(to) {
                         this.envSettings.EMAIL_TO = to
                     },
-                    var SERVER_NAME = 'http://localhost:3250';
+
                     // Send settings via a POST request to be saved
                     sendSettings() {
                         axios.post(SERVER_NAME.concat('/config'), this.userSettings)
