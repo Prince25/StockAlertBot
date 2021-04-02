@@ -29,7 +29,8 @@
     "WEBHOOK_URLS": [],
     "SUPPORTED_WEBHOOK_DOMAINS": [
         "discord",
-        "slack"
+        "slack",
+        "ifttt"
     ],
     "PROXIES": false,
     "EMAIL": false,

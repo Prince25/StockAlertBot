@@ -86,7 +86,26 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
                     console.error(moment().format('LTS') + ": Error sending alert to Slack.")
                     writeErrorToFile('Slack', error)
                 }) 
-            }    
+            // Notify IFTTT  
+            } else if (url.includes('ifttt')) {
+                console.info(moment().format('LTS') + ": Sending alert to IFTTT")
+                axios({
+                    method: 'POST',
+                    url: url,
+                    headers: {
+                        "Content-type": "application/json"
+                    },
+                    data: {
+                        value1: title,
+                        value2: product_url,
+                        value3: image
+                    }
+                })
+                .catch(error => {
+                    console.error(moment().format('LTS') + ": Error sending alert to IFTTT.")
+                    writeErrorToFile('IFTTT', error)
+                }) 
+            }  
         }   
     )
 } 
