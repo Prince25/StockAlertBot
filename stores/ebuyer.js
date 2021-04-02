@@ -52,7 +52,7 @@ export default async function ebuyer(url, interval) {
 		// Get Page
 		res = await axios.get(url, options)
 			.catch(async function (error) {
-				if (error.response.status == 503) {
+				if (error.response && error.response.status == 503) {
 					console.error(moment().format('LTS') + ': ' + store + ' 503 (service unavailable) Error. Interval possibly too low. Consider increasing interval rate.')
 					if (PROXIES) {
 						console.error('Proxy', proxy, 'might be banned from ' + store + '. Adding it to the bad list.')
