@@ -30,6 +30,7 @@ Currently, the following stores are supported:
 * Best Buy (including open-box and combos. Does not currently work with proxies)
 * Costco (Does not currently work with proxies)
 * Currys (UK)
+* Ebuyer (UK)
 * Gamestop
 * Microcenter
 * Newegg (including combo deals)
@@ -170,6 +171,7 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 ## Things to work on
 * Add more stores
     * B&H Photo Video
+    * ~~Ebuyer~~
     * ~~Walmart~~
     * ~~Gamestop~~
     * ~~Currys~~

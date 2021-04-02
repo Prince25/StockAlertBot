@@ -11,6 +11,7 @@ import argos from './stores/argos.js'
 import bestbuy from './stores/bestbuy.js'
 import costco from './stores/costco.js'
 import currys from './stores/currys.js'
+import ebuyer from './stores/ebuyer.js'
 import gamestop from './stores/gamestop.js'
 import microcenter from './stores/microcenter.js'
 import newegg from './stores/newegg.js'
@@ -170,6 +171,10 @@ function main() {
 
             case 'currys':
                 checkStore(currys, url);
+                break;
+
+            case 'ebuyer':
+                checkStore(ebuyer, url);
                 break;
                 
             case 'gamestop':
