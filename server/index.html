@@ -1440,17 +1440,17 @@
                     updateEmailTo(to) {
                         this.envSettings.EMAIL_TO = to
                     },
-
+                    var SERVER_NAME = 'http://localhost:3250';
                     // Send settings via a POST request to be saved
                     sendSettings() {
-                        axios.post('http://localhost:3250/config', this.userSettings)
+                        axios.post(SERVER_NAME.concat('/config'), this.userSettings)
                             .then(function (response) {
                                 console.log('User settings successfully written!', response);
                             }).catch(function (error) {   // Handle error
                                 console.log('Error writing user settings', error);
                             })
 
-                        axios.post('http://localhost:3250/env', this.envSettings)
+                        axios.post(SERVER_NAME.concat('/env'), this.envSettings)
                             .then(function (response) {
                                 console.log('.env settings successfully written!', response);
                             }).catch(function (error) {   // Handle error
@@ -1461,7 +1461,7 @@
 
                 mounted() {
                     // Get settings already saved in file
-                    axios.get('http://localhost:3250/config')
+                    axios.get(SERVER_NAME.concat('/config'))
                         .then(res => {
                             this.userSettings = res.data
                             console.log('User settings successfully fetched!')
@@ -1478,7 +1478,7 @@
                         })
 
                     // Get .env data
-                    axios.get('http://localhost:3250/env')
+                    axios.get(SERVER_NAME.concat('/env'))
                         .then(res => {
                             this.envSettings = res.data
                             console.log('.env settings successfully fetched!')
