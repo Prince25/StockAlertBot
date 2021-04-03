@@ -6,7 +6,9 @@ import HttpsProxyAgent from 'https-proxy-agent';
 import { PROXIES, PROXY_LIST } from '../main.js'
 
 
-// Get a random user agent
+/* 
+    Get a random user agent
+*/
 export function getUserAgent() {
     return ua.getRandom(function (ua) {
         return ua.deviceType != 'mobile' && parseFloat(ua.browserVersion) >= 40;
@@ -14,10 +16,13 @@ export function getUserAgent() {
 }
 
 
-// Get a random proxy from the list
+/* 
+    Get a random proxy from the list
+    TODO: return bad proxies
+*/
 export function getProxy(badProxies) {  
     let proxy;
-    if (PROXIES.length == badProxies.size) {
+    if (PROXY_LIST.length == badProxies.size) {
         badProxies = new Set()
         log.toConsole('info', 'All proxies used. Resetting bad proxy list.')
     }
@@ -28,8 +33,10 @@ export function getProxy(badProxies) {
 }
 
 
-// Fetches the item page and returns html in a promise 
-// Returns false if not successful
+/*
+    Fetches the item page and returns html in a promise 
+    Returns false if not successful
+*/
 export function fetchPage(url, badProxies) {
     const headers = {
         "user-agent": getUserAgent(),

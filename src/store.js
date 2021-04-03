@@ -1,63 +1,66 @@
 import chalk from 'chalk'
-import Item from './item.js'
-import cheerio from 'cheerio'
+import moment from "moment";
 import * as log from './utils/log.js'
-import { INTERVAL } from "./main.js";
+import getMs from './utils/interval-value.js'
+import { INTERVAL, STORE_INTERVALS, TIME_BETWEEN_CHECKS } from "./main.js";
+
+const PROXY_BLOCKING_MESSAGES = [
+	""
+]
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms)) 
 
 export default class Store {
 	constructor(name, storeFunction) {
 		this.name = name;
 		this.items = [];
-		this.badProxies = [];
-		this.storeFunction = storeFunction
+		this.bad_proxies = new Set();
+		this.store_function = storeFunction,
+		this.interval = getMs(STORE_INTERVALS[name] ? STORE_INTERVALS[name] : INTERVAL)
+		this.delay = getMs(TIME_BETWEEN_CHECKS)
+		this.check_in_progress = false
+		this.last_checked = moment().unix()
 	}
 
-	// Adds an Item to the array
+
+
+	/*
+		Adds an Item to the array
+	*/
 	addItem(item) {
 		this.items.push(item);
 	}
 
-	// Starts checking status of items
+
+
+	/*
+		Starts checking status of items
+	*/
 	startMonitor() {
 		if (this.items.length == 0) {
 			log.toConsole('error', 'Cannot start montior: no items added!')
 			return
 		}
 
-		log.toConsole('info', 'Starting monitor for store: ' + chalk.cyan.bold(this.name))
-        
-		setInterval(this.monitorItems.bind(this), INTERVAL.value * 1000)
-	}
+		log.toConsole('info', 'Starting monitor for: ' + chalk.cyan.bold(this.name))
 
-	async monitorItems() {
-		for (const item of this.items) {
-			if (item.info.title)
-				log.toConsole('info', 'Checking item, ' + chalk.magenta(item.info.title) + ', from store: ' + chalk.cyan.bold(this.name))
-			else
-				log.toConsole('info', 'Checking url: ' + chalk.magenta(item.url))
-
-			if (!await item.getPage(this.badProxies)) continue
-			if (!await item.extractInformation(this.storeFunction)) continue
-		}
-	}
-
-
-}
-
-
-const currysFunction = (html) => {
-	const TITLE_SELECTOR = ".prd-name"
-	const INVENTORY_SELECTOR = "div[data-component='add-to-basket-button-wrapper']:first"
-	const IMAGE_SELECTOR = "meta[property='og:image']"
-
-	const $ = cheerio.load(html)
-	const title = $(TITLE_SELECTOR).text().trim()
-	const inventory = $(INVENTORY_SELECTOR).attr('data-button-label').trim()
-	const image = $(IMAGE_SELECTOR).attr('content')
+		const monitorItems = async () => {
+			const length = this.items.length
+			for (const [index, item] of this.items.entries()) {
+				if (item.info.title)
+					log.toConsole('info', 'Checking ' + chalk.magenta(item.info.title) + ' at ' + chalk.cyan.bold(this.name))
+				else
+					log.toConsole('info', 'Checking url: ' + chalk.magenta(item.url))
 	
-	return { title, inventory, image }
+				if (!await item.getPage(this.bad_proxies)) continue
+				if (!await item.extractInformation(this.store_function)) continue
+				if (index != length - 1) await sleep(this.delay)
+			}
+
+			setTimeout(monitorItems.bind(this), this.interval)
+		}
+
+		monitorItems()
+	}
 }
 
-const currys = new Store('currys', currysFunction)
-currys.addItem(new Item('https://www.currys.co.uk/gbuk/gaming/pc-gaming/gaming-laptops/asus-rog-zephyrus-duo-15-se-15-6-gaming-laptop-amd-ryzen-9-rtx-3080-2-tb-ssd-10220360-pdt.html'))
-currys.startMonitor()

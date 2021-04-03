@@ -30,6 +30,7 @@ Currently, the following stores are supported:
 * Best Buy (including open-box and combos. Does not currently work with proxies)
 * Costco (Does not currently work with proxies)
 * Currys (UK)
+* Ebuyer (UK)
 * Gamestop
 * Microcenter
 * Newegg (including combo deals)
@@ -66,7 +67,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
         - If you have Amazon link(s), you will see an option to pick a region. Select a region if you want to only monitor items sold by Amazon and not third party sellers. If you want to use a particular seller or if your region is not in the list, select `Custom` and provide the merchant ID. See [Feedback and Support](#Feedback-and-Support) if you'd like to request a region.
         - If you have Target link(s), you will see additional options to put zip code and API Key. Only change the key if you get API key errors. Refer to the instructions in the following [section](#Via-Text-Editor).
     4. Configure notification options in Optional tab.
-        - If you want notifications sent to Discord or Slack, expand WEBHOOKS and enter the URL(s) there.
+        - If you want notifications sent to [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks), [IFTTT](https://maker.ifttt.com/), or [Slack](https://api.slack.com/messaging/webhooks), expand WEBHOOKS and enter the webhook URL(s) there.
         - If you want notification sent via SMS/Text, expand SMS and choose a method: Amazon Web Services, Email, or Twilio. See [SMS](#SMS).
         - If you want notifications sent to Email, turn on email and enter your service provider information. Some providers (Yahoo, AOL, AT&T) cause problems. Refer to this [section](#Email).
     5. Once you're happy with the settings, click `Save Settings`.\
@@ -89,7 +90,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
             In DevTools, you have to click the gear and check "Log XMLHttpRequests" to see them
             3. Click on any of the urls that has the string "key=" and copy the whole key
             4. Paste it to `TARGET_KEY`
-        3. **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks) or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array.
+        3. **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks), [IFTTT](https://ifttt.com/maker_webhooks/), or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array.
         4. **If** you want to use Proxies, change `PROXIES` to `true` and create a file called `proxies.txt` in the root directory and fill it with one proxy per line. See [proxies](#Proxies).
         5. **If** you want to send alerts to SMS, change `SMS_METHOD` to either "Email", "Amazon Web Services", or "Twilio". Then change the associated values in `.env`. See [SMS](#SMS).
         6. **If** you want to send alerts to email, change `EMAIL` in `config.json` to `true`. Make a copy of `example.env` and rename it to `.env`. Inside `.env`, type out one of the service providers (`EMAIL_SERVICE`) listed in [Email](#Email), your email (`EMAIL_FROM`) and password (`EMAIL_PASS`) and the email you want alerts sent to (`EMAIL_TO`). All without quotes.
@@ -170,6 +171,7 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 ## Things to work on
 * Add more stores
     * B&H Photo Video
+    * ~~Ebuyer~~
     * ~~Walmart~~
     * ~~Gamestop~~
     * ~~Currys~~

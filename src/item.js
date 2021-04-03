@@ -19,8 +19,10 @@ export default class Item {
 	}
 
 
-	// Fetches the item page and assigns the html to this.html
-	// Returns a promise of true if successful, false otherwise
+	/*
+		Fetches the item page and assigns the html to this.html
+		Returns a promise of true if successful, false otherwise
+	*/
 	getPage(badProxies) {
 		return new Promise(async resolve => {
 			const html = await fetchPage(this.url, badProxies)
@@ -31,9 +33,10 @@ export default class Item {
 		})
 	}
 
-
-	// Extract item information based on the passed callback function and assigns it to this.info
-	// Returns true if successful, false otherwise
+	/*
+		Extract item information based on the passed callback function and assigns it to this.info
+		Returns true if successful, false otherwise
+	*/
 	extractInformation(storeFunction) {
 		return new Promise(async resolve => {
 			const info = storeFunction(this.html)

@@ -5,7 +5,7 @@ import moment from "moment";
 
 
 const DIRECTORY = "../../logs/";
-const MOMENT_FORMAT = "hh:mm:ss a"
+const MOMENT_FORMAT = "LTS"
 
 
 /*

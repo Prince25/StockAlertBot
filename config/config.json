@@ -7,6 +7,7 @@
         "bestbuy",
         "costco",
         "currys",
+        "ebuyer",
         "gamestop",
         "microcenter",
         "newegg",
@@ -31,7 +32,8 @@
     "WEBHOOK_URLS": [],
     "SUPPORTED_WEBHOOK_DOMAINS": [
         "discord",
-        "slack"
+        "slack",
+        "ifttt"
     ],
     "PROXIES": false,
     "EMAIL": false,
