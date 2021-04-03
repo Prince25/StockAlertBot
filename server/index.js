@@ -43,7 +43,7 @@ var app = express();
 console.log('Starting server...')
 app.use(cors());
 app.options('*', cors());
-app.listen(3250, listening);
+app.listen(3250, '0.0.0.0', listening);
 
 function listening(){
   console.log("Server started!")
