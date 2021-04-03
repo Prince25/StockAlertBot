@@ -1,14 +1,14 @@
-import axios from "axios";
 import moment from "moment";
-import { writeErrorToFile } from "../log.js";
-import { WEBHOOK_URLS } from "../../main.js";
+import fetch from 'node-fetch'
+import * as log from '../log';
 
-export default async function sendAlertToWebhooks(product_url, title, image, store) {
+export default async function sendAlertToWebhooks(WEBHOOK_URLS, product_url, title, image, store) {
 	for (const url of WEBHOOK_URLS) {
+		
 		// Notify Discord
 		if (url.includes("discord")) {
-			console.info(moment().format("LTS") + ": Sending alert to discord");
-			axios({
+			log.toConsole('alert', 'Sending notification to Discord!')
+			fetch({
 				method: "POST",
 				url: url,
 				headers: {
@@ -24,7 +24,7 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
 							footer: {
 								text: `StockAlertBot | ${moment().format(
 									"MMMM Do YYYY - h:mm:ss A"
-								)}`,
+								)}\nhttps://github.com/Prince25/StockAlertBot`,
 							},
 							thumbnail: {
 								url: image,
@@ -49,15 +49,17 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
 					],
 				},
 			}).catch((error) => {
-				console.error(moment().format("LTS") + ": Error sending alert to Discord.");
-				writeErrorToFile("Discord", error);
+				log.toConsole('error', 'Error sending notification to Discord: ' + error)
+				log.toFile('Discord', error)
 			});
 
-			// Notify Slack
+		// Notify Slack
 		} else if (url.includes("slack")) {
-			console.info(moment().format("LTS") + ": Sending alert to slack");
-			axios
-				.post(url, {
+			log.toConsole('alert', 'Sending notification to Slack!')
+			fetch({
+				method: 'POST',
+				url: url,
+				data: {
 					attachments: [
 						{
 							title: title,
@@ -83,18 +85,19 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
 							thumb_url: image,
 							footer: `StockAlertBot | ${moment().format(
 								"MMMM Do YYYY - h:mm:ss A"
-							)}`,
+							)}\nhttps://github.com/Prince25/StockAlertBot`,
 						},
 					],
-				})
+				}})
 				.catch((error) => {
-					console.error(moment().format("LTS") + ": Error sending alert to Slack.");
-					writeErrorToFile("Slack", error);
+					log.toConsole('error', 'Error sending notification to Slack: ' + error)
+					log.toFile("Slack", error);
 				});
+
 		// Notify IFTTT  
 		} else if (url.includes('ifttt')) {
-			console.info(moment().format('LTS') + ": Sending alert to IFTTT")
-			axios({
+			log.toConsole('alert', 'Sending notification to IFTTT!')
+			fetch({
 				method: 'POST',
 				url: url,
 				headers: {
@@ -107,8 +110,8 @@ export default async function sendAlertToWebhooks(product_url, title, image, sto
 				}
 			})
 			.catch(error => {
-				console.error(moment().format('LTS') + ": Error sending alert to IFTTT.")
-				writeErrorToFile('IFTTT', error)
+				log.toConsole('error', 'Error sending notification to IFTTT: ' + error)
+				log.toFile('IFTTT', error)
 			}) 
 		}  
 	}   

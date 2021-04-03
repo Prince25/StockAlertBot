@@ -1,9 +1,10 @@
 import chalk from 'chalk'
-import moment from "moment";
-import * as log from './utils/log.js'
+import moment from "moment";	// TODO : Need this?
+import * as log from './utils/log.js'	// TODO : Need toFile?
 import getMs from './utils/interval-value.js'
 import { INTERVAL, STORE_INTERVALS, TIME_BETWEEN_CHECKS } from "./main.js";
 
+// TODO
 const PROXY_BLOCKING_MESSAGES = [
 	""
 ]
@@ -18,8 +19,8 @@ export default class Store {
 		this.store_function = storeFunction,
 		this.interval = getMs(STORE_INTERVALS[name] ? STORE_INTERVALS[name] : INTERVAL)
 		this.delay = getMs(TIME_BETWEEN_CHECKS)
-		this.check_in_progress = false
-		this.last_checked = moment().unix()
+		this.check_in_progress = false		// TODO : Need this?
+		this.last_checked = moment().unix()	// TODO : Need this?
 	}
 
 
@@ -43,39 +44,52 @@ export default class Store {
 		}
 		
 		log.toConsole('setup', 'Starting monitor for: ' + chalk.cyan.bold(this.name.toUpperCase()))
+		this.monitorItems()
+	}
 
-		const monitorItems = async () => {
-			const length = this.items.length
-			for (const [index, item] of this.items.entries()) {
-				if (item.info.title)
-					log.toConsole('info', 'Checking ' + chalk.magenta.bold(item.info.title) + ' at ' + chalk.cyan.bold(this.name))
-				else
-					log.toConsole('info', 'Checking url: ' + chalk.magenta(item.url))
-	
-				if (!await item.getPage(this.bad_proxies)) {
-					await sleep(this.delay)
-					continue
-				}
+	/*
+		Recursively checks all items 
+	*/
+	async monitorItems() {
+		const length = this.items.length
+		for (const [index, item] of this.items.entries()) {
+			if (item.info.title)
+				log.toConsole('info', 'Checking ' + chalk.magenta.bold(item.info.title) + ' at ' + chalk.cyan.bold(this.name.toUpperCase()))
+			else
+				log.toConsole('info', 'Checking url: ' + chalk.magenta(item.url))
+			
+			// Gets Item Page
+			if (!await item.getPage(this.bad_proxies)) {
+				await sleep(this.delay)
+				continue
+			}
 
-				if (!await item.extractInformation(this.name, this.store_function)) {
-					await sleep(this.delay)
-					continue
-				}
-				
-				if (index != length - 1) await sleep(this.delay)
+			// Extract item information from the page
+			if (!await item.extractInformation(this.name, this.store_function)) {
+				await sleep(this.delay)
+				continue
+			}
+
+			// Sends notifications about the item
+			if (item.info.inventory && item.notificationSent) {
+				log.toConsole('info', chalk.magenta.bold(item.info.title) + ' is still in stock at ' + chalk.cyan.bold(this.name.toUpperCase()))
+			}
+			if (item.shouldSendNotification && !item.notificationSent) {
+				log.toConsole('stock', chalk.magenta.bold(item.info.title) + ' is in stock at ' + chalk.cyan.bold(this.name.toUpperCase()) + '!!')
+				item.notificationSent = true;
 			}
 			
-			log.toConsole(
-				'info',
-				'Waiting ' + 
-				chalk.yellow.bold(STORE_INTERVALS[this.name] ? 
-					STORE_INTERVALS[this.name].value + ' ' + STORE_INTERVALS[this.name].unit : 
-					INTERVAL[this.name].value + ' ' + INTERVAL[this.name].unit) +
-				' to check ' + chalk.cyan.bold(this.name.toUpperCase()) + ' again')
-			setTimeout(monitorItems.bind(this), this.interval)
+			if (index != length - 1) await sleep(this.delay)
 		}
+		
+		log.toConsole(
+			'info',
+			'Waiting ' + 
+			chalk.yellow.bold(STORE_INTERVALS[this.name] ? 
+				STORE_INTERVALS[this.name].value + ' ' + STORE_INTERVALS[this.name].unit : 
+				INTERVAL.value + ' ' + INTERVAL.unit) +
+			' to check ' + chalk.cyan.bold(this.name.toUpperCase()) + ' again')
 
-		monitorItems()
+		setTimeout(this.monitorItems.bind(this), this.interval)
 	}
 }
-

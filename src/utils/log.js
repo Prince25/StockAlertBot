@@ -15,6 +15,14 @@ const MOMENT_FORMAT = "LTS"
 export function toConsole(type, message) {
 	const time = () => moment().format(MOMENT_FORMAT)
 	switch (type.toLowerCase()) {
+		case 'alert':
+			console.error(
+				"[" + chalk.magenta.bold(type.toUpperCase()) + "]" + "\t" +
+				chalk.gray.italic(time()) + ": " +
+				message
+			)
+			break
+
 		case 'error':
 			console.error(
 				"[" + chalk.red.bold(type.toUpperCase()) + "]" + "\t" +

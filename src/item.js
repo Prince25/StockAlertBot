@@ -1,5 +1,4 @@
-import chalk from 'chalk'
-import * as log from './utils/log.js'
+import * as log from './utils/log.js'	// TODO : Need toConsole?
 import { fetchPage } from './utils/fetch.js'
 
 
@@ -41,7 +40,12 @@ export default class Item {
 		return new Promise(async resolve => {
 			const info = storeFunction(this.html)
 			if (info.title && info.image && typeof(info.inventory) == 'boolean') {
-				this.info =  info
+				// Change notification status to false once item goes out of stock
+				if (this.notificationSent && !info.inventory)
+					this.notificationSent = false	
+
+				this.shouldSendNotification = !this.info.inventory && info.inventory	// Check change in item stock
+				this.info = info
 				resolve(true)
 			} else if (info.error) {
 				log.toFile(store, info.error, this)
