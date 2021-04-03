@@ -10,6 +10,7 @@ log.toConsole('info', chalk.red("https://github.com/Prince25/StockAlertBot\n"))
 log.toConsole('setup', 'Starting setup...')
 
 
+
 log.toConsole('setup', 'Importing necessary files...')
 /*
 	Import store functions and assign them
@@ -19,6 +20,8 @@ import currysFunction from './stores/currys.js'
 const storeFunctionMap = {
 	"currys": currysFunction
 }
+
+
 
 // Read config.json
 export const {
@@ -33,6 +36,7 @@ export const {
 	TARGET_ZIP_CODE,
 	TARGET_KEY,
 	WEBHOOK_URLS,
+	SUPPORTED_WEBHOOK_DOMAINS,
 	PROXIES,
 	EMAIL,
 	SMS_METHOD, // "None", "Amazon Web Services", "Email", "Twilio"
@@ -44,28 +48,15 @@ export const PROXY_LIST = (() =>
 	PROXIES ? fs.readFileSync("config/proxies.txt", "UTF-8").split(/\r?\n/).filter((proxy) => proxy != "") : []
 )()
 
-
-
-
-
-
-// const currys = new Store('currys', currysFunction)
-// currys.addItem(new Item('https://www.currys.co.uk/gbuk/gaming/pc-gaming/gaming-laptops/asus-rog-zephyrus-duo-15-se-15-6-gaming-laptop-amd-ryzen-9-rtx-3080-2-tb-ssd-10220360-pdt.html'))
-// currys.addItem(new Item('https://www.currys.co.uk/gbuk/household-appliances/cooking/cookers/essentials-cfsewh18-50-cm-electric-solid-plate-cooker-white-10179280-pdt.html'))
-// currys.addItem(new Item('https://www.currys.co.uk/gbuk/computing-accessories/printers-scanners-and-ink/printers/epson-expression-home-xp-4105-all-in-one-wireless-inkjet-printer-10195552-pdt.html'))
-// currys.startMonitor()
-
-
-
 // Check if webhooks are supported
 if (WEBHOOK_URLS.length > 0) {
 	log.toConsole('setup', 'Checking webhooks...')
 	WEBHOOK_URLS.forEach(url => {
-	
+		if (!SUPPORTED_WEBHOOK_DOMAINS.some((webhookDomain) => url.includes(webhookDomain))) {
+			log.toConsole('error', 'Webhook not supported: ' + chalk.blue.bold(url))
+		}
 	})
 }
-(() => {
-})()
 
 
 
@@ -113,141 +104,9 @@ function main() {
 		}
 	})
 
-	
-
-	// for (const url of URLS) {
-	// 	store.addItem(new Item(url))
-	// 	stores.add(storeName)
-
-	// 	switch (storeName) {
-	// 		case "antonline":
-	// 			break;
-
-	// 		case "amazon":
-	// 			break;
-
-	// 		case "argos":
-	// 			break;
-
-	// 		case "bestbuy":
-	// 			break;
-
-	// 		case "costco":
-	// 			break;
-
-	// 		case "currys":
-	// 			break;
-
-	// 		case "gamestop":
-	// 			break;
-
-	// 		case "microcenter":
-	// 			break;
-
-	// 		case "newegg":
-	// 			break;
-
-	// 		case "target":
-	// 			break;
-
-	// 		case "tesco":
-	// 			break;
-
-	// 		case "walmart":
-	// 			break;
-
-	// 		default:
-	// 			console.error("This store is not supported:", storeName);
-	// 	}
-	// }
-
-
-
-	// if (amazonItems.length > 0)
-	// 	for (const [index, item] of amazonItems.entries()) {
-	// 		switch (INTERVAL.unit) {
-	// 			case "seconds":
-	// 				setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * index, item);
-	// 				break;
-
-	// 			case "minutes":
-	// 				setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * 60 * index, item);
-	// 				break;
-
-	// 			case "hours":
-	// 				setTimeout(checkStoreWithDelay, AMAZON_DELAY * 1000 * 60 * 60 * index, item);
-	// 				break;
-	// 		}
-	// 	}
+	storeFunctions.forEach(store => {
+		store.startMonitor()
+	})
 }
 
-
-console.log(getDomainName('https://discord.com/api/webhooks/819409247414255635/sdGaXOU_TJtHPeHWjtD_j3rBqK_cMJFGJAnlseJS1o-XTyXpFIUZE9oFHJfpGaUSbfO4'))
 main()
-
-
-/*
-
-// Calls the given store function with the set interval
-async function checkStore(storeFunction, url) {
-	switch (INTERVAL.unit) {
-		case "seconds":
-			setInterval(storeFunction, INTERVAL.value * 1000, url, INTERVAL);
-			break;
-
-		case "minutes":
-			setInterval(storeFunction, INTERVAL.value * 1000 * 60, url, INTERVAL);
-			break;
-
-		case "hours":
-			setInterval(storeFunction, INTERVAL.value * 1000 * 60 * 60, url, INTERVAL);
-			break;
-	}
-}
-
-// Same as checkStore() but adds dynamic delay to interval to help avoid 503 error
-// Takes an item with url, interval, firstRun, and storeFunc properties (see amazonItem() below for an example)
-async function checkStoreWithDelay(item) {
-	let timer = (firstRun) => {
-		return new Promise(function (resolve) {
-			item.storeFunc(
-				item.url,
-				item.interval,
-				INTERVAL.value,
-				firstRun,
-				item.urlOpened,
-				resolve
-			);
-		});
-	};
-
-	timer(item.firstRun).then(async function ({ interval, urlOpened }) {
-		if (item.interval.value != interval) {
-			item.firstRun = true;
-			item.interval.value = interval;
-		} else item.firstRun = false;
-
-		if (OPEN_URL && urlOpened && urlOpened != item.urlOpened) {
-			item.urlOpened = true;
-			setTimeout(() => (item.urlOpened = false), 1000 * 295); // Open URL and send alerts every 5 minutes
-		}
-
-		switch (item.interval.unit) {
-			case "seconds":
-				setTimeout(checkStoreWithDelay, item.interval.value * 1000, item);
-				break;
-
-			case "minutes":
-				setTimeout(checkStoreWithDelay, item.interval.value * 1000 * 60, item);
-				break;
-
-			case "hours":
-				setTimeout(checkStoreWithDelay, item.interval.value * 1000 * 60 * 60, item);
-				break;
-		}
-	});
-}
-
-
-
-*/

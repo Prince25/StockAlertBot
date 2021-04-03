@@ -1,15 +1,14 @@
 import chalk from 'chalk'
 import * as log from './utils/log.js'
 import { fetchPage } from './utils/fetch.js'
-import { INTERVAL } from "./main.js";
 
 
 export default class Item {
 	constructor(url) {
 		this.url = url;
-		this.interval = INTERVAL;
-		this.firstRun = true;
-		this.urlOpened = false;
+		this.firstRun = true;	// TODO : Need this?
+		this.notificationSent = false;
+		this.shouldSendNotification = true;
 		this.html = undefined;
 		this.info = {
 			title: undefined,
@@ -29,7 +28,8 @@ export default class Item {
 			if (html) {
 				this.html = html;
 				resolve(true);
-			} else resolve(false);
+			}
+			resolve(false);
 		})
 	}
 
@@ -37,14 +37,19 @@ export default class Item {
 		Extract item information based on the passed callback function and assigns it to this.info
 		Returns true if successful, false otherwise
 	*/
-	extractInformation(storeFunction) {
+	extractInformation(store, storeFunction) {
 		return new Promise(async resolve => {
 			const info = storeFunction(this.html)
-			if (info.title && info.inventory && info.image) {
-				this.info = info
+			if (info.title && info.image && typeof(info.inventory) == 'boolean') {
+				this.info =  info
 				resolve(true)
+			} else if (info.error) {
+				log.toFile(store, info.error, this)
+				resolve(false);
+			} else {
+				log.toFile(store, 'Unable to get information', Object.assign(this, info))
+				resolve(false);
 			}
-			resolve(false);
 		})
 	}
 }

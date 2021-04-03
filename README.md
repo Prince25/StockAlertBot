@@ -18,7 +18,17 @@ Donate, buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Piz
 
 ### How does it work?
 
-Enter links of the products you want tracked and how often you want the program to check if those products are in stock. When an item becomes available, you may configure it to  notify you through variety of alerts including sound, email, discord and slack notifications, SMS / Text, console, automatically opening the URL in your browser, and more to come.
+Enter links of the products you want tracked and how often you want the program to monitor them. When an item becomes available, you will be alerted through variety of notifications
+<br><br>
+
+### Features
+* Automatically open a product's URL
+* Notifications
+    * Desktop
+    * Email
+    * SMS / Text
+    * Terminal
+    * Webhooks: Discord, IFTTT, and Slack
 <br><br>
 
 ### What stores/websites are supported?
@@ -34,7 +44,7 @@ Currently, the following stores are supported:
 * Gamestop
 * Microcenter
 * Newegg (including combo deals)
-* Target (Works but may require additional setup)
+* Target
 * Tesco (UK. Does not currently work with proxies)
 * Walmart
 
@@ -153,7 +163,8 @@ If you plan to use low interval rates OR track several items from one store, it 
 <br><br>
 
 
-## Screenshots
+## Screenshots 
+<!-- TODO -->
 ![Screenshot of URLs](https://i.imgur.com/FVrmKNA.png)<br><br>
 ---
 <br><br>![Screenshot of Settings](https://i.imgur.com/ue3Pdlv.png)<br><br>

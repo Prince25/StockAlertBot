@@ -1576,18 +1576,18 @@
 					// Add a webhook URL
 					addWebhookURL(urlToAdd) {
 						if (this.isValidHttpUrl(urlToAdd)) {
-							if (
-								this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some((webhookDomain) =>
+							if (this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some((webhookDomain) =>
 									urlToAdd.includes(webhookDomain)
-								)
-							)
+								)) 
+							{
 								if (!this.userSettings.WEBHOOK_URLS.includes(urlToAdd)) {
 									this.userSettings.WEBHOOK_URLS.push(urlToAdd);
 									document.getElementById("add_webhook_url_error").textContent =
 										"";
-								} else
+								} else 
 									document.getElementById("add_webhook_url_error").textContent =
 										"Error: URL already included.";
+							}
 							else
 								document.getElementById("add_webhook_url_error").textContent =
 									"Error: Webhook currently not supported.";

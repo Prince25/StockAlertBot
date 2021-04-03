@@ -4,7 +4,7 @@ import chalk from 'chalk'	// https://www.npmjs.com/package/chalk
 import moment from "moment";
 
 
-const DIRECTORY = "../../logs/";
+const DIRECTORY = "logs/";
 const MOMENT_FORMAT = "LTS"
 
 
@@ -53,33 +53,30 @@ export function toConsole(type, message) {
 /*
 	Writes a message (preferably an error) to log file
 */
-export function toFile(store, error, html = undefined) {
-	fs.writeFile(DIRECTORY + store + ".log", util.inspect(error), function (error) {
+export function toFile(store, error, item = undefined) {
+	const itemClone = Object.assign({}, item);
+	delete itemClone.html;
+	fs.writeFile(DIRECTORY + store + ".log", util.inspect(error) + '\n' + JSON.stringify(itemClone), function (error) {
 		if (error) toConsole("error", chalk.red("File write error: ") + error);
 	});
 
-	toConsole(
-		"error",
-		"Error occured for " +
-		chalk.cyan(store) + ". Written to " + 
-		chalk.yellow(DIRECTORY + store + ".log.")
-	);
+	let message = 
+		"Error occured for " + chalk.cyan.bold(store) +
+		( item && item.title ?
+			" while checking the item, " + chalk.magenta.bold(item.title) :
+			item ? " while checking url: " + chalk.magenta(item.url) : "" )
+		+ ".\n\t\t\     Writing error information to " + chalk.yellow(DIRECTORY + store + ".log.")
 
-	let message =
-		"This is usually not a problem but if this error appears frequently, please report the error (and the log) to GitHub.";
-
-	if (html) {
+	if (item.html) {
 		message +=
-			"\nHTML written for " +
-			chalk.cyan(store) +
-			" to " +
-			chalk.yellow(DIRECTORY + store + "ErrorPage.html. ") +
-			"Please report this bug to GitHub and upload this file.";
+			"\n\t\t\     Writing HTML to " +
+			chalk.yellow(DIRECTORY + store + "ErrorPage.html.");
 
-		fs.writeFile(DIRECTORY + store + "ErrorPage.html", html, function (error) {
+		fs.writeFile(DIRECTORY + store + "ErrorPage.html", item.html, function (error) {
 			if (error) toConsole("error", chalk.red("File write error: ") + error);
 		});
 	}
+	message += "\n\t\t\     This is usually not a problem but if this error appears frequently, please report the error and post the log and html files to GitHub.";
 
-	toConsole("info", message);
+	toConsole("error", message);
 }

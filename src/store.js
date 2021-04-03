@@ -41,22 +41,37 @@ export default class Store {
 			log.toConsole('error', 'Cannot start montior: no items added!')
 			return
 		}
-
-		log.toConsole('info', 'Starting monitor for: ' + chalk.cyan.bold(this.name))
+		
+		log.toConsole('setup', 'Starting monitor for: ' + chalk.cyan.bold(this.name.toUpperCase()))
 
 		const monitorItems = async () => {
 			const length = this.items.length
 			for (const [index, item] of this.items.entries()) {
 				if (item.info.title)
-					log.toConsole('info', 'Checking ' + chalk.magenta(item.info.title) + ' at ' + chalk.cyan.bold(this.name))
+					log.toConsole('info', 'Checking ' + chalk.magenta.bold(item.info.title) + ' at ' + chalk.cyan.bold(this.name))
 				else
 					log.toConsole('info', 'Checking url: ' + chalk.magenta(item.url))
 	
-				if (!await item.getPage(this.bad_proxies)) continue
-				if (!await item.extractInformation(this.store_function)) continue
+				if (!await item.getPage(this.bad_proxies)) {
+					await sleep(this.delay)
+					continue
+				}
+
+				if (!await item.extractInformation(this.name, this.store_function)) {
+					await sleep(this.delay)
+					continue
+				}
+				
 				if (index != length - 1) await sleep(this.delay)
 			}
-
+			
+			log.toConsole(
+				'info',
+				'Waiting ' + 
+				chalk.yellow.bold(STORE_INTERVALS[this.name] ? 
+					STORE_INTERVALS[this.name].value + ' ' + STORE_INTERVALS[this.name].unit : 
+					INTERVAL[this.name].value + ' ' + INTERVAL[this.name].unit) +
+				' to check ' + chalk.cyan.bold(this.name.toUpperCase()) + ' again')
 			setTimeout(monitorItems.bind(this), this.interval)
 		}
 
