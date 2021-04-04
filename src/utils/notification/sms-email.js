@@ -1,12 +1,10 @@
 import chalk from 'chalk'
 import moment from "moment";
-import * as log from '../log';
+import * as log from '../log.js';
 import nodemailer from "nodemailer";
 
 
 export default async function sendAlertToSMSViaEmail(sms_email, product_url, title, image, store) {
-	log.toConsole('alert', 'Sending SMS via Email notification')
-
 	var transporter = nodemailer.createTransport({
 		service: sms_email.service,
 		auth: {

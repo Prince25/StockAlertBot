@@ -1,6 +1,6 @@
 import Twilio from "twilio";
 import moment from "moment";
-import * as log from '../log';
+import * as log from '../log.js';
 
 
 export default async function sendAlertToSMSViaTwilio(twilio, product_url, title, store) {

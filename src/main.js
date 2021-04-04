@@ -126,7 +126,7 @@ if (EMAIL || SMS_METHOD !== "None") {
 				break;
 
 			case 'Twilio':
-				if (env_config.twilio.sid == "" || env_config.twilio.auth == "" || env_config.twilio.from == "" || env_config.twilio.to == "") {
+				if (env_config.sms_twilio.sid == "" || env_config.sms_twilio.auth == "" || env_config.sms_twilio.from == "" || env_config.sms_twilio.to == "") {
 					log.toConsole('error', 'Twilio is chosen as SMS method but information is not provided in ' + chalk.yellow('config/.env'))
 					shouldTerminate = true;
 				}

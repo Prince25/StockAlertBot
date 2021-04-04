@@ -2,6 +2,7 @@ import chalk from 'chalk'
 import moment from "moment";	// TODO : Need this?
 import * as log from './utils/log.js'	// TODO : Need toFile?
 import getMs from './utils/interval-value.js'
+import sendAlerts from './utils/notification/alerts.js';
 import { INTERVAL, STORE_INTERVALS, TIME_BETWEEN_CHECKS } from "./main.js";
 
 // TODO
@@ -75,6 +76,7 @@ export default class Store {
 				log.toConsole('info', chalk.magenta.bold(item.info.title) + ' is still in stock at ' + chalk.cyan.bold(this.name.toUpperCase()))
 			}
 			if (item.shouldSendNotification && !item.notificationSent) {
+				sendAlerts(item.url, item.info.title, item.info.image, this.name)
 				log.toConsole('stock', chalk.magenta.bold(item.info.title) + ' is in stock at ' + chalk.cyan.bold(this.name.toUpperCase()) + '!!')
 				item.notificationSent = true;
 			}

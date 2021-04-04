@@ -5,7 +5,7 @@ import moment from "moment";
 
 
 const DIRECTORY = "logs/";
-const MOMENT_FORMAT = "LTS"
+const MOMENT_FORMAT = "hh:mm:ss: a"
 
 
 /*
@@ -17,7 +17,7 @@ export function toConsole(type, message) {
 	switch (type.toLowerCase()) {
 		case 'alert':
 			console.error(
-				"[" + chalk.magenta.bold(type.toUpperCase()) + "]" + "\t" +
+				"[" + chalk.yellow.bold(type.toUpperCase()) + "]" + "\t" +
 				chalk.gray.italic(time()) + ": " +
 				message
 			)
@@ -73,18 +73,18 @@ export function toFile(store, error, item = undefined) {
 		( item && item.title ?
 			" while checking the item, " + chalk.magenta.bold(item.title) :
 			item ? " while checking url: " + chalk.magenta(item.url) : "" )
-		+ ".\n\t\t\     Writing error information to " + chalk.yellow(DIRECTORY + store + ".log.")
+		+ ".\n\t\t\      Writing error information to " + chalk.yellow(DIRECTORY + store + ".log.")
 
-	if (item.html) {
+	if (item && item.html) {
 		message +=
-			"\n\t\t\     Writing HTML to " +
+			"\n\t\t\      Writing HTML to " +
 			chalk.yellow(DIRECTORY + store + "ErrorPage.html.");
 
 		fs.writeFile(DIRECTORY + store + "ErrorPage.html", item.html, function (error) {
 			if (error) toConsole("error", chalk.red("File write error: ") + error);
 		});
 	}
-	message += "\n\t\t\     This is usually not a problem but if this error appears frequently, please report the error and post the log and html files to GitHub.";
+	message += "\n\t\t\      This is usually not a problem but if this error appears frequently, please report the error and post the log and html files to GitHub.";
 
 	toConsole("error", message);
 }

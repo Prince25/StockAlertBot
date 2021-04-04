@@ -1,6 +1,6 @@
 import aws from "aws-sdk";
 import moment from "moment";
-import * as log from '../log';
+import * as log from '../log.js';
 
 
 
