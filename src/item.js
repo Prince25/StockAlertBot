@@ -21,14 +21,31 @@ export default class Item {
 		Fetches the item page and assigns the html to this.html
 		Returns a promise of true if successful, false otherwise
 	*/
-	getPage(badProxies) {
+	getPage(store, use_proxies, badProxies) {
 		return new Promise(async resolve => {
-			const html = await fetchPage(this.url, badProxies)
-			if (html) {
-				this.html = html;
-				resolve(true);
+			const response = await fetchPage(this.url, store, use_proxies, badProxies)
+			switch (response.status) {
+				case "ok":
+					this.html = response.html;
+					resolve({
+						"status": "ok"
+					})
+					break
+
+				case "retry":
+					this.html = response.html;
+					resolve({
+						"status": "retry",
+						"bad_proxies": response.badProxies
+					})
+					break
+
+				case "error":
+					resolve({
+						"status": "error"
+					})
+					break
 			}
-			resolve(false);
 		})
 	}
 

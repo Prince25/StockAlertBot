@@ -38,6 +38,7 @@ export const {
 	WEBHOOK_URLS,
 	SUPPORTED_WEBHOOK_DOMAINS,
 	PROXIES,
+	SUPPORTED_PROXY_DOMAINS,
 	EMAIL,
 	SMS_METHOD, // "None", "Amazon Web Services", "Email", "Twilio"
 } = JSON.parse(fs.readFileSync("config/config.json", "UTF-8"))

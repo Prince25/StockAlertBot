@@ -3,12 +3,8 @@ import moment from "moment";	// TODO : Need this?
 import * as log from './utils/log.js'	// TODO : Need toFile?
 import getMs from './utils/interval-value.js'
 import sendAlerts from './utils/notification/alerts.js';
-import { INTERVAL, STORE_INTERVALS, TIME_BETWEEN_CHECKS } from "./main.js";
+import { INTERVAL, STORE_INTERVALS, SUPPORTED_PROXY_DOMAINS, TIME_BETWEEN_CHECKS } from "./main.js";
 
-// TODO
-const PROXY_BLOCKING_MESSAGES = [
-	""
-]
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms)) 
 
@@ -17,6 +13,7 @@ export default class Store {
 		this.name = name;
 		this.items = [];
 		this.bad_proxies = new Set();
+		this.supports_proxies = SUPPORTED_PROXY_DOMAINS.includes(name);
 		this.store_function = storeFunction,
 		this.interval = getMs(STORE_INTERVALS[name] ? STORE_INTERVALS[name] : INTERVAL)
 		this.delay = getMs(TIME_BETWEEN_CHECKS)
@@ -60,7 +57,11 @@ export default class Store {
 				log.toConsole('info', 'Checking url: ' + chalk.magenta(item.url))
 			
 			// Gets Item Page
-			if (!await item.getPage(this.bad_proxies)) {
+			const response = await item.getPage(this.name, this.supports_proxies, this.bad_proxies)
+			if (response.status == "retry") {
+				this.bad_proxies = response.bad_proxies
+			}
+			else if (response.status == "error") {
 				await sleep(this.delay)
 				continue
 			}
