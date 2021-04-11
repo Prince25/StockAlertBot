@@ -16,9 +16,20 @@ log.toConsole('setup', 'Importing necessary files...')
 	Import store functions and assign them
 	* Important: Edit this when adding new stores
 */
+import amazonFunction from './stores/amazon.js'
+import antonlineFunction from './stores/antonline.js'
 import currysFunction from './stores/currys.js'
+import ebuyerFunction from './stores/ebuyer.js'
+import microcenterFunction from './stores/microcenter.js'
+import walmartFunction from './stores/walmart.js'
+
 const storeFunctionMap = {
-	"currys": currysFunction
+	"amazon": amazonFunction,
+	"antonline": antonlineFunction,
+	"currys": currysFunction,
+	"ebuyer": ebuyerFunction,
+	"microcenter": microcenterFunction,
+	"walmart": walmartFunction
 }
 
 
