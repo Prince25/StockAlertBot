@@ -37,6 +37,7 @@ Currently, the following stores are supported:
 * AntOnline
 * Amazon (fails at low interval rates, see [proxies](#Proxies))
 * Argos (UK. Does not currently work with proxies) (For PS5, use product link. Disc: https://www.argos.co.uk/product/8349000, Digital: https://www.argos.co.uk/product/8349024)
+* B&H Photo Video
 * Best Buy (including open-box and combos. Does not currently work with proxies)
 * Costco (Does not currently work with proxies)
 * Currys (UK)
@@ -181,7 +182,7 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 
 ## Things to work on
 * Add more stores
-    * B&H Photo Video
+    * ~~B&H Photo Video~~
     * ~~Ebuyer~~
     * ~~Walmart~~
     * ~~Gamestop~~

@@ -18,6 +18,7 @@ log.toConsole('setup', 'Importing necessary files...')
 */
 import amazonFunction from './stores/amazon.js'
 import antonlineFunction from './stores/antonline.js'
+import bhphotovideoFunction from './stores/bhphotovideo.js'
 import currysFunction from './stores/currys.js'
 import ebuyerFunction from './stores/ebuyer.js'
 import microcenterFunction from './stores/microcenter.js'
@@ -26,6 +27,7 @@ import walmartFunction from './stores/walmart.js'
 const storeFunctionMap = {
 	"amazon": amazonFunction,
 	"antonline": antonlineFunction,
+	"bhphotovideo": bhphotovideoFunction,
 	"currys": currysFunction,
 	"ebuyer": ebuyerFunction,
 	"microcenter": microcenterFunction,

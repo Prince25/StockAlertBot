@@ -22,6 +22,7 @@
         "amazon",
         "antonline",
         "argos",
+        "bhphotovideo",
         "bestbuy",
         "costco",
         "currys",
@@ -41,6 +42,7 @@
     "SUPPORTED_PROXY_DOMAINS": [
         "amazon",
         "antonline",
+        "bhphotovideo",
         "currys",
         "ebuyer",
         "gamestop",
