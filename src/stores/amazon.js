@@ -3,8 +3,8 @@ import cheerio from 'cheerio'
 export default function amazon(html) {
 	try {
 		const TITLE_SELECTOR = "#productTitle"
-		const INVENTORY_SELECTOR = "#add-to-cart-button"
 		const IMAGE_SELECTOR = "#landingImage"
+		const INVENTORY_SELECTOR = "#add-to-cart-button"
 
 		const $ = cheerio.load(html)
 		const title = $(TITLE_SELECTOR).text().trim()

@@ -3,8 +3,8 @@ import cheerio from 'cheerio'
 export default function currys(html) {
 	try {
 		const TITLE_SELECTOR = ".prd-name"
-		const INVENTORY_SELECTOR = "div[data-component='add-to-basket-button-wrapper']:first"
 		const IMAGE_SELECTOR = "meta[property='og:image']"
+		const INVENTORY_SELECTOR = "div[data-component='add-to-basket-button-wrapper']:first"
 	
 		const $ = cheerio.load(html)
 		const title = $(TITLE_SELECTOR).text().trim()

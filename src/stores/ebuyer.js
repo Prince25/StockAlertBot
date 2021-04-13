@@ -3,8 +3,8 @@ import cheerio from 'cheerio'
 export default function ebuyer(html) {
 	try {
 		const TITLE_SELECTOR = ".product-hero__title"
-		const INVENTORY_SELECTOR = ".js-add-to-basket-main.js-show-loader"
 		const IMAGE_SELECTOR = "div.image-gallery__hero > a > img"
+		const INVENTORY_SELECTOR = ".js-add-to-basket-main.js-show-loader"
 
 		const $ = cheerio.load(html)
 		const title = $(TITLE_SELECTOR).text().trim()

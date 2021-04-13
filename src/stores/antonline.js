@@ -3,12 +3,12 @@ import cheerio from 'cheerio'
 export default function antonline(html) {
 	try {
 		const TITLE_SELECTOR = ".title"
-		const INVENTORY_SELECTOR = ".uk-button"
-		const IMAGE_SELECTOR = "img"
+		const IMAGE_SELECTOR = "ul.uk-slideshow > li > img"
+		const INVENTORY_SELECTOR = "button.uk-button:first"
 
 		const $ = cheerio.load(html)
 		const title = $(TITLE_SELECTOR).text().trim()
-		const image = $(IMAGE_SELECTOR).eq(7).attr('src');
+		const image = $(IMAGE_SELECTOR).attr('src');
 		let inventory = $(INVENTORY_SELECTOR).text().trim()
 		
 		if (inventory == 'Add to Cart') {

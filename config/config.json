@@ -34,11 +34,6 @@
         "tesco",
         "walmart"
     ],
-    "SUPPORTED_WEBHOOK_DOMAINS": [
-        "discord",
-        "slack",
-        "ifttt"
-    ],
     "SUPPORTED_PROXY_DOMAINS": [
         "amazon",
         "antonline",
@@ -50,5 +45,10 @@
         "newegg",
         "target",
         "walmart"
+    ],
+    "SUPPORTED_WEBHOOK_DOMAINS": [
+        "discord",
+        "slack",
+        "ifttt"
     ]
 }

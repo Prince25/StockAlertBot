@@ -35,8 +35,8 @@ Enter links of the products you want tracked and how often you want the program 
 
 Currently, the following stores are supported:
 * AntOnline
-* Amazon (fails at low interval rates, see [proxies](#Proxies))
-* Argos (UK. Does not currently work with proxies) (For PS5, use product link. Disc: https://www.argos.co.uk/product/8349000, Digital: https://www.argos.co.uk/product/8349024)
+* Amazon (see [proxies](#Proxies))
+* Argos (UK. Does not currently work with proxies) (For PS5, use product link. Disc: `https://www.argos.co.uk/product/8349000`, Digital: `https://www.argos.co.uk/product/8349024`)
 * B&H Photo Video
 * Best Buy (including open-box and combos. Does not currently work with proxies)
 * Costco (Does not currently work with proxies)

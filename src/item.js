@@ -41,6 +41,8 @@ export default class Item {
 					break
 
 				case "error":
+					this.html = response.html;
+					log.toFile(store, response.error, this)
 					resolve({
 						"status": "error"
 					})

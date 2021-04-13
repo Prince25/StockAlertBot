@@ -64,12 +64,12 @@ export function toConsole(type, message) {
 export function toFile(store, error, item = undefined) {
 	const itemClone = Object.assign({}, item);
 	delete itemClone.html;
-	fs.writeFile(DIRECTORY + store + ".log", util.inspect(error) + '\n' + JSON.stringify(itemClone), function (error) {
+	fs.writeFile(DIRECTORY + store + ".log", util.inspect(error) + (item ? '\n' + "ITEM_INFO: " + JSON.stringify(itemClone, undefined, 4) : ''), function (error) {
 		if (error) toConsole("error", chalk.red("File write error: ") + error);
 	});
 
 	let message = 
-		"Error occured for " + chalk.cyan.bold(store) +
+		"Error occured for " + chalk.cyan.bold(store.toUpperCase()) +
 		( item && item.title ?
 			" while checking the item, " + chalk.magenta.bold(item.title) :
 			item ? " while checking url: " + chalk.magenta(item.url) : "" )
@@ -84,7 +84,7 @@ export function toFile(store, error, item = undefined) {
 			if (error) toConsole("error", chalk.red("File write error: ") + error);
 		});
 	}
-	message += "\n\t\t\      This is usually not a problem but if this error appears frequently, please report the error and post the log and html files to GitHub.";
+	message += "\n\t\t\      This is usually not a problem but if this error appears frequently, please report the error with the log and html files to GitHub.";
 
 	toConsole("error", message);
 }

@@ -62,13 +62,13 @@ export default class Store {
 				this.bad_proxies = response.bad_proxies
 			}
 			else if (response.status == "error") {
-				await sleep(this.delay)
+				if (index != length - 1) await sleep(this.delay)
 				continue
 			}
 
 			// Extract item information from the page
 			if (!await item.extractInformation(this.name, this.store_function)) {
-				await sleep(this.delay)
+				if (index != length - 1) await sleep(this.delay)
 				continue
 			}
 

@@ -3,8 +3,8 @@ import cheerio from 'cheerio'
 export default function walmart(html) {
 	try {
 		const TITLE_SELECTOR = ".prod-ProductTitle"
-		const INVENTORY_SELECTOR = ".prod-ProductCTA--primary"
 		const IMAGE_SELECTOR = "meta[property='og:image']"
+		const INVENTORY_SELECTOR = ".prod-ProductCTA--primary"
 
 		const $ = cheerio.load(html)
 		const title = $(TITLE_SELECTOR).text().trim()

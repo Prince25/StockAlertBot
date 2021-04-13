@@ -1,13 +1,16 @@
+import axios from 'axios';
 import fetch from 'node-fetch'
 import rand from 'random-seed'
-import * as log from './log.js'
 import ua from 'random-useragent'
+import { toConsole } from './log.js'
 import HttpsProxyAgent from 'https-proxy-agent';
 import { PROXIES, PROXY_LIST } from '../main.js'
 
-// TODO
+
 const PROXY_BLOCKING_MESSAGES = [
-	""
+    "Are you a human?",
+    "Help us keep your account safe by clicking on the checkbox below",
+    "we just need to make sure you're not a robot",
 ]
 
 
@@ -28,7 +31,7 @@ export function getProxy(badProxies) {
     let proxy;
     if (PROXY_LIST.length == badProxies.size) {
         badProxies = new Set()
-        log.toConsole('info', 'All proxies used. Resetting bad proxy list.')
+        toConsole('info', 'All proxies used. Resetting bad proxy list.')
     }
     do {
         proxy = 'http://' + PROXY_LIST[rand.create()(PROXY_LIST.length)];
@@ -65,17 +68,24 @@ export function fetchPage(url, store, use_proxies, badProxies, retry = false) {
         Object.assign(options, {agent})
     }
     else if (!use_proxies && PROXIES) {
-        log.toConsole('error', `Proxies are turned on but ${store} does not currently support proxies. Your IP will be used!!`)
+        toConsole('error', `Proxies are turned on but ${store} does not currently support proxies. Your IP will be used!!`)
     }
+    if (!use_proxies) return fetchPageViaAxios(url, store)
 
+    let sourceHTML = undefined
     return fetch(url, options)
-    .then(response => {
+    .then(async response => {
         if (response && response.ok) return response.text()
-        else throw new Error(response.status + " - " + response.statusText)
+        else if (url.includes("antonline") && response && response.status == "404") return response.text()
+        else {
+            sourceHTML = await response.text()
+            throw new Error(response.status + " - " + response.statusText)
+        }
     })
     .then(html => {
         // If proxy was blocked, add to bad list and retry
         if (use_proxies && PROXIES && PROXY_BLOCKING_MESSAGES.some(message => html.includes(message))) {
+            toConsole('info', `Proxy, ${proxy}, was blocked! Retrying...`)
             badProxies.add(proxy)
             return fetchPage(url, store, use_proxies, badProxies, true)
         }
@@ -91,9 +101,42 @@ export function fetchPage(url, store, use_proxies, badProxies, retry = false) {
                 html
             }
     })
-    .catch(error => {
-        log.toConsole('error', 'Error getting page for url: ' + url + '. ')
-        log.toFile(store, error)
-        return { "status": "error" }
+    .catch(async error => {
+        toConsole('error', 'Error getting page for url: ' + url + '. ')
+        return {
+            "status": "error",
+            error,
+            "html": sourceHTML
+        }
     })
+}
+
+
+/*
+    Uses Axios to fetch the item page and returns html in a promise 
+    Returns false if not successful
+*/
+function fetchPageViaAxios(url, store) {
+    let sourceHTML = undefined
+    return axios.get(url)
+        .then(async response => {
+            if (response && response.status == 200) {
+                return {
+                    "status": "ok",
+                    "html": response.data
+                }
+            }
+            else {
+                sourceHTML = await response.text()
+                throw new Error(response.status + " - " + response.statusText)
+            } 
+        })
+        .catch(error => {
+            toConsole('error', 'Error getting page for url: ' + url + '. ')
+            return {
+                "status": "error",
+                error,
+                "html": sourceHTML
+            }
+        })
 }
