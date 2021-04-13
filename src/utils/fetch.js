@@ -4,7 +4,7 @@ import rand from 'random-seed'
 import ua from 'random-useragent'
 import { toConsole } from './log.js'
 import HttpsProxyAgent from 'https-proxy-agent';
-import { PROXIES, PROXY_LIST } from '../main.js'
+import { AMAZON_MERCHANT_ID, PROXIES, PROXY_LIST } from '../main.js'
 
 
 const PROXY_BLOCKING_MESSAGES = [
@@ -72,11 +72,28 @@ export function fetchPage(url, store, use_proxies, badProxies, retry = false) {
     }
     if (!use_proxies) return fetchPageViaAxios(url, store)
 
+    // Update URL for Amazon if a particular merchant is selected
+    if (url.includes("amazon") && AMAZON_MERCHANT_ID !== "None") {
+        url = url + "?m=" + AMAZON_MERCHANT_ID;
+    }
+
     let sourceHTML = undefined
     return fetch(url, options)
     .then(async response => {
-        if (response && response.ok) return response.text()
-        else if (url.includes("antonline") && response && response.status == "404") return response.text()
+        if (response && response.ok) {
+            return response.text()
+        }
+        else if (url.includes("antonline") && response && response.status == "404") {   // Hard code Ant online status code for out of stock items 
+            return response.text()
+        } 
+        else if (url.includes("currys") && response && response.status == "503") {      // Hard code Currys showing high traffic page
+            sourceHTML = response.text()
+            if (sourceHTML.includes('getting waaaay more traffic than usual')) {
+                toConsole('alert', 'High traffic redirect page at Currys! This may mean a hot item might be getting restocked.')
+            } else {
+                throw new Error(response.status + " - " + response.statusText)
+            }
+        }
         else {
             sourceHTML = await response.text()
             throw new Error(response.status + " - " + response.statusText)

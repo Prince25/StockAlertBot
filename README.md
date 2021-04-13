@@ -182,6 +182,8 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 
 ## Things to work on
 * Add more stores
+    * Newegg search pages
+    * Overclockers
     * ~~B&H Photo Video~~
     * ~~Ebuyer~~
     * ~~Walmart~~
@@ -193,10 +195,11 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
     * ~~Target~~
     * ~~Tesco~~
     * ~~Argos~~
-* Add delay between items from the same store
-* More OOP!!
-    * ~~Add way to track notification status independent of items in a store~~
 * Add tests
+* Twitter notifications
+* ~~Add delay between items from the same store~~
+* ~~More OOP!!~~
+    * ~~Add way to track notification status independent of items in a store~~
 * ~~Fix~~ Find Bugs
     * ~~Fix notifications relying on `OPEN_URL`~~
 * ~~Add Ability to use certain Amazon Merchants~~

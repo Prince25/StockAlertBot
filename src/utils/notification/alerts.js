@@ -16,7 +16,7 @@ export default function sendAlerts(product_url, title, image, store) {
 		if (!openedDonateLink) {
 			open('https://www.paypal.com/donate/?business=3Y9NEYR4TURT8&item_name=Making+software+and+hacking+the+world%21+%E2%99%A5&currency_code=USD');
 			openedDonateLink = true;
-			setTimeout(() => openedDonateLink = false, 5 * 60 * 1000)
+			setTimeout(() => openedDonateLink = false, 30 * 60 * 1000)
 		}
 	}
 	if (SMS_METHOD == "Amazon Web Services") sendAlertToSMSViaAWS(env_config.sms_aws, product_url, title, store);
