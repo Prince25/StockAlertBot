@@ -89,7 +89,7 @@ export default async function ebuyer(url, interval) {
 			if (inventory.length > 0) inventory = inventory[0].textContent
 
 			//Make code think a preorder is an item to order
-			if(inventoryPreorder) inventory = 'Add to Basket'
+			if(inventoryPreorder == "Pre-order") inventory = 'Add to Basket'
 			
 			
 			if (inventory != 'Add to Basket' && runtimeData[url]['firstRun']) {
