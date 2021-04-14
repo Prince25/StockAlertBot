@@ -1,7 +1,9 @@
 
-### New in v3.0: SMS / Text notification support :iphone: !! (see [SMS](#SMS))
-
-#### New in v2.0: :email: E-mail notification support and an user interface :computer: (see [screenshots](#Screenshots))
+### New in v4.0: Complete code overhaul! Better control over intervals, new stores and notifications! (see [Features](#Features))
+#### New in v3.0: SMS / Text notification support :iphone: !! (see [SMS](#SMS))
+##### New in v2.0: :email: E-mail notification support and an user interface :computer: (see [screenshots](#Screenshots))
+###### New in v1.0: Official release! New name and webhook notification support.
+<br><br>
 
 # StockAlertBot
 Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiculously high markup prices, I decided to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s).
@@ -18,11 +20,17 @@ Donate, buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Piz
 
 ### How does it work?
 
-Enter links of the products you want tracked and how often you want the program to monitor them. When an item becomes available, you will be alerted through variety of notifications
+Enter links of the products you want tracked and how often you want the program to monitor them. When an item becomes available, you will be alerted through variety of notifications.
 <br><br>
 
 ### Features
-* Automatically open a product's URL
+* Add links and change settings **easily** through a browser page
+* Complete control over check intervals
+    * Ability to freely set monitor frequency, **no limits**
+    * Ability to space out checks if multiple items in a per store
+    * Ability to override default interval and define frequency for each store
+* Proxy Support
+* Automatically opens a product's URL upon restock
 * Notifications
     * Desktop
     * Email
@@ -35,21 +43,22 @@ Enter links of the products you want tracked and how often you want the program 
 
 Currently, the following stores are supported:
 * AntOnline
-* Amazon (see [proxies](#Proxies))
-* Argos (UK. Does not currently work with proxies) (For PS5, use product link. Disc: `https://www.argos.co.uk/product/8349000`, Digital: `https://www.argos.co.uk/product/8349024`)
+* Amazon, with ability to track stock by a particular merchant (see [proxies](#Proxies))
+* Argos (UK. Does not currently work with proxies)\
+  For PS5, use the following links. Disc: `https://www.argos.co.uk/product/8349000`, Digital: `https://www.argos.co.uk/product/8349024`
 * B&H Photo Video
-* Best Buy (including open-box and combos. Does not currently work with proxies)
+* Best Buy, including open-box and combos (Does not currently work with proxies)
 * Costco (Does not currently work with proxies)
 * Currys (UK)
 * Ebuyer (UK)
 * Gamestop
 * Microcenter
-* Newegg (including combo deals)
+* Newegg, including combo deals
 * Target
 * Tesco (UK. Does not currently work with proxies)
 * Walmart
 
-![Console Screenshot](https://i.imgur.com/po6GtU6.png)
+![Console Screenshot](https://i.imgur.com/po6GtU6.png)  // TODO
 
 
 ## Prerequisites
@@ -196,6 +205,7 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
     * ~~Tesco~~
     * ~~Argos~~
 * Add tests
+* Documentation page
 * Twitter notifications
 * ~~Add delay between items from the same store~~
 * ~~More OOP!!~~
@@ -218,8 +228,11 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 - [ESLint](https://eslint.org/) with [Prettier](https://prettier.io/) and [Unicorn](https://github.com/sindresorhus/eslint-plugin-unicorn) plugin
 - [AWS SDK](https://aws.amazon.com/sdk-for-javascript/)
 - [Axios](https://github.com/axios/axios)
+- [Chalk](https://github.com/chalk/chalk)
+- [Cheerio](https://github.com/cheeriojs/cheerio)
 - [Dotenv](https://github.com/motdotla/dotenv)
 - [Moment](https://momentjs.com/)
+- [Node Fetch](https://github.com/node-fetch/node-fetch)
 - [Nodemailer](https://nodemailer.com/)
 - [Twilio](https://github.com/twilio/twilio-node)
 
