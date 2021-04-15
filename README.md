@@ -47,7 +47,7 @@ Currently, the following stores are supported:
 * Argos (UK. Does not currently work with proxies)\
   For PS5, use the following links. Disc: `https://www.argos.co.uk/product/8349000`, Digital: `https://www.argos.co.uk/product/8349024`
 * B&H Photo Video
-* Best Buy, including open-box and combos (Does not currently work with proxies)
+* Best Buy, including open-box and packages (Does not currently work with proxies)
 * Costco (Does not currently work with proxies)
 * Currys (UK)
 * Ebuyer (UK)

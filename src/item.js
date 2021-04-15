@@ -56,7 +56,7 @@ export default class Item {
 		Returns true if successful, false otherwise
 	*/
 	extractInformation(store, storeFunction) {
-		return new Promise(async resolve => {
+		return new Promise(resolve => {
 			const info = storeFunction(this.html)
 			if (info.title && info.image && typeof(info.inventory) == 'boolean') {
 				// Change notification status to false once item goes out of stock
