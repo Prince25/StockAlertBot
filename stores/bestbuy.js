@@ -37,9 +37,9 @@ export default async function bestbuy(url, interval) {
             else writeErrorToFile(store.replace(' ', ''), error);
         });
 
+        let doc, title, inventory, open_box, image
         if (res && res.status === 200) {
             let parser = new DomParser();
-            let doc, title, inventory, open_box, image
            
             doc = parser.parseFromString(res.data, 'text/html');
             if (url.includes('bestbuy.ca')) {   // Check Best buy Canada
