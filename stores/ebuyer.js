@@ -83,7 +83,7 @@ export default async function ebuyer(url, interval) {
 			
 			if (inventory.length > 0) inventory = inventory[0]?.textContent
 			else { //Check for preorder
-				inventoryPreorder = doc.getElementsByClassName('js-add-to-basket-main')[0]?.value;
+				inventoryPreorder = doc.getElementsByClassName('js-add-to-basket-main')[0]?.getAttribute('value');
 			}
 			
 			// Make code think a preorder is an item to order
