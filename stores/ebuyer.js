@@ -70,7 +70,7 @@ export default async function ebuyer(url, interval) {
 			let parser = new DomParser();
 			let doc = parser.parseFromString(html, 'text/html');
 			let productInfo = doc.getElementsByTagName('script').filter(script => script.getAttribute('type') == 'application/ld+json')
-			if (productInfo) productInfo = JSON.parse(productInfo[0].textContent)
+			if (productInfo && productInfo.length > 0) productInfo = JSON.parse(productInfo[0].textContent)
 			else {
 				writeErrorToFile(store, 'Unable to get product info for url: ' + url)
 				return
@@ -79,17 +79,15 @@ export default async function ebuyer(url, interval) {
 			let title = productInfo.name
 			let image = productInfo.image
 			let inventory = doc.getElementsByClassName('js-add-to-mini-basket')
-			
-			//Check for preorder
 			let inventoryPreorder = undefined;
-			if(inventory.length == 0){
+			
+			if (inventory.length > 0) inventory = inventory[0]?.textContent
+			else { //Check for preorder
 				inventoryPreorder = doc.getElementsByClassName('js-add-to-basket-main')[0]?.value;
 			}
 			
-			if (inventory.length > 0) inventory = inventory[0].textContent
-
-			//Make code think a preorder is an item to order
-			if(inventoryPreorder == "Pre-order") inventory = 'Add to Basket'
+			// Make code think a preorder is an item to order
+			if (inventoryPreorder == "Pre-order") inventory = 'Add to Basket'
 			
 			
 			if (inventory != 'Add to Basket' && runtimeData[url]['firstRun']) {
