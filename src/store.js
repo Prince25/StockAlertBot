@@ -56,7 +56,7 @@ export default class Store {
 			else
 				log.toConsole('info', 'Checking url: ' + chalk.magenta(item.url))
 			
-			// Gets Item Page
+			// Get Item Page
 			const response = await item.getPage(this.name, this.supports_proxies, this.bad_proxies)
 			if (response.status == "retry") {
 				this.bad_proxies = response.bad_proxies
@@ -67,21 +67,21 @@ export default class Store {
 			}
 
 			// Extract item information from the page
-			if (!await item.extractInformation(this.name, this.store_function)) {
+			if (!item.extractInformation(this.name, this.store_function)) {
 				if (index != length - 1) await sleep(this.delay)
 				continue
+			} else {
+				// Send notifications about the item
+				if (item.info.inventory && item.notificationSent) {
+					log.toConsole('info', chalk.magenta.bold(item.info.title) + ' is still in stock at ' + chalk.cyan.bold(this.name.toUpperCase()))
+				}
+				if (item.shouldSendNotification && !item.notificationSent) {
+					sendAlerts(item.url, item.info.title, item.info.image, this.name)
+					log.toConsole('stock', chalk.magenta.bold(item.info.title) + ' is in stock at ' + chalk.cyan.bold(this.name.toUpperCase()) + '!!')
+					item.notificationSent = true;
+				}
 			}
 
-			// Sends notifications about the item
-			if (item.info.inventory && item.notificationSent) {
-				log.toConsole('info', chalk.magenta.bold(item.info.title) + ' is still in stock at ' + chalk.cyan.bold(this.name.toUpperCase()))
-			}
-			if (item.shouldSendNotification && !item.notificationSent) {
-				sendAlerts(item.url, item.info.title, item.info.image, this.name)
-				log.toConsole('stock', chalk.magenta.bold(item.info.title) + ' is in stock at ' + chalk.cyan.bold(this.name.toUpperCase()) + '!!')
-				item.notificationSent = true;
-			}
-			
 			if (index != length - 1) await sleep(this.delay)
 		}
 		

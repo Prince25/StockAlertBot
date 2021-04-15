@@ -56,23 +56,21 @@ export default class Item {
 		Returns true if successful, false otherwise
 	*/
 	extractInformation(store, storeFunction) {
-		return new Promise(resolve => {
-			const info = storeFunction(this.html)
-			if (info.title && info.image && typeof(info.inventory) == 'boolean') {
-				// Change notification status to false once item goes out of stock
-				if (this.notificationSent && !info.inventory)
-					this.notificationSent = false	
+		const info = storeFunction(this.html)
+		if (info.title && info.image && typeof(info.inventory) == 'boolean') {
+			// Change notification status to false once item goes out of stock
+			if (this.notificationSent && !info.inventory)
+				this.notificationSent = false	
 
-				this.shouldSendNotification = !this.info.inventory && info.inventory	// Check change in item stock
-				this.info = info
-				resolve(true)
-			} else if (info.error) {
-				log.toFile(store, info.error, this)
-				resolve(false);
-			} else {
-				log.toFile(store, 'Unable to get information', Object.assign(this, info))
-				resolve(false);
-			}
-		})
+			this.shouldSendNotification = !this.info.inventory && info.inventory	// Check change in item stock
+			this.info = info
+			return true
+		} else if (info.error) {
+			log.toFile(store, info.error, this)
+			return false;
+		} else {
+			log.toFile(store, 'Unable to get information', Object.assign(this, info))
+			return false;
+		}
 	}
 }
