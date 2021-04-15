@@ -80,7 +80,17 @@ export default async function ebuyer(url, interval) {
 			let image = productInfo.image
 			let inventory = doc.getElementsByClassName('js-add-to-mini-basket')
 			
+			//Check for preorder
+			let inventoryPreorder = undefined;
+			if(inventory.length == 0){
+				inventoryPreorder = doc.getElementsByClassName('js-add-to-basket-main')[0]?.value;
+			}
+			
 			if (inventory.length > 0) inventory = inventory[0].textContent
+
+			//Make code think a preorder is an item to order
+			if(inventoryPreorder == "Pre-order") inventory = 'Add to Basket'
+			
 			
 			if (inventory != 'Add to Basket' && runtimeData[url]['firstRun']) {
 				console.info(moment().format('LTS') + ': "' + title + '" not in stock at ' + store + '.' + ' Will keep retrying in background every', interval.value, interval.unit)
