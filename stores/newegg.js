@@ -133,7 +133,7 @@ export default async function newegg(url, interval) {
 				console.info(url);
 			}
 		}
-	} catch (error) {
-		writeErrorToFile(store, error, html, response.status);
-	}
-}
+    } catch (e) {
+        writeErrorToFile(store, e, html, res ? res.status : undefined)
+    }
+};

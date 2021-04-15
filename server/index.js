@@ -37,8 +37,8 @@ var app = express();
 // Setup express with CORS on port 3250
 console.log("Starting server...");
 app.use(cors());
-app.options("*", cors());
-app.listen(3250, listening);
+app.options('*', cors());
+app.listen(3250, '0.0.0.0', listening);
 
 function listening() {
 	console.log("Server started!");

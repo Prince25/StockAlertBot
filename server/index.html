@@ -1354,7 +1354,8 @@
 			/*
                 Main Component
             */
-			var app = new Vue({
+			const SERVER_NAME = 'http://localhost:3250';
+			const app = new Vue({
 				el: "#app",
 				vuetify: new Vuetify(),
 
@@ -1701,7 +1702,7 @@
 					// Send settings via a POST request to be saved
 					sendSettings() {
 						axios
-							.post("http://localhost:3250/config", this.userSettings)
+							.post(SERVER_ENDPOINT + '/config', this.userSettings)
 							.then(function (response) {
 								console.log("User settings successfully written!", response);
 							})
@@ -1711,7 +1712,7 @@
 							});
 
 						axios
-							.post("http://localhost:3250/env", this.envSettings)
+							.post(SERVER_ENDPOINT + '/env', this.envSettings)
 							.then(function (response) {
 								console.log(".env settings successfully written!", response);
 							})
@@ -1725,7 +1726,7 @@
 				mounted() {
 					// Get settings already saved in file
 					axios
-						.get("http://localhost:3250/config")
+						.get(SERVER_ENDPOINT + '/config')
 						.then((res) => {
 							this.userSettings = res.data;
 							console.log("User settings successfully fetched!");
@@ -1753,7 +1754,7 @@
 
 					// Get .env data
 					axios
-						.get("http://localhost:3250/env")
+						.get(SERVER_ENDPOINT + '/env')
 						.then((res) => {
 							this.envSettings = res.data;
 							console.log(".env settings successfully fetched!");
