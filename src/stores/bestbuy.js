@@ -17,6 +17,8 @@ export default function bestbuy(html) {
 		const INVENTORY_SELECTOR_US_OPEN_BOX = "span.open-box-option__label"
 		const INVENTORY_SELECTOR_CANADA = "button.addToCartButton:first"
 
+        const CANADA_BACKUP_SELECTOR = "body > script:first"
+
 		const $ = cheerio.load(html)
 
         // Check US Normal Products
@@ -44,7 +46,28 @@ export default function bestbuy(html) {
         if (!title || !image) {
             title = $(TITLE_SELECTOR_CANADA).text().trim()
             image = $(IMAGE_SELECTOR_CANADA).attr('src');
-            inventory = $(INVENTORY_SELECTOR_CANADA).attr('disabled') ? false : true
+            let inventory_button = $(INVENTORY_SELECTOR_CANADA)
+            if (inventory_button.length) {
+                inventory = inventory_button.attr('disabled') ? false : true
+            } else {
+                inventory = false
+            }
+            
+            // Backup method
+            if (!title || !image || !inventory) {
+                let script = $(CANADA_BACKUP_SELECTOR).html()
+                if (script.length > 0) {
+                    script = script.slice(script.indexOf("window.__INITIAL_STATE__ = {") + 27, script.indexOf('};') + 1)
+                    script = script.length > 0 ? JSON.parse(script) : undefined
+                    if (script) {
+                        let productInfo = script.product
+                        title = productInfo.product.name
+                        image = productInfo.product.productImage
+                        if (productInfo.availability.shipping.purchasable) inventory = true
+                        else inventory = false
+                    }
+                }
+            }
         }
 
 		return { title, image, inventory }
