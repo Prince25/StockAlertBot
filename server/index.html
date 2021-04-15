@@ -1163,8 +1163,8 @@
             /*
                 Main Component
             */
-            var SERVER_NAME = 'http://localhost:3250';
-            var app = new Vue({
+            const SERVER_ENDPOINT = 'http://localhost:3250';
+            const app = new Vue({
                 el: '#app',
                 vuetify: new Vuetify(),
 
@@ -1444,14 +1444,14 @@
 
                     // Send settings via a POST request to be saved
                     sendSettings() {
-                        axios.post(SERVER_NAME.concat('/config'), this.userSettings)
+                        axios.post(SERVER_ENDPOINT + '/config', this.userSettings)
                             .then(function (response) {
                                 console.log('User settings successfully written!', response);
                             }).catch(function (error) {   // Handle error
                                 console.log('Error writing user settings', error);
                             })
 
-                        axios.post(SERVER_NAME.concat('/env'), this.envSettings)
+                        axios.post(SERVER_ENDPOINT + '/env', this.envSettings)
                             .then(function (response) {
                                 console.log('.env settings successfully written!', response);
                             }).catch(function (error) {   // Handle error
@@ -1462,7 +1462,7 @@
 
                 mounted() {
                     // Get settings already saved in file
-                    axios.get(SERVER_NAME.concat('/config'))
+                    axios.get(SERVER_ENDPOINT + '/config')
                         .then(res => {
                             this.userSettings = res.data
                             console.log('User settings successfully fetched!')
@@ -1479,7 +1479,7 @@
                         })
 
                     // Get .env data
-                    axios.get(SERVER_NAME.concat('/env'))
+                    axios.get(SERVER_ENDPOINT + '/env')
                         .then(res => {
                             this.envSettings = res.data
                             console.log('.env settings successfully fetched!')
