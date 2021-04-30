@@ -10,7 +10,7 @@ export default function gamestop(html) {
 		const $ = cheerio.load(html)
 		const json = $(PRODUCT_INFO_SELECTOR).attr('data-gtmdata')
 		const product_info = json ? JSON.parse(json) : undefined;
-		let title = $(TITLE_SELECTOR).text().trim()
+		let title = $(TITLE_SELECTOR).text()?.trim()
 		let image = $(IMAGE_SELECTOR).attr('data-src')
 		let inventory = product_info?.productInfo?.availability
 

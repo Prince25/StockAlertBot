@@ -7,9 +7,9 @@ export default function walmart(html) {
 		const INVENTORY_SELECTOR = ".prod-ProductCTA--primary"
 
 		const $ = cheerio.load(html)
-		const title = $(TITLE_SELECTOR).text().trim()
+		const title = $(TITLE_SELECTOR).text()?.trim()
 		const image = $(IMAGE_SELECTOR).attr('content')
-		let inventory = $(INVENTORY_SELECTOR).text().trim()
+		let inventory = $(INVENTORY_SELECTOR).text()?.trim()
 
 		if (inventory == 'Add to cart') {
 			inventory = true

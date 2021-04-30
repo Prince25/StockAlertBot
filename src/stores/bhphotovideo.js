@@ -7,12 +7,12 @@ export default function bhphotovideo(html) {
 		const INVENTORY_SELECTOR = "button[data-selenium='addToCartButton']"
 
 		const $ = cheerio.load(html)
-		const title = $(TITLE_SELECTOR).text().trim()
+		const title = $(TITLE_SELECTOR).text()?.trim()
 		const image = $(IMAGE_SELECTOR).attr('src')
 		let inventory = $(INVENTORY_SELECTOR).text()
 
 		if (inventory) {
-			inventory = inventory.trim()
+			inventory = inventory?.trim()
 			inventory = inventory == 'Add to Cart'
 		} else if (html.includes('Notify When Available')) {
 			inventory = false

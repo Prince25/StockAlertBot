@@ -7,7 +7,7 @@ export default function costco(html) {
 		const INVENTORY_SELECTOR = "#add-to-cart-btn"
 	
 		const $ = cheerio.load(html)
-		const title = $(TITLE_SELECTOR).text().trim()
+		const title = $(TITLE_SELECTOR).text()?.trim()
 		const image = $(IMAGE_SELECTOR).attr('src')
 		let inventory = $(INVENTORY_SELECTOR).attr('value')
 

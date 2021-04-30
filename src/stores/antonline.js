@@ -7,9 +7,9 @@ export default function antonline(html) {
 		const INVENTORY_SELECTOR = "button.uk-button:first"
 
 		const $ = cheerio.load(html)
-		const title = $(TITLE_SELECTOR).text().trim()
+		const title = $(TITLE_SELECTOR).text()?.trim()
 		const image = $(IMAGE_SELECTOR).attr('src');
-		let inventory = $(INVENTORY_SELECTOR).text().trim()
+		let inventory = $(INVENTORY_SELECTOR).text()?.trim()
 		
 		if (inventory == 'Add to Cart') {
 			inventory = true

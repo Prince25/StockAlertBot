@@ -7,7 +7,7 @@ export default function ebuyer(html) {
 		const INVENTORY_SELECTOR = ".js-add-to-basket-main:first"
 
 		const $ = cheerio.load(html)
-		let title = $(TITLE_SELECTOR).text().trim()
+		let title = $(TITLE_SELECTOR).text()?.trim()
 		const image = $(IMAGE_SELECTOR).attr('src')
 		let inventory = $(INVENTORY_SELECTOR).attr('value')
 

@@ -7,7 +7,7 @@ export default function amazon(html) {
 		const INVENTORY_SELECTOR = "#add-to-cart-button"
 
 		const $ = cheerio.load(html)
-		const title = $(TITLE_SELECTOR).text().trim()
+		const title = $(TITLE_SELECTOR).text()?.trim()
 		const image = $(IMAGE_SELECTOR).attr('data-old-hires')
 		let inventory = $(INVENTORY_SELECTOR).attr('value')
 

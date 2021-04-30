@@ -10,15 +10,15 @@ export default function newegg(html) {
 		const INVENTORY_COMBO_SELECTOR = "a.atnPrimary:first"
 	
 		const $ = cheerio.load(html)
-		let title = $(TITLE_SELECTOR).text().trim()
+		let title = $(TITLE_SELECTOR).text()?.trim()
 		let image = $(IMAGE_SELECTOR).attr('src')
-		let inventory = $(INVENTORY_SELECTOR).text().trim().toLowerCase()
+		let inventory = $(INVENTORY_SELECTOR).text()?.trim().toLowerCase()
 
 		// Combo Deals
 		if (!title) {
-			title = $(TITLE_COMBO_SELECTOR).text().trim()
+			title = $(TITLE_COMBO_SELECTOR).text()?.trim()
 			image = "https:" + $(IMAGE_COMBO_SELECTOR).attr('src')
-			inventory = $(INVENTORY_COMBO_SELECTOR).text().trim().toLowerCase().replace(' ►', '')
+			inventory = $(INVENTORY_COMBO_SELECTOR).text()?.trim()?.toLowerCase()?.replace(' ►', '')
 		}
 
 		return { title, image, inventory: inventory == 'add to cart' }

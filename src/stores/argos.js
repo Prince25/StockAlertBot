@@ -17,9 +17,9 @@ export default function argos(html) {
 		const INVENTORY_SELECTOR = "button[data-test='add-to-trolley-button-button']:first"
 
 		const $ = cheerio.load(html)
-		const title = $(TITLE_SELECTOR).text().trim()
+		const title = $(TITLE_SELECTOR).text()?.trim()
 		const image = "https:" + $(IMAGE_SELECTOR).attr('src');
-		let inventory = $(INVENTORY_SELECTOR).text().trim()
+		let inventory = $(INVENTORY_SELECTOR).text()?.trim()
 		
 		if (inventory == 'Add  to trolley') {
 			inventory = true
