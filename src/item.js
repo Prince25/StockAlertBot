@@ -1,11 +1,10 @@
-import * as log from './utils/log.js'	// TODO : Need toConsole?
+import { toFile } from './utils/log.js'
 import { fetchPage } from './utils/fetch.js'
 
 
 export default class Item {
 	constructor(url) {
 		this.url = url;
-		this.firstRun = true;	// TODO : Need this?
 		this.notificationSent = false;
 		this.shouldSendNotification = true;
 		this.html = undefined;
@@ -39,14 +38,14 @@ export default class Item {
 
 			case "error":
 				this.html = response.html;
-				log.toFile(store, response.error, this)
+				toFile(store, response.error, this)
 				return({
 					"status": "error"
 				})
 		}
 	}
 
-	
+
 	/*
 		Extract item information based on the passed callback function and assigns it to this.info
 		Returns true if successful, false otherwise
@@ -62,10 +61,10 @@ export default class Item {
 			this.info = info
 			return true
 		} else if (info.error) {
-			log.toFile(store, info.error, this)
+			toFile(store, info.error, this)
 			return false;
 		} else {
-			log.toFile(store, 'Unable to get information', Object.assign(this, info))
+			toFile(store, 'Unable to get information', Object.assign(this, info))
 			return false;
 		}
 	}

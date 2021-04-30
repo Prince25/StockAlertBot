@@ -1,6 +1,5 @@
 import chalk from 'chalk'
-import moment from "moment";	// TODO : Need this?
-import * as log from './utils/log.js'	// TODO : Need toFile?
+import { toConsole } from './utils/log.js'
 import getMs from './utils/interval-value.js'
 import sendAlerts from './utils/notification/alerts.js';
 import { INTERVAL, STORE_INTERVALS, SUPPORTED_PROXY_DOMAINS, TIME_BETWEEN_CHECKS } from "./main.js";
@@ -17,8 +16,6 @@ export default class Store {
 		this.store_function = storeFunction,
 		this.interval = getMs(STORE_INTERVALS[name] ? STORE_INTERVALS[name] : INTERVAL)
 		this.delay = getMs(TIME_BETWEEN_CHECKS)
-		this.check_in_progress = false		// TODO : Need this?
-		this.last_checked = moment().unix()	// TODO : Need this?
 	}
 
 
@@ -37,11 +34,11 @@ export default class Store {
 	*/
 	startMonitor() {
 		if (this.items.length == 0) {
-			log.toConsole('error', 'Cannot start montior: no items added!')
+			toConsole('error', 'Cannot start montior: no items added!')
 			return
 		}
 		
-		log.toConsole('setup', 'Starting monitor for: ' + chalk.cyan.bold(this.name.toUpperCase()))
+		toConsole('setup', 'Starting monitor for: ' + chalk.cyan.bold(this.name.toUpperCase()))
 		this.monitorItems()
 	}
 
@@ -52,9 +49,9 @@ export default class Store {
 		const length = this.items.length
 		for (const [index, item] of this.items.entries()) {
 			if (item.info.title)
-				log.toConsole('check', 'Checking ' + chalk.magenta.bold(item.info.title) + ' at ' + chalk.cyan.bold(this.name.toUpperCase()))
+				toConsole('check', 'Checking ' + chalk.magenta.bold(item.info.title) + ' at ' + chalk.cyan.bold(this.name.toUpperCase()))
 			else
-				log.toConsole('check', 'Checking url: ' + chalk.magenta(item.url))
+				toConsole('check', 'Checking url: ' + chalk.magenta(item.url))
 			
 			// Get Item Page
 			const response = await item.getPage(this.name, this.supports_proxies, this.bad_proxies)
@@ -73,11 +70,11 @@ export default class Store {
 			} else {
 				// Send notifications about the item
 				if (item.info.inventory && item.notificationSent) {
-					log.toConsole('info', chalk.magenta.bold(item.info.title) + ' is still in stock at ' + chalk.cyan.bold(this.name.toUpperCase()))
+					toConsole('info', chalk.magenta.bold(item.info.title) + ' is still in stock at ' + chalk.cyan.bold(this.name.toUpperCase()))
 				}
 				if (item.shouldSendNotification && !item.notificationSent) {
 					sendAlerts(item.url, item.info.title, item.info.image, this.name)
-					log.toConsole('stock', chalk.magenta.bold(item.info.title) + ' is in stock at ' + chalk.cyan.bold(this.name.toUpperCase()) + '!!')
+					toConsole('stock', chalk.magenta.bold(item.info.title) + ' is in stock at ' + chalk.cyan.bold(this.name.toUpperCase()) + '!!')
 					item.notificationSent = true;
 				}
 			}
@@ -85,7 +82,7 @@ export default class Store {
 			if (index != length - 1) await sleep(this.delay)
 		}
 		
-		log.toConsole(
+		toConsole(
 			'info',
 			'Waiting ' + 
 			chalk.yellow.bold(STORE_INTERVALS[this.name] ? 

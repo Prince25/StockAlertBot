@@ -27,7 +27,7 @@ Enter links of the products you want tracked and how often you want the program 
 * Add links and change settings **easily** through a browser page
 * Complete control over check intervals
     * Ability to freely set monitor frequency, **no limits**
-    * Ability to space out checks if multiple items in a per store
+    * Ability to space out checks if multiple items per store
     * Ability to override default interval and define frequency for each store
 * Proxy Support
 * Automatically opens a product's URL upon restock
@@ -43,7 +43,7 @@ Enter links of the products you want tracked and how often you want the program 
 
 Currently, the following stores are supported:
 * AntOnline
-* Amazon, with ability to track stock by a particular merchant (see [proxies](#Proxies))
+* Amazon, with ability to track stock by a particular merchant
 * Argos (UK. Does not currently work with proxies)\
   For PS5, use the following links. Disc: `https://www.argos.co.uk/product/8349000`, Digital: `https://www.argos.co.uk/product/8349024`
 * B&H Photo Video
@@ -58,7 +58,7 @@ Currently, the following stores are supported:
 * Tesco (UK. Does not currently work with proxies)
 * Walmart
 
-![Console Screenshot](https://i.imgur.com/po6GtU6.png)  // TODO
+![Console Screenshot](https://i.imgur.com/gKcgBrA.png)
 
 
 ## Prerequisites
@@ -75,15 +75,18 @@ Currently, the following stores are supported:
 ## Usage
 There are only two steps to use this program: 1) enter information and 2) launch the program.
 
-1. You can now enter information using two ways: via a browser (recommended) or a text editor.
+1. You can now enter information using two ways: via a [browser](#Via-Browser) (recommended) or a [text editor](#Via-Text-Editor).
     #### Via Browser
+    <details>
+    <summary>Expand</summary>
+
     1. At the root directory, run on the terminal:
         `npm run settings`\
         A browser window should open up. If it doesn't and the console says `Server started!`, go to: `http://localhost:3250/` in your browser.
     2. Enter the links of the items you want to track in the URLs tab.
     3. Go to Settings tab and change to your heart's content.
         - Set how often you want to check the stores for given URLs and how much to space out the checks between items. It's not recommended to set it to 0 as you may be flagged as a bot. If you have 3 items (call them A, B, C) for Amazon and 2 items for Walmart (call them D, E) at 10 second interval spaced out at 2 seconds, for example, Items A and D will be checked first. 2 seconds later, items B and E will be checked. 2 seconds later, item C will be checked. The checks will start again in 8 seconds for Walmart and 10 seconds for Amazon.
-        - If you want to use Proxies, turn it on and create a file called `proxies.txt` in the root directory and fill it with one proxy per line. See [proxies](#Proxies).
+        - If you want to use Proxies, turn it on and create a file called `proxies.txt` in the `config` folder and fill it with one proxy per line. See [proxies](#Proxies).
         - If you have Amazon link(s), you will see an option to pick a region. Select a region if you want to only monitor items sold by Amazon and not third party sellers. If you want to use a particular seller or if your region is not in the list, select `Custom` and provide the merchant ID. See [Feedback and Support](#Feedback-and-Support) if you'd like to request a region.
         - If you have Target link(s), you will see additional options to put zip code and API Key. Only change the key if you get API key errors. Refer to the instructions in the following [section](#Via-Text-Editor).
     4. Configure notification options in Optional tab.
@@ -91,13 +94,26 @@ There are only two steps to use this program: 1) enter information and 2) launch
         - If you want notification sent via SMS/Text, expand SMS and choose a method: Amazon Web Services, Email, or Twilio. See [SMS](#SMS).
         - If you want notifications sent to Email, turn on email and enter your service provider information. Some providers (Yahoo, AOL, AT&T) cause problems. Refer to this [section](#Email).
     5. Once you're happy with the settings, click `Save Settings`.\
-    `config.json` and `.env` files should now reflect your settings.\
-    You can use `CTRL + C` or `CMD + C` to stop the program.<br><br>
+    `config.json` and `.env` files in the `config` directory should now reflect your settings.\
+    You can use `CTRL + C` or `CMD + C` to stop the program.
+    </details><br>
 
     #### Via Text Editor 
-    Open and edit `config.json`
+    <details>
+    <summary>Expand</summary>
+
+    Open and edit `config.json` in the `config` directory 
     1. Add urls of products in the `URLS` array
     2. Change the `INTERVAL` to suit your desires.\
+    You can override this default interval for any store by changing `STORE_INTERVALS` in the following manner:\
+    `
+    "STORE_INTERVALS": {
+        "newegg": {
+            "unit": "seconds",
+            "value": 10
+        }
+    },
+    `\
     **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot or blocking your IP from accessing the website entirely. See [proxies](#Proxies). Setting `TIME_BETWEEN_CHECKS` might help prevent this. See step 3a from the other [method](#Via-Browser) for a detailed explanation and an example.
     3. Set `OPEN_URL` to false if you don't want the application to automatically open urls when item is in stock
     4. Set `ALARM` to false if you want to disable the audible warning
@@ -111,9 +127,10 @@ There are only two steps to use this program: 1) enter information and 2) launch
             3. Click on any of the urls that has the string "key=" and copy the whole key
             4. Paste it to `TARGET_KEY`
         3. **If** you want to send alerts to webhook URL(s) like [Discord](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks), [IFTTT](https://ifttt.com/maker_webhooks/), or [Slack](https://api.slack.com/messaging/webhooks), add them to `WEBHOOK_URLS` array.
-        4. **If** you want to use Proxies, change `PROXIES` to `true` and create a file called `proxies.txt` in the root directory and fill it with one proxy per line. See [proxies](#Proxies).
-        5. **If** you want to send alerts to SMS, change `SMS_METHOD` to either "Email", "Amazon Web Services", or "Twilio". Then change the associated values in `.env`. See [SMS](#SMS).
-        6. **If** you want to send alerts to email, change `EMAIL` in `config.json` to `true`. Make a copy of `example.env` and rename it to `.env`. Inside `.env`, type out one of the service providers (`EMAIL_SERVICE`) listed in [Email](#Email), your email (`EMAIL_FROM`) and password (`EMAIL_PASS`) and the email you want alerts sent to (`EMAIL_TO`). All without quotes.
+        4. **If** you want to use Proxies, change `PROXIES` to `true` and create a file called `proxies.txt` in the `config` directory and fill it with one proxy per line. See [proxies](#Proxies).
+        5. **If** you want to send alerts to email, change `EMAIL` to `true`. Make a copy of `example.env` in the `config` directory and rename it to `.env`. Inside `.env`, type out one of the service providers (`EMAIL_SERVICE`) listed in [Email](#Email), your email (`EMAIL_FROM`) and password (`EMAIL_PASS`) and the email you want alerts sent to (`EMAIL_TO`). All without quotes.
+        6. **If** you want to send alerts to SMS, change `SMS_METHOD` to either "Email", "Amazon Web Services", or "Twilio". Then change the associated values in `.env`. See [SMS](#SMS).
+    </details><br>
         
 2. Execute and continue about your day: 
     `npm start` OR `node --experimental-modules main.js`\
@@ -174,12 +191,11 @@ If you plan to use low interval rates OR track several items from one store, it 
 
 
 ## Screenshots 
-<!-- TODO -->
-![Screenshot of URLs](https://i.imgur.com/FVrmKNA.png)<br><br>
+![Screenshot of URLs](https://i.imgur.com/YlIW0HQ.png)<br><br>
 ---
-<br><br>![Screenshot of Settings](https://i.imgur.com/ue3Pdlv.png)<br><br>
+<br><br>![Screenshot of Settings](https://i.imgur.com/feeFg8V.png)<br><br>
 ---
-<br><br>![Screenshot of Optional](https://i.imgur.com/w7xkXIw.png)
+<br><br>![Screenshot of Optional](https://i.imgur.com/JczL8u5.png)
 
 
 ## Feedback and Support

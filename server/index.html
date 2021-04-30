@@ -455,7 +455,7 @@
                                                 <span>Enable support for proxies.</span>
                                             </v-tooltip>
                                         </div>
-                                        <p class="text-right red--text" v-if="proxies">Make sure to put proxies (one proxy per line) in the file, "proxies.txt".<br>
+                                        <p class="text-right red--text" v-if="proxies">Make sure to put proxies (one proxy per line) in the file, "config/proxies.txt".<br>
                                             Format: ip:port or username:password@ip:port.<br>
                                             Argos, Best Buy, Costco and Tesco do not currently work with proxies.</p> 
                                     </v-col>
@@ -1354,7 +1354,7 @@
 			/*
                 Main Component
             */
-			const SERVER_NAME = 'http://localhost:3250';
+			const SERVER_ENDPOINT = 'http://localhost:3250';
 			const app = new Vue({
 				el: "#app",
 				vuetify: new Vuetify(),
