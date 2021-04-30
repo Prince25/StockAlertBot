@@ -6,7 +6,7 @@ export default function microcenter(html) {
 		const IMAGE_SELECTOR = ".productImageZoom"
 
 		const $ = cheerio.load(html)
-		const title = $(TITLE_SELECTOR).attr('content').replace(' - Micro Center', '')
+		const title = $(TITLE_SELECTOR).attr('content')?.replace(' - Micro Center', '')
 		const image = $(IMAGE_SELECTOR).attr('src')
 		let inventory = null
 

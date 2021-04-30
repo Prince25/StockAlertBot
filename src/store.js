@@ -52,9 +52,9 @@ export default class Store {
 		const length = this.items.length
 		for (const [index, item] of this.items.entries()) {
 			if (item.info.title)
-				log.toConsole('info', 'Checking ' + chalk.magenta.bold(item.info.title) + ' at ' + chalk.cyan.bold(this.name.toUpperCase()))
+				log.toConsole('check', 'Checking ' + chalk.magenta.bold(item.info.title) + ' at ' + chalk.cyan.bold(this.name.toUpperCase()))
 			else
-				log.toConsole('info', 'Checking url: ' + chalk.magenta(item.url))
+				log.toConsole('check', 'Checking url: ' + chalk.magenta(item.url))
 			
 			// Get Item Page
 			const response = await item.getPage(this.name, this.supports_proxies, this.bad_proxies)
@@ -67,7 +67,7 @@ export default class Store {
 			}
 
 			// Extract item information from the page
-			if (!item.extractInformation(this.name, this.store_function)) {
+			if (!await item.extractInformation(this.name, this.store_function)) {
 				if (index != length - 1) await sleep(this.delay)
 				continue
 			} else {

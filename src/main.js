@@ -27,6 +27,7 @@ import ebuyerFunction from './stores/ebuyer.js'
 import gamestopFunction from './stores/gamestop.js'
 import microcenterFunction from './stores/microcenter.js'
 import neweggFunction from './stores/newegg.js'
+import targetFunction from './stores/target.js'
 import walmartFunction from './stores/walmart.js'
 
 const storeFunctionMap = {
@@ -41,6 +42,7 @@ const storeFunctionMap = {
 	"gamestop": gamestopFunction,
 	"microcenter": microcenterFunction,
 	"newegg": neweggFunction,
+	"target": targetFunction,
 	"walmart": walmartFunction
 }
 

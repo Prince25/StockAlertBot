@@ -23,6 +23,14 @@ export function toConsole(type, message) {
 			)
 			break
 
+		case 'check':
+			console.error(
+				"[" + chalk.magentaBright.bold(type.toUpperCase()) + "]" + "\t" +
+				chalk.gray.italic(time()) + ": " +
+				message
+			)
+			break
+
 		case 'error':
 			console.error(
 				"[" + chalk.red.bold(type.toUpperCase()) + "]" + "\t" +

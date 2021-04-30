@@ -21,42 +21,38 @@ export default class Item {
 		Fetches the item page and assigns the html to this.html
 		Returns a promise of true if successful, false otherwise
 	*/
-	getPage(store, use_proxies, badProxies) {
-		return new Promise(async resolve => {
-			const response = await fetchPage(this.url, store, use_proxies, badProxies)
-			switch (response.status) {
-				case "ok":
-					this.html = response.html;
-					resolve({
-						"status": "ok"
-					})
-					break
+	async getPage(store, use_proxies, badProxies) {
+		const response = await fetchPage(this.url, store, use_proxies, badProxies)
+		switch (response.status) {
+			case "ok":
+				this.html = response.html;
+				return({
+					"status": "ok"
+				})
 
-				case "retry":
-					this.html = response.html;
-					resolve({
-						"status": "retry",
-						"bad_proxies": response.badProxies
-					})
-					break
+			case "retry":
+				this.html = response.html;
+				return({
+					"status": "retry",
+					"bad_proxies": response.badProxies
+				})
 
-				case "error":
-					this.html = response.html;
-					log.toFile(store, response.error, this)
-					resolve({
-						"status": "error"
-					})
-					break
-			}
-		})
+			case "error":
+				this.html = response.html;
+				log.toFile(store, response.error, this)
+				return({
+					"status": "error"
+				})
+		}
 	}
 
+	
 	/*
 		Extract item information based on the passed callback function and assigns it to this.info
 		Returns true if successful, false otherwise
 	*/
-	extractInformation(store, storeFunction) {
-		const info = storeFunction(this.html)
+	async extractInformation(store, storeFunction) {
+		const info = await storeFunction(this.html)
 		if (info.title && info.image && typeof(info.inventory) == 'boolean') {
 			// Change notification status to false once item goes out of stock
 			if (this.notificationSent && !info.inventory)

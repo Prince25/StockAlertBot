@@ -54,7 +54,7 @@ Currently, the following stores are supported:
 * Gamestop (Does not currently work with proxies)
 * Microcenter
 * Newegg, including combo deals
-* Target
+* Target, including local stock
 * Tesco (UK. Does not currently work with proxies)
 * Walmart
 
