@@ -24,6 +24,7 @@ import bhphotovideoFunction from './stores/bhphotovideo.js'
 import costcoFunction from './stores/costco.js'
 import currysFunction from './stores/currys.js'
 import ebuyerFunction from './stores/ebuyer.js'
+import gamestopFunction from './stores/gamestop.js'
 import microcenterFunction from './stores/microcenter.js'
 import walmartFunction from './stores/walmart.js'
 
@@ -36,6 +37,7 @@ const storeFunctionMap = {
 	"costco": costcoFunction,
 	"currys": currysFunction,
 	"ebuyer": ebuyerFunction,
+	"gamestop": gamestopFunction,
 	"microcenter": microcenterFunction,
 	"walmart": walmartFunction
 }

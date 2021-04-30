@@ -51,7 +51,7 @@ Currently, the following stores are supported:
 * Costco (Does not currently work with proxies)
 * Currys (UK)
 * Ebuyer (UK)
-* Gamestop
+* Gamestop (Does not currently work with proxies)
 * Microcenter
 * Newegg, including combo deals
 * Target
@@ -169,7 +169,7 @@ First, read pricing information [here](https://www.twilio.com/sms/pricing). You 
 
 ### Proxies
 If you plan to use low interval rates OR track several items from one store, it is highly recommended that you use proxies such as ones from [Webshare](https://www.webshare.io/) in the format `ip:port` for IP-based authentication or `username:password@ip:port`.<br>\
-**NOTE:** The following stores do not currently with proxies due to them blocking some connections/headers which results in inconsistent connection: Argos, Best Buy, Costco, and Tesco. Thus we thought it'd be best if we take off proxy support for now until we can do some further research or find an alternative way.
+**NOTE:** The following stores do not currently with proxies due to them blocking some connections/headers which results in inconsistent connection: Argos, Best Buy, Costco, Gamestop and Tesco. Thus we thought it'd be best if we take off proxy support for now until we can do some further research or find an alternative way.
 <br><br>
 
 

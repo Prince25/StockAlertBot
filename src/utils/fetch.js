@@ -56,7 +56,7 @@ export function fetchPage(url, store, use_proxies, badProxies, retry = false) {
         },
         options = { 
             headers,
-            timeout: 15000 // TODO Put timeout in CONFIG ?
+            timeout: 15000
         }
     
     let proxy = undefined,
