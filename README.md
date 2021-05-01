@@ -3,7 +3,6 @@
 #### New in v3.0: SMS / Text notification support :iphone: !! (see [SMS](#SMS))
 ##### New in v2.0: :email: E-mail notification support and an user interface :computer: (see [screenshots](#Screenshots))
 ###### New in v1.0: Official release! New name and webhook notification support.
-<br>
 
 # StockAlertBot
 Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiculously high markup prices, I decided to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s).
@@ -15,11 +14,8 @@ Donate, buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Piz
 <a href="https://www.buymeacoffee.com/PrinceSingh" target="_blank"><img src="https://i.imgur.com/H7BJq0V.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 <a href="https://www.paypal.me/PrinceSingh25" target="_blank"><img src="https://i.imgur.com/FDuYJBd.png" alt="Paypal me" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 </p>
-<br>
-
 
 ### How does it work?
-
 Enter links of the products you want tracked and how often you want the program to monitor them. When an item becomes available, you will be alerted through variety of notifications.
 <br>
 
@@ -37,10 +33,8 @@ Enter links of the products you want tracked and how often you want the program 
     * SMS / Text
     * Terminal
     * Webhooks: Discord, IFTTT, and Slack
-<br>
 
 ### What stores/websites are supported?
-
 Currently, the following stores are supported:
 * AntOnline
 * Amazon, with ability to track stock by a particular merchant
@@ -75,7 +69,7 @@ Currently, the following stores are supported:
 ## Usage
 There are only two steps to use this program: 1) enter information and 2) launch the program.
 
-1. You can now enter information using two ways: via a [browser](#Via-Browser) (recommended) or a [text editor](#Via-Text-Editor).
+1. You can now enter information using two ways: via a browser (recommended) or a text editor.
     #### Via Browser
     <details>
     <summary>Expand</summary>
@@ -192,10 +186,8 @@ If you plan to use low interval rates OR track several items from one store, it 
 
 ## Screenshots 
 ![Screenshot of URLs](https://i.imgur.com/yt6G4eB.jpg)<br><br>
----
-<br><br>![Screenshot of Settings](https://i.imgur.com/rsRe6ca.jpg)<br><br>
----
-<br><br>![Screenshot of Optional](https://i.imgur.com/fO1LQxk.jpg)
+![Screenshot of Settings](https://i.imgur.com/rsRe6ca.jpg)<br><br>
+![Screenshot of Optional](https://i.imgur.com/fO1LQxk.jpg)
 
 
 ## Feedback and Support
