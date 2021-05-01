@@ -66,6 +66,11 @@ export const {
 	SMS_METHOD, // "None", "Amazon Web Services", "Email", "Twilio"
 } = JSON.parse(fs.readFileSync("config/config.json", "UTF-8"));
 
+// Check for URLs
+if (URLS.length == 0) {
+	log.toConsole("error", "No URLs provided. Exiting.");
+}
+
 // Read proxies.txt
 export const PROXY_LIST = (() =>
 	PROXIES
