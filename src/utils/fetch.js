@@ -7,6 +7,7 @@ import HttpsProxyAgent from 'https-proxy-agent';
 import { AMAZON_MERCHANT_ID, PROXIES, PROXY_LIST } from '../main.js'
 
 
+const random = rand.create()
 const PROXY_BLOCKING_MESSAGES = [
     "Are you a human?",
     "Help us keep your account safe by clicking on the checkbox below",
@@ -34,7 +35,7 @@ export function getProxy(badProxies) {
         toConsole('info', 'All proxies used. Resetting bad proxy list.')
     }
     do {
-        proxy = 'http://' + PROXY_LIST[rand.create()(PROXY_LIST.length)];
+        proxy = 'http://' + PROXY_LIST[random(PROXY_LIST.length)];
     } while (badProxies.has(proxy))
     return proxy
 }

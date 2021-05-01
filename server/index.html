@@ -77,7 +77,7 @@
 									v-on:update_interval="updateInterval"
 									v-on:update_delay="updateDelay"
 									v-on:update_open_url="updateOpenURL"
-									v-on:update_alarm="updateAlarm"
+									v-on:update_desktop="updateDesktop"
 									v-on:update_proxies="updateProxies"
 									v-on:update_store_intervals="updateStoreIntervals"
 									v-on:update_amazon_merchant="updateAmazonMerchant"
@@ -248,9 +248,9 @@
 						delay_unit: this.user_settings.TIME_BETWEEN_CHECKS.unit,
 						delay_units: ["milliseconds", "seconds", "minutes", "hours"],
 
-						// Boolean: Open URL, Alarm, Proxies
+						// Boolean: Open URL, Desktop, Proxies
 						open_url: this.user_settings.OPEN_URL,
-						sound_alarm: this.user_settings.ALARM,
+						desktop_notification: this.user_settings.DESKTOP,
 						proxies: this.user_settings.PROXIES,
 
 						// Store Intervals
@@ -332,8 +332,8 @@
 						this.$emit("update_open_url", this.open_url);
 					},
 
-					updateAlarm() {
-						this.$emit("update_alarm", this.sound_alarm);
+					updateDesktop() {
+						this.$emit("update_desktop", this.desktop_notification);
 					},
 
 					updateProxies() {
@@ -422,7 +422,7 @@
 										</div>
                                     </v-col>
                                     
-                                    <!--  Open URL, Sound Alarm HTML  -->
+                                    <!--  Open URL, Desktop Notification HTML  -->
                                     <v-col md="6" class="ma-0 pa-3 pl-8 pr-8">
                                         <div style="display: flex; align-items: center; justify-content: center;">
                                             <v-checkbox class="mt-0" v-model="open_url" label="Open URL" @change="updateOpenURL" dense></v-checkbox>
@@ -432,17 +432,17 @@
                                                         <v-icon dark>mdi-help</v-icon>
                                                     </v-btn>
                                                 </template>
-                                                <span>Opens the product url in your default browser if checked when product is available.</span>
+                                                <span>Opens the product url in your default browser when product is available.</span>
                                             </v-tooltip>
                                             
-                                            <v-checkbox class="mt-0 ml-8 pl-8" v-model="sound_alarm" label="Sound Alarm" @change="updateAlarm"></v-checkbox>
+                                            <v-checkbox class="mt-0 ml-8 pl-8" v-model="desktop_notification" label="Desktop Notification" @change="updateDesktop"></v-checkbox>
                                             <v-tooltip bottom>
                                                 <template v-slot:activator="{ on, attrs }">
                                                     <v-btn class="ma-3 mb-9" color="primary" fab x-small v-bind="attrs" v-on="on">
                                                         <v-icon dark>mdi-help</v-icon>
                                                     </v-btn>
                                                 </template>
-                                                <span>Makes a sound when a product is in stock.</span>
+                                                <span>Sends a desktop notification.</span>
                                             </v-tooltip>
 
                                             <v-checkbox class="mt-0 ml-8 pl-8" v-model="proxies" label="Proxies" @change="updateProxies"></v-checkbox>
@@ -1540,9 +1540,9 @@
 						this.userSettings.OPEN_URL = boolean;
 					},
 
-					// Update alarm boolean
-					updateAlarm(boolean) {
-						this.userSettings.ALARM = boolean;
+					// Update Desktop boolean
+					updateDesktop(boolean) {
+						this.userSettings.DESKTOP = boolean;
 					},
 
 					// Update proxies boolean

@@ -1,15 +1,15 @@
 import open from "open";
-import sendAuditoryAlert from "./beep.js";	// TODO : REMOVE?
 import sendAlertToEmail from "./email.js";
+import sendDesktopAlert from "./desktop.js";
 import sendAlertToWebhooks from "./webhook.js";
 import sendAlertToSMSViaAWS from "./sms-aws.js";
 import sendAlertToSMSViaEmail from "./sms-email.js";
 import sendAlertToSMSViaTwilio from "./sms-twilio.js";
-import { ALARM, EMAIL, env_config, OPEN_URL, SMS_METHOD, WEBHOOK_URLS } from "../../main.js";
+import { DESKTOP, EMAIL, env_config, OPEN_URL, SMS_METHOD, WEBHOOK_URLS } from "../../main.js";
 
 let openedDonateLink = false;
 export default function sendAlerts(product_url, title, image, store) {
-	if (ALARM) sendAuditoryAlert()
+	if (DESKTOP) sendDesktopAlert(product_url, title, image, store)
 	if (EMAIL) sendAlertToEmail(env_config.email, product_url, title, image, store);
 	if (OPEN_URL) {
 		if (!openedDonateLink) {

@@ -3,7 +3,7 @@
 #### New in v3.0: SMS / Text notification support :iphone: !! (see [SMS](#SMS))
 ##### New in v2.0: :email: E-mail notification support and an user interface :computer: (see [screenshots](#Screenshots))
 ###### New in v1.0: Official release! New name and webhook notification support.
-<br><br>
+<br>
 
 # StockAlertBot
 Faced with the scenario of scalpers using bots to hog up all the inventory of popular holiday toys and sell them at ridiculously high markup prices, I decided to put up a fight so we can get our hands on things we ~~want~~ need to survive the #Coronavirus quarantine(s).
@@ -15,13 +15,13 @@ Donate, buy me a <a href="https://buymeacoff.ee/PrinceSingh" target="_blank">Piz
 <a href="https://www.buymeacoffee.com/PrinceSingh" target="_blank"><img src="https://i.imgur.com/H7BJq0V.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 <a href="https://www.paypal.me/PrinceSingh25" target="_blank"><img src="https://i.imgur.com/FDuYJBd.png" alt="Paypal me" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
 </p>
-<br><br>
+<br>
 
 
 ### How does it work?
 
 Enter links of the products you want tracked and how often you want the program to monitor them. When an item becomes available, you will be alerted through variety of notifications.
-<br><br>
+<br>
 
 ### Features
 * Add links and change settings **easily** through a browser page
@@ -37,7 +37,7 @@ Enter links of the products you want tracked and how often you want the program 
     * SMS / Text
     * Terminal
     * Webhooks: Discord, IFTTT, and Slack
-<br><br>
+<br>
 
 ### What stores/websites are supported?
 
@@ -96,7 +96,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
     5. Once you're happy with the settings, click `Save Settings`.\
     `config.json` and `.env` files in the `config` directory should now reflect your settings.\
     You can use `CTRL + C` or `CMD + C` to stop the program.
-    </details><br>
+    </details>
 
     #### Via Text Editor 
     <details>
@@ -116,7 +116,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
     `\
     **WARNING:** Having the interval too low might have negative consquences such as this program being detected as a bot or blocking your IP from accessing the website entirely. See [proxies](#Proxies). Setting `TIME_BETWEEN_CHECKS` might help prevent this. See step 3a from the other [method](#Via-Browser) for a detailed explanation and an example.
     3. Set `OPEN_URL` to false if you don't want the application to automatically open urls when item is in stock
-    4. Set `ALARM` to false if you want to disable the audible warning
+    4. Set `DESKTOP` to false if you want to disable desktop and audible warnings
     5. Optional Settings.
         1. **If** you're planning to track Amazon item(s), you can also set a merchant ID in `AMAZON_MERCHANT_ID` to only get prices from a ceratin merchant. The other [method](#Via-Browser) allows you to select pre-configured IDs items only sold by Amazon depending on the region.
         2. **If** you're planning to track Target item(s), enter your zip code in `TARGET_ZIP_CODE`.\
@@ -130,7 +130,7 @@ There are only two steps to use this program: 1) enter information and 2) launch
         4. **If** you want to use Proxies, change `PROXIES` to `true` and create a file called `proxies.txt` in the `config` directory and fill it with one proxy per line. See [proxies](#Proxies).
         5. **If** you want to send alerts to email, change `EMAIL` to `true`. Make a copy of `example.env` in the `config` directory and rename it to `.env`. Inside `.env`, type out one of the service providers (`EMAIL_SERVICE`) listed in [Email](#Email), your email (`EMAIL_FROM`) and password (`EMAIL_PASS`) and the email you want alerts sent to (`EMAIL_TO`). All without quotes.
         6. **If** you want to send alerts to SMS, change `SMS_METHOD` to either "Email", "Amazon Web Services", or "Twilio". Then change the associated values in `.env`. See [SMS](#SMS).
-    </details><br>
+    </details>
         
 2. Execute and continue about your day: 
     `npm start` OR `node --experimental-modules main.js`\
@@ -154,7 +154,7 @@ Supported email providers:
 
 
 ### SMS
-SMS / Text support is now available via Amazon Web Services, Email, or Twilio. This, however, requires some setup on your part. Read below regarding setup for each method:
+SMS / Text support is available via Amazon Web Services, Email, or Twilio. This, however, requires some setup on your part. Read below regarding setup for each method:
 
 - **[Amazon Web Services](https://aws.amazon.com/sns)**\
 First, read pricing information [here](https://aws.amazon.com/sns/faqs/#SMS_pricing). First 100 SMS are free for each month as long as you send them to a United States destination. For this method, you will need:
@@ -168,7 +168,7 @@ First, read pricing information [here](https://aws.amazon.com/sns/faqs/#SMS_pric
     Phone number is the number to send SMS to. You will need to include country code and area code. Country code information can be found [here](https://countrycode.org/).
 
 - **Email**\
-**FREE** but limited. Uses email to send text via phone carrier's [SMS gateway](https://en.wikipedia.org/wiki/SMS_gateway). Mostly the same setup as [Email](#Email).\
+**FREE** but limited. Uses email to send text via phone carrier's [SMS gateway](https://en.wikipedia.org/wiki/SMS_gateway#Email_clients). Mostly the same setup as [Email](#Email).\
 Currently supported carriers: Alltel, AT&T, Boost Mobil, Cricket Wireless, FirstNet, Google Project Fi, MetroPCS, Republic Wireless, Sprint, Straight Talk, T-Mobile, Ting, U.S. Cellular, Verizon Wireless, Virgin Mobile.\
 If you'd like to request a carrier, please refer to [Feedback and Support](#Feedback-and-Support) and provide your carrier's SMS gateway if possible.
 
@@ -186,16 +186,16 @@ First, read pricing information [here](https://www.twilio.com/sms/pricing). You 
 
 ### Proxies
 If you plan to use low interval rates OR track several items from one store, it is highly recommended that you use proxies such as ones from [Webshare](https://www.webshare.io/) in the format `ip:port` for IP-based authentication or `username:password@ip:port`.<br>\
-**NOTE:** The following stores do not currently with proxies due to them blocking some connections/headers which results in inconsistent connection: Argos, Best Buy, Costco, Gamestop and Tesco. Thus we thought it'd be best if we take off proxy support for now until we can do some further research or find an alternative way.
+**NOTE:** The following stores do not currently work with proxies due to them blocking some connections/headers which results in inconsistent connection: Argos, Best Buy, Costco, Gamestop and Tesco. Thus I thought it'd be best to take off proxy support for now until further research is done or an alternative way is found.
 <br><br>
 
 
 ## Screenshots 
-![Screenshot of URLs](https://i.imgur.com/YlIW0HQ.png)<br><br>
+![Screenshot of URLs](https://i.imgur.com/yt6G4eB.jpg)<br><br>
 ---
-<br><br>![Screenshot of Settings](https://i.imgur.com/feeFg8V.png)<br><br>
+<br><br>![Screenshot of Settings](https://i.imgur.com/rsRe6ca.jpg)<br><br>
 ---
-<br><br>![Screenshot of Optional](https://i.imgur.com/JczL8u5.png)
+<br><br>![Screenshot of Optional](https://i.imgur.com/fO1LQxk.jpg)
 
 
 ## Feedback and Support
@@ -249,6 +249,7 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 - [Dotenv](https://github.com/motdotla/dotenv)
 - [Moment](https://momentjs.com/)
 - [Node Fetch](https://github.com/node-fetch/node-fetch)
+- [Node Notifier](https://github.com/mikaelbr/node-notifier)
 - [Nodemailer](https://nodemailer.com/)
 - [Twilio](https://github.com/twilio/twilio-node)
 
