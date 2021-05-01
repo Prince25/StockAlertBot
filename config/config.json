@@ -1,53 +1,49 @@
 {
-    "URLS": [],
-    "INTERVAL": {
-        "unit": "seconds",
-        "value": 10
-    },
-    "TIME_BETWEEN_CHECKS": {
-        "unit": "seconds",
-        "value": 3
-    },
-    "STORE_INTERVALS": {},
-    "OPEN_URL": true,
-    "DESKTOP": true,
-    "AMAZON_MERCHANT_ID": "None",
-    "TARGET_ZIP_CODE": "90024",
-    "TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01",
-    "WEBHOOK_URLS": [],
-    "PROXIES": false,
-    "EMAIL": false,
-    "SMS_METHOD": "None",
-    "SUPPORTED_STORES_DOMAINS": [
-        "amazon",
-        "antonline",
-        "argos",
-        "bhphotovideo",
-        "bestbuy",
-        "costco",
-        "currys",
-        "ebuyer",
-        "gamestop",
-        "microcenter",
-        "newegg",
-        "target",
-        "tesco",
-        "walmart"
-    ],
-    "SUPPORTED_PROXY_DOMAINS": [
-        "amazon",
-        "antonline",
-        "bhphotovideo",
-        "currys",
-        "ebuyer",
-        "microcenter",
-        "newegg",
-        "target",
-        "walmart"
-    ],
-    "SUPPORTED_WEBHOOK_DOMAINS": [
-        "discord",
-        "slack",
-        "ifttt"
-    ]
+	"URLS": [],
+	"INTERVAL": {
+		"unit": "seconds",
+		"value": 10
+	},
+	"TIME_BETWEEN_CHECKS": {
+		"unit": "seconds",
+		"value": 3
+	},
+	"STORE_INTERVALS": {},
+	"OPEN_URL": true,
+	"DESKTOP": true,
+	"AMAZON_MERCHANT_ID": "None",
+	"TARGET_ZIP_CODE": "90024",
+	"TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01",
+	"WEBHOOK_URLS": [],
+	"PROXIES": false,
+	"EMAIL": false,
+	"SMS_METHOD": "None",
+	"SUPPORTED_STORES_DOMAINS": [
+		"amazon",
+		"antonline",
+		"argos",
+		"bhphotovideo",
+		"bestbuy",
+		"costco",
+		"currys",
+		"ebuyer",
+		"gamestop",
+		"microcenter",
+		"newegg",
+		"target",
+		"tesco",
+		"walmart"
+	],
+	"SUPPORTED_PROXY_DOMAINS": [
+		"amazon",
+		"antonline",
+		"bhphotovideo",
+		"currys",
+		"ebuyer",
+		"microcenter",
+		"newegg",
+		"target",
+		"walmart"
+	],
+	"SUPPORTED_WEBHOOK_DOMAINS": ["discord", "slack", "ifttt"]
 }

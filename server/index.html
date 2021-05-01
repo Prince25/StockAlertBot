@@ -284,26 +284,26 @@
 
 				computed: {
 					// Store Intervals
-					updateStores: function() {
-						this.store_intervals = []
-						const stores = Object.keys(this.user_settings.STORE_INTERVALS)
-						this.store_names.forEach(store => {
-							if(this.user_settings.STORE_INTERVALS.hasOwnProperty(store)) {
+					updateStores: function () {
+						this.store_intervals = [];
+						const stores = Object.keys(this.user_settings.STORE_INTERVALS);
+						this.store_names.forEach((store) => {
+							if (this.user_settings.STORE_INTERVALS.hasOwnProperty(store)) {
 								this.store_intervals.push({
 									name: store,
 									on: true,
-									...this.user_settings.STORE_INTERVALS[store]
-								})
+									...this.user_settings.STORE_INTERVALS[store],
+								});
 							} else {
 								this.store_intervals.push({
 									name: store,
 									on: false,
-									...this.user_settings.INTERVAL
-								})
+									...this.user_settings.INTERVAL,
+								});
 							}
-						})
-						return this.store_intervals
-					}
+						});
+						return this.store_intervals;
+					},
 				},
 
 				mounted() {
@@ -1354,7 +1354,7 @@
 			/*
                 Main Component
             */
-			const SERVER_ENDPOINT = 'http://localhost:3250';
+			const SERVER_ENDPOINT = "http://localhost:3250";
 			const app = new Vue({
 				el: "#app",
 				vuetify: new Vuetify(),
@@ -1443,15 +1443,14 @@
 					getStoreNames: function () {
 						if (this.userSettings.URLS && this.userSettings.URLS.length > 0) {
 							this.stores = new Set();
-							this.userSettings.URLS.forEach(url => {
+							this.userSettings.URLS.forEach((url) => {
 								const storeName = this.getDomainName(url);
-								this.stores.add(storeName)
-							})
+								this.stores.add(storeName);
+							});
 							return [...this.stores];
-						}
-						else {
+						} else {
 							this.stores = new Set();
-							return []
+							return [];
 						}
 					},
 				},
@@ -1552,15 +1551,15 @@
 
 					// Update store intervals
 					updateStoreIntervals(store_intervals) {
-						this.userSettings.STORE_INTERVALS = {}
-						store_intervals.forEach(store => {
+						this.userSettings.STORE_INTERVALS = {};
+						store_intervals.forEach((store) => {
 							if (store.on && this.stores.has(store.name)) {
 								this.userSettings.STORE_INTERVALS[store.name] = {
 									unit: store.unit,
-									value: store.value
+									value: store.value,
 								};
 							}
-						})
+						});
 					},
 
 					// Update Amazon Merchant
@@ -1577,19 +1576,19 @@
 					// Add a webhook URL
 					addWebhookURL(urlToAdd) {
 						if (this.isValidHttpUrl(urlToAdd)) {
-							if (this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some((webhookDomain) =>
+							if (
+								this.userSettings.SUPPORTED_WEBHOOK_DOMAINS.some((webhookDomain) =>
 									urlToAdd.includes(webhookDomain)
-								)) 
-							{
+								)
+							) {
 								if (!this.userSettings.WEBHOOK_URLS.includes(urlToAdd)) {
 									this.userSettings.WEBHOOK_URLS.push(urlToAdd);
 									document.getElementById("add_webhook_url_error").textContent =
 										"";
-								} else 
+								} else
 									document.getElementById("add_webhook_url_error").textContent =
 										"Error: URL already included.";
-							}
-							else
+							} else
 								document.getElementById("add_webhook_url_error").textContent =
 									"Error: Webhook currently not supported.";
 						} else
@@ -1702,7 +1701,7 @@
 					// Send settings via a POST request to be saved
 					sendSettings() {
 						axios
-							.post(SERVER_ENDPOINT + '/config', this.userSettings)
+							.post(SERVER_ENDPOINT + "/config", this.userSettings)
 							.then(function (response) {
 								console.log("User settings successfully written!", response);
 							})
@@ -1712,7 +1711,7 @@
 							});
 
 						axios
-							.post(SERVER_ENDPOINT + '/env', this.envSettings)
+							.post(SERVER_ENDPOINT + "/env", this.envSettings)
 							.then(function (response) {
 								console.log(".env settings successfully written!", response);
 							})
@@ -1726,7 +1725,7 @@
 				mounted() {
 					// Get settings already saved in file
 					axios
-						.get(SERVER_ENDPOINT + '/config')
+						.get(SERVER_ENDPOINT + "/config")
 						.then((res) => {
 							this.userSettings = res.data;
 							console.log("User settings successfully fetched!");
@@ -1754,7 +1753,7 @@
 
 					// Get .env data
 					axios
-						.get(SERVER_ENDPOINT + '/env')
+						.get(SERVER_ENDPOINT + "/env")
 						.then((res) => {
 							this.envSettings = res.data;
 							console.log(".env settings successfully fetched!");
