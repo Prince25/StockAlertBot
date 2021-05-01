@@ -3,18 +3,16 @@
 */
 export default function getMSFromInterval(interval) {
 	switch (interval.unit) {
-        case 'milliseconds':
-            return interval.value
+		case "milliseconds":
+			return interval.value;
 
 		case "seconds":
-            return interval.value * 1000
-			setInterval(storeFunction, INTERVAL.value * 1000, url, INTERVAL);
+			return interval.value * 1000;
 
 		case "minutes":
-            return interval.value * 1000 * 60
-			setInterval(storeFunction, INTERVAL.value * 1000 * 60, url, INTERVAL);
+			return interval.value * 1000 * 60;
 
 		case "hours":
-            return interval.value * 1000 * 60 * 60
+			return interval.value * 1000 * 60 * 60;
 	}
 }

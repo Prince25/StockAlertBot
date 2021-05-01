@@ -1,8 +1,7 @@
-import chalk from 'chalk'
+import chalk from "chalk";
 import moment from "moment";
-import * as log from '../log.js';
+import * as log from "../log.js";
 import nodemailer from "nodemailer";
-
 
 export default async function sendAlertToEmail(email, product_url, title, image, store) {
 	var transporter = nodemailer.createTransport({
@@ -30,10 +29,13 @@ export default async function sendAlertToEmail(email, product_url, title, image,
 
 	transporter.sendMail(mailOptions, function (error, info) {
 		if (error) {
-			log.toConsole('error', 'Error sending Email notification: ' + error)
-			log.toFile('Email', error)
+			log.toConsole("error", "Error sending Email notification: " + error);
+			log.toFile("Email", error);
 		} else {
-			log.toConsole('alert', 'Email notification sent to ' + chalk.yellow.bold(info.accepted[0]) + '!')
+			log.toConsole(
+				"alert",
+				"Email notification sent to " + chalk.yellow.bold(info.accepted[0]) + "!"
+			);
 		}
 	});
 }

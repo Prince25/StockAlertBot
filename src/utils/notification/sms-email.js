@@ -1,8 +1,7 @@
-import chalk from 'chalk'
+import chalk from "chalk";
 import moment from "moment";
-import * as log from '../log.js';
+import * as log from "../log.js";
 import nodemailer from "nodemailer";
-
 
 export default async function sendAlertToSMSViaEmail(sms_email, product_url, title, image, store) {
 	var transporter = nodemailer.createTransport({
@@ -30,10 +29,13 @@ export default async function sendAlertToSMSViaEmail(sms_email, product_url, tit
 
 	transporter.sendMail(mailOptions, (error, info) => {
 		if (error) {
-			log.toConsole('error', 'Error sending SMS via Email notification: ' + error)
-			log.toFile('sms-email', error)
+			log.toConsole("error", "Error sending SMS via Email notification: " + error);
+			log.toFile("sms-email", error);
 		} else {
-			log.toConsole('alert', 'SMS via Email notification sent to ' + chalk.yellow.bold(info.accepted[0]) + '!')
+			log.toConsole(
+				"alert",
+				"SMS via Email notification sent to " + chalk.yellow.bold(info.accepted[0]) + "!"
+			);
 		}
 	});
 }

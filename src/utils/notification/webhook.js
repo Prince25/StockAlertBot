@@ -1,13 +1,12 @@
 import moment from "moment";
-import fetch from 'node-fetch'
-import * as log from '../log.js';
+import fetch from "node-fetch";
+import * as log from "../log.js";
 
 export default async function sendAlertToWebhooks(WEBHOOK_URLS, product_url, title, image, store) {
 	for (const url of WEBHOOK_URLS) {
-		
 		// Notify Discord
 		if (url.includes("discord")) {
-			log.toConsole('alert', 'Sending notification to Discord!')
+			log.toConsole("alert", "Sending notification to Discord!");
 			fetch(url, {
 				method: "POST",
 				headers: {
@@ -48,15 +47,15 @@ export default async function sendAlertToWebhooks(WEBHOOK_URLS, product_url, tit
 					],
 				}),
 			}).catch((error) => {
-				log.toConsole('error', 'Error sending notification to Discord: ' + error)
-				log.toFile('Discord', error)
+				log.toConsole("error", "Error sending notification to Discord: " + error);
+				log.toFile("Discord", error);
 			});
 
-		// Notify Slack
+			// Notify Slack
 		} else if (url.includes("slack")) {
-			log.toConsole('alert', 'Sending notification to Slack!')
+			log.toConsole("alert", "Sending notification to Slack!");
 			fetch(url, {
-				method: 'POST',
+				method: "POST",
 				body: JSON.stringify({
 					attachments: [
 						{
@@ -86,32 +85,30 @@ export default async function sendAlertToWebhooks(WEBHOOK_URLS, product_url, tit
 							)}\nhttps://github.com/Prince25/StockAlertBot`,
 						},
 					],
-				})
-			})
-			.catch((error) => {
-				log.toConsole('error', 'Error sending notification to Slack: ' + error)
+				}),
+			}).catch((error) => {
+				log.toConsole("error", "Error sending notification to Slack: " + error);
 				log.toFile("Slack", error);
 			});
 
-		// Notify IFTTT  
-		} else if (url.includes('ifttt')) {
-			log.toConsole('alert', 'Sending notification to IFTTT!')
+			// Notify IFTTT
+		} else if (url.includes("ifttt")) {
+			log.toConsole("alert", "Sending notification to IFTTT!");
 			fetch(url, {
-				method: 'POST',
+				method: "POST",
 				url: url,
 				headers: {
-					"Content-type": "application/json"
+					"Content-type": "application/json",
 				},
 				body: JSON.stringify({
 					value1: title,
 					value2: product_url,
-					value3: image
-				})
-			})
-			.catch(error => {
-				log.toConsole('error', 'Error sending notification to IFTTT: ' + error)
-				log.toFile('IFTTT', error)
-			}) 
-		}  
-	}   
-} 
+					value3: image,
+				}),
+			}).catch((error) => {
+				log.toConsole("error", "Error sending notification to IFTTT: " + error);
+				log.toFile("IFTTT", error);
+			});
+		}
+	}
+}

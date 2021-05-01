@@ -1,10 +1,9 @@
 import Twilio from "twilio";
 import moment from "moment";
-import * as log from '../log.js';
-
+import * as log from "../log.js";
 
 export default async function sendAlertToSMSViaTwilio(twilio, product_url, title, store) {
-	log.toConsole('alert', 'Sending SMS notification via Twilio!')
+	log.toConsole("alert", "Sending SMS notification via Twilio!");
 
 	try {
 		var client = new Twilio(twilio.sid, twilio.auth);
@@ -16,7 +15,7 @@ export default async function sendAlertToSMSViaTwilio(twilio, product_url, title
 			)}\nhttps://github.com/Prince25/StockAlertBot`,
 		});
 	} catch (error) {
-		log.toConsole('error', 'Error sending SMS notification via Twilio: ' + error)
-		log.toFile('sms-twilio', error)
+		log.toConsole("error", "Error sending SMS notification via Twilio: " + error);
+		log.toFile("sms-twilio", error);
 	}
 }

@@ -1,11 +1,9 @@
 import aws from "aws-sdk";
 import moment from "moment";
-import * as log from '../log.js';
-
-
+import * as log from "../log.js";
 
 export default async function sendAlertToSMSViaAWS(service, product_url, title, store) {
-	log.toConsole('alert', 'Sending SMS notification via AWS!')
+	log.toConsole("alert", "Sending SMS notification via AWS!");
 
 	aws.config.update({
 		region: service.region,
@@ -25,8 +23,11 @@ export default async function sendAlertToSMSViaAWS(service, product_url, title, 
 
 	sns.publish(parameters, (error) => {
 		if (error) {
-			log.toConsole('error', 'Error sending SMS notification via AWS: ' + error + '\n' + error.stack)
-			log.toFile('sms-aws', error)
+			log.toConsole(
+				"error",
+				"Error sending SMS notification via AWS: " + error + "\n" + error.stack
+			);
+			log.toFile("sms-aws", error);
 		}
 	});
 }
