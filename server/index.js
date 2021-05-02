@@ -20,7 +20,7 @@ function readEnvironmentFile(firstRun) {
 	} catch {
 		if (firstRun) toConsole("info", ".env file not found! Creating a new one...");
 		environmentFile = fs.readFileSync("config/example.env", { encoding: "utf8", flag: "r" });
-		fs.writeFileSync("../config/.env", environmentFile);
+		fs.writeFileSync("config/.env", environmentFile);
 	}
 	return environmentFile;
 }
