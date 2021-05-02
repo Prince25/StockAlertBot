@@ -212,6 +212,7 @@
                                         v-model="url"
                                         :append-outer-icon="'mdi-plus'"
                                         @click:append-outer="add"
+										@keydown.enter="add"
                                     ></v-text-field>
                                     <v-tooltip bottom>
                                         <template v-slot:activator="{ on, attrs }">
@@ -881,6 +882,7 @@
                                         v-model="webhook_url"
                                         :append-outer-icon="'mdi-plus'"
                                         @click:append-outer="add"
+										@keydown.enter="add"
                                     ></v-text-field>
                                     <v-tooltip bottom>
                                         <template v-slot:activator="{ on, attrs }">
@@ -1138,21 +1140,24 @@
 							"qiye.aliyun",
 						],
 						carriers: {
-							Alltel: "sms.alltelwireless.com",
+							"Alltel": "sms.alltelwireless.com",
 							"AT&T": "txt.att.net",
 							"Boost Mobile": "sms.myboostmobile.com",
 							"Cricket Wireless": "mms.cricketwireless.net",
-							FirstNet: "txt.att.net",
+							"EE": "mms.ee.co.uk",
+							"FirstNet": "txt.att.net",
 							"Google Project Fi": "msg.fi.google.com",
-							MetroPCS: "mymetropcs.com",
+							"MetroPCS": "mymetropcs.com",
+							"O2": "mmail.co.uk",
 							"Republic Wireless": "text.republicwireless.com",
-							Sprint: "messaging.sprintpcs.com",
+							"Sprint": "messaging.sprintpcs.com",
 							"Straight Talk": "vtext.com",
 							"T-Mobile": "tmomail.net",
-							Ting: "message.ting.com",
+							"Ting": "message.ting.com",
 							"U.S. Cellular": "email.uscc.net",
 							"Verizon Wireless": "vtext.com",
 							"Virgin Mobile": "vmobl.com",
+							"Vodafone": "vodafone.net",
 						},
 					};
 				},

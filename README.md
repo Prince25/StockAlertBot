@@ -163,7 +163,7 @@ First, read pricing information [here](https://aws.amazon.com/sns/faqs/#SMS_pric
 
 - **Email**\
 **FREE** but limited. Uses email to send text via phone carrier's [SMS gateway](https://en.wikipedia.org/wiki/SMS_gateway#Email_clients). Mostly the same setup as [Email](#Email).\
-Currently supported carriers: Alltel, AT&T, Boost Mobil, Cricket Wireless, FirstNet, Google Project Fi, MetroPCS, Republic Wireless, Sprint, Straight Talk, T-Mobile, Ting, U.S. Cellular, Verizon Wireless, Virgin Mobile.\
+Currently supported carriers: Alltel, AT&T, Boost Mobil, Cricket Wireless, EE, FirstNet, Google Project Fi, MetroPCS, O2, Republic Wireless, Sprint, Straight Talk, T-Mobile, Ting, U.S. Cellular, Verizon Wireless, Virgin Mobile, Vodafone.\
 If you'd like to request a carrier, please refer to [Feedback and Support](#Feedback-and-Support) and provide your carrier's SMS gateway if possible.
 
 - **[Twilio](https://www.twilio.com/sms)**\
@@ -200,7 +200,6 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 ## Things to work on
 * Add more stores
     * Newegg search pages
-    * Overclockers
     * ~~B&H Photo Video~~
     * ~~Ebuyer~~
     * ~~Walmart~~
