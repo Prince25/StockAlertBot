@@ -50,7 +50,7 @@ Currently, the following stores are supported:
 * Newegg, including combo deals
 * Target, including local stock
 * Tesco (UK. Does not currently work with proxies)
-* Walmart
+* Walmart (No third party sellers)
 
 ![Console Screenshot](https://i.imgur.com/gKcgBrA.png)
 

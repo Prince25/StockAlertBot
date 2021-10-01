@@ -12,8 +12,8 @@ export default class Store {
 		this.items = [];
 		this.bad_proxies = new Set();
 		this.supports_proxies = SUPPORTED_PROXY_DOMAINS.includes(name);
-		(this.store_function = storeFunction),
-			(this.interval = getMs(STORE_INTERVALS[name] ? STORE_INTERVALS[name] : INTERVAL));
+		this.store_function = storeFunction;
+		this.interval = getMs(STORE_INTERVALS[name] ? STORE_INTERVALS[name] : INTERVAL);
 		this.delay = getMs(TIME_BETWEEN_CHECKS);
 	}
 

@@ -10,7 +10,7 @@
 		"eslint": "eslint",
 		"eslintFix": "eslint --fix",
 		"eslintFixAll": "eslint --fix .",
-		"prettier": "prettier",
+		"prettier": "prettier --write",
 		"prettierAll": "prettier --write ."
 	},
 	"dependencies": {
