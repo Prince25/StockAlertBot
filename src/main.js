@@ -18,7 +18,6 @@ import amazonFunction from "./stores/amazon.js";
 import antonlineFunction from "./stores/antonline.js";
 import argosFunction from "./stores/argos.js";
 import bestbuyFunction from "./stores/bestbuy.js";
-import bhphotovideoFunction from "./stores/bhphotovideo.js";
 import costcoFunction from "./stores/costco.js";
 import currysFunction from "./stores/currys.js";
 import ebuyerFunction from "./stores/ebuyer.js";
@@ -34,7 +33,6 @@ const storeFunctionMap = {
 	antonline: antonlineFunction,
 	argos: argosFunction,
 	bestbuy: bestbuyFunction,
-	bhphotovideo: bhphotovideoFunction,
 	costco: costcoFunction,
 	currys: currysFunction,
 	ebuyer: ebuyerFunction,

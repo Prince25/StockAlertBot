@@ -11,6 +11,7 @@ const PROXY_BLOCKING_MESSAGES = [
 	"Are you a human?",
 	"Help us keep your account safe by clicking on the checkbox below",
 	"we just need to make sure you're not a robot",
+	"discuss automated access to Amazon",
 ];
 
 /* 
@@ -106,15 +107,19 @@ export function fetchPage(url, store, use_proxies, badProxies, retry = false, ge
 			}
 		})
 		.then((html) => {
-			// If proxy was blocked, add to bad list and retry
-			if (
-				use_proxies &&
-				PROXIES &&
-				PROXY_BLOCKING_MESSAGES.some((message) => html.includes(message))
-			) {
-				toConsole("info", `Proxy, ${proxy}, was blocked! Retrying...`);
-				badProxies.add(proxy);
-				return fetchPage(url, store, use_proxies, badProxies, true);
+			// If request was blocked..
+			if (PROXY_BLOCKING_MESSAGES.some((message) => html.includes(message))) {
+				// ..via proxy, add it to bad list and retry
+				if (use_proxies && PROXIES) {
+					toConsole("info", `Proxy, ${proxy}, was blocked! Retrying...`);
+					badProxies.add(proxy);
+					return fetchPage(url, store, use_proxies, badProxies, true);
+				}
+				// Otherwise, Raise error
+				else {
+					sourceHTML = html;
+					throw new Error(`Request to ${store} was blocked!`);
+				}
 			}
 
 			return retry

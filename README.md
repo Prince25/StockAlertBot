@@ -40,7 +40,6 @@ Currently, the following stores are supported:
 * Amazon, with ability to track stock by a particular merchant
 * Argos (UK. Does not currently work with proxies)\
   For PS5, use the following links. Disc: `https://www.argos.co.uk/product/8349000`, Digital: `https://www.argos.co.uk/product/8349024`
-* B&H Photo Video
 * Best Buy, including open-box and packages (Does not currently work with proxies)
 * Costco (Does not currently work with proxies)
 * Currys (UK)
@@ -200,7 +199,8 @@ To provide monetary support, [donate](https://www.paypal.com/donate?business=3Y9
 ## Things to work on
 * Add more stores
     * Newegg search pages
-    * ~~B&H Photo Video~~
+    * Best Buy preorder alerts
+    * ~~B&H Photo Video~~ (no longer supported)
     * ~~Ebuyer~~
     * ~~Walmart~~
     * ~~Gamestop~~
