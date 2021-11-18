@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<!-- 
+		<!--
             Designed and coded by:
             Prabhjot "Prince" Singh
-            https://github.com/Prince25/StockAlertBot 
+            https://github.com/Prince25/StockAlertBot
         -->
 		<title>StockAlertBot Settings</title>
 
@@ -422,7 +422,7 @@
 											</v-tooltip>
 										</div>
                                     </v-col>
-                                    
+
                                     <!--  Open URL, Desktop Notification HTML  -->
                                     <v-col md="6" class="ma-0 pa-3 pl-8 pr-8">
                                         <div style="display: flex; align-items: center; justify-content: center;">
@@ -435,7 +435,7 @@
                                                 </template>
                                                 <span>Opens the product url in your default browser when product is available.</span>
                                             </v-tooltip>
-                                            
+
                                             <v-checkbox class="mt-0 ml-8 pl-8" v-model="desktop_notification" label="Desktop Notification" @change="updateDesktop"></v-checkbox>
                                             <v-tooltip bottom>
                                                 <template v-slot:activator="{ on, attrs }">
@@ -458,7 +458,7 @@
                                         </div>
                                         <p class="text-right red--text" v-if="proxies">Make sure to put proxies (one proxy per line) in the file, "config/proxies.txt".<br>
                                             Format: ip:port or username:password@ip:port.<br>
-                                            Argos, Best Buy, Costco and Tesco do not currently work with proxies.</p> 
+                                            Argos, Best Buy, Costco and Tesco do not currently work with proxies.</p>
                                     </v-col>
                                 </v-row>
 
@@ -490,7 +490,7 @@
 										</div>
                                     </div>
                                 </div>
-                                
+
                                 <!--  Amazon HTML  -->
                                 <div v-if="has_amazon">
                                     <v-divider inset></v-divider>
@@ -617,9 +617,9 @@
 
                                 <div style="width: 100%;" class="mb-4" v-if="webhook_expanded">
                                     <webhooks
-                                        v-bind:webhook_urls="user_settings.WEBHOOK_URLS" 
-                                        v-on:remove_webhook_url="$emit('remove_webhook_url', $event)" 
-                                        v-on:add_webhook_url="$emit('add_webhook_url', $event)" 
+                                        v-bind:webhook_urls="user_settings.WEBHOOK_URLS"
+                                        v-on:remove_webhook_url="$emit('remove_webhook_url', $event)"
+                                        v-on:add_webhook_url="$emit('add_webhook_url', $event)"
                                     />
                                 </div>
 
@@ -634,8 +634,8 @@
 
                                 <div style="width: 100%;" class="mb-4" v-if="sms_expanded">
                                     <sms
-                                        v-bind:user_settings="user_settings" 
-                                        v-bind:env_settings="env_settings" 
+                                        v-bind:user_settings="user_settings"
+                                        v-bind:env_settings="env_settings"
                                         v-on:update_method="$emit('update_sms_method', $event)"
                                         v-on:update_aws_region="$emit('update_sms_aws_region', $event)"
                                         v-on:update_aws_key="$emit('update_sms_aws_key', $event)"
@@ -661,13 +661,13 @@
                                 </div>
 
                                 <div v-if="email" style="width: 100%;">
-                                    <email 
+                                    <email
                                         v-bind:settings="env_settings"
-                                        v-on:update_service="$emit('update_email_service', $event)" 
-                                        v-on:update_from="$emit('update_email_from', $event)" 
-                                        v-on:update_pass="$emit('update_email_pass', $event)" 
-                                        v-on:update_to="$emit('update_email_to', $event)" 
-                                        class="ma-4" 
+                                        v-on:update_service="$emit('update_email_service', $event)"
+                                        v-on:update_from="$emit('update_email_from', $event)"
+                                        v-on:update_pass="$emit('update_email_pass', $event)"
+                                        v-on:update_to="$emit('update_email_to', $event)"
+                                        class="ma-4"
                                     />
                                 </div>
 
@@ -929,38 +929,38 @@
 
                                 <!--  AWS SMS HTML  -->
                                 <div v-if="method === 'Amazon Web Services'" style="width: 100%;">
-                                    <aws-sms 
+                                    <aws-sms
                                         v-bind:settings="env_settings"
                                         v-on:update_region="$emit('update_aws_region', $event)"
                                         v-on:update_key="$emit('update_aws_key', $event)"
                                         v-on:update_secret="$emit('update_aws_secret', $event)"
-                                        v-on:update_phone="$emit('update_aws_phone', $event)" 
-                                        class="ma-4" 
+                                        v-on:update_phone="$emit('update_aws_phone', $event)"
+                                        class="ma-4"
                                     />
                                 </div>
 
                                 <!--  EMAIL SMS HTML  -->
                                 <div v-if="method === 'Email'" style="width: 100%;">
-                                    <email-sms 
+                                    <email-sms
                                         v-bind:settings="env_settings"
                                         v-on:update_service="$emit('update_service', $event)"
                                         v-on:update_from="$emit('update_from', $event)"
                                         v-on:update_pass="$emit('update_pass', $event)"
                                         v-on:update_carrier="$emit('update_carrier', $event)"
                                         v-on:update_phone="$emit('update_phone', $event)"
-                                        class="ma-4" 
+                                        class="ma-4"
                                     />
                                 </div>
 
                                 <!--  TWILIO SMS HTML  -->
                                 <div v-if="method === 'Twilio'" style="width: 100%;">
-                                    <twilio-sms 
+                                    <twilio-sms
                                         v-bind:settings="env_settings"
                                         v-on:update_sid="$emit('update_twilio_sid', $event)"
                                         v-on:update_auth="$emit('update_twilio_auth', $event)"
                                         v-on:update_from="$emit('update_twilio_from', $event)"
                                         v-on:update_to="$emit('update_twilio_to', $event)"
-                                        class="ma-4" 
+                                        class="ma-4"
                                     />
                                 </div>
                             </div>`,
@@ -1151,11 +1151,11 @@
 							"O2": "mmail.co.uk",
 							"Republic Wireless": "text.republicwireless.com",
 							"Sprint": "messaging.sprintpcs.com",
-							"Straight Talk": "vtext.com",
 							"T-Mobile": "tmomail.net",
 							"Ting": "message.ting.com",
 							"U.S. Cellular": "email.uscc.net",
-							"Verizon Wireless": "vtext.com",
+							"Verizon Wireless / Straight Talk": "vtext.com",
+							"Verizon Wireless MMS": "vzwpix.com",
 							"Virgin Mobile": "vmobl.com",
 							"Vodafone": "vodafone.net",
 						},
@@ -1243,7 +1243,7 @@
                                         <span>Carrier of the phone number.</span>
                                     </v-tooltip>
                                 </div>
-                                
+
                                 <!--  Phone HTML  -->
                                 <div style="display: flex; align-items: center; justify-content: center;">
                                     <p class="text-overline mb-5" style="font-size: 1rem!important;">Phone Number</p>
