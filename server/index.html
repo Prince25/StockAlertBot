@@ -1141,23 +1141,28 @@
 						],
 						carriers: {
 							"Alltel": "sms.alltelwireless.com",
-							"AT&T": "txt.att.net",
+							"AT&T / FirstNet": "txt.att.net",
+							"AT&T MMS": "mms.att.net",
 							"Boost Mobile": "sms.myboostmobile.com",
-							"Cricket Wireless": "mms.cricketwireless.net",
+							"Boost Mobile MMS": "myboostmobile.com",
+							"Cricket Wireless": "sms.cricketwireless.net",
+							"Cricket Wireless MMS": "mms.cricketwireless.net",
 							"EE": "mms.ee.co.uk",
-							"FirstNet": "txt.att.net",
-							"Google Project Fi": "msg.fi.google.com",
-							"MetroPCS": "mymetropcs.com",
+							"Google Fi SMS & MMS": "msg.fi.google.com",
+							"MetroPCS SMS & MMS": "mymetropcs.com",
 							"O2": "mmail.co.uk",
 							"Republic Wireless": "text.republicwireless.com",
 							"Sprint": "messaging.sprintpcs.com",
-							"T-Mobile": "tmomail.net",
+							"Sprint MMS": "pm.sprint.com",
+							"T-Mobile SMS & MMS": "tmomail.net",
 							"Ting": "message.ting.com",
 							"U.S. Cellular": "email.uscc.net",
-							"Verizon Wireless / Straight Talk": "vtext.com",
+							"U.S. Cellular MMS": "mms.uscc.net",
+							"Verizon Wireless / Straight Talk / Xfinity Mobile": "vtext.com",
 							"Verizon Wireless MMS": "vzwpix.com",
 							"Virgin Mobile": "vmobl.com",
 							"Vodafone": "vodafone.net",
+              "Xfinity Mobile MMS / Virgin Mobile MMS": "mypixmessages.com",
 						},
 					};
 				},
@@ -1240,7 +1245,7 @@
                                                 <v-icon dark>mdi-help</v-icon>
                                             </v-btn>
                                         </template>
-                                        <span>Carrier of the phone number.</span>
+                                        <span>Carrier of the phone number. Default sending is SMS, some carriers support MMS as well, individual carrier rates may apply.</span>
                                     </v-tooltip>
                                 </div>
 
@@ -1258,7 +1263,7 @@
                                         </template>
                                         <span>Include area code (just digits, no special characters).</span>
                                     </v-tooltip>
-                                </div>>
+                                </div>
                             </div>`,
 			});
 
