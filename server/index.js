@@ -1,108 +1,62 @@
 import { toConsole } from "../src/utils/log.js";
-
-toConsole("setup", "Setting up server...");
-
-// Support require
 import { createRequire } from "module";
+import { readFileSync, writeFileSync } from "fs";
+import express from "express";
+import { parse, stringify } from "envfile";
+import { resolve } from "path";
+import open from "open";
+
 const require = createRequire(import.meta.url);
+const app = express();
+const port = 3250;
+const envFile = "config/.env";
+const exampleEnvFile = "config/example.env";
+const configFile = "config/config.json";
 
-// Attempt to read .env file
-// If it doesn't exist, create an .env file with example.env information
-toConsole("setup", "Looking for .env file...");
-const fs = require("fs");
-var firstRun = true;
-function readEnvironmentFile(firstRun) {
-	let environmentFile = "";
-	try {
-		environmentFile = fs.readFileSync("config/.env", { encoding: "utf8", flag: "r" });
-		if (environmentFile == "") throw new Error(".env file empty!");
-		if (firstRun) toConsole("info", ".env file found! Attempting to read...");
-	} catch {
-		if (firstRun) toConsole("info", ".env file not found! Creating a new one...");
-		environmentFile = fs.readFileSync("config/example.env", { encoding: "utf8", flag: "r" });
-		fs.writeFileSync("config/.env", environmentFile);
-	}
-	return environmentFile;
-}
-readEnvironmentFile(firstRun);
-firstRun = false;
-
-// Import stuff
-toConsole("setup", "Importing important stuff...");
-const { parse, stringify } = require("envfile");
-var open = require("open");
-var express = require("express");
-var path = require("path");
-var cors = require("cors");
-var app = express();
-
-// Setup express with CORS on port 3250
-toConsole("setup", "Starting server...");
-app.use(cors());
-app.options("*", cors());
-app.listen(3250, "0.0.0.0", listening);
-
-function listening() {
-	toConsole("setup", "Server started!");
+// Attempt to read .env file, if it doesn't exist, create an .env file with example.env information
+let environmentFile = "";
+try {
+  environmentFile = readFileSync(envFile, { encoding: "utf8", flag: "r" });
+  if (environmentFile === "") throw new Error(".env file empty!");
+  toConsole("info", ".env file found! Attempting to read...");
+} catch {
+  toConsole("info", ".env file not found! Creating a new one...");
+  environmentFile = readFileSync(exampleEnvFile, { encoding: "utf8", flag: "r" });
+  writeFileSync(envFile, environmentFile);
 }
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-/*
-  Setup routes
-*/
-toConsole("setup", "Setting up routes...");
+// Setup routes
+app.get("/", (req, res) => {
+  res.sendFile(resolve() + "/server/index.html");
+});
 
-// index.html: https://localhost:3250/
-app.get("/", getPage);
-function getPage(request, response) {
-	response.sendFile(path.join(path.resolve() + "/server/index.html"));
-}
+app.get("/env", (req, res) => {
+  res.send(parse(environmentFile));
+});
 
-// GET .env: https://localhost:3250/env
-app.get("/env", getEnvironment);
-function getEnvironment(request, response) {
-	let environmentFile = readEnvironmentFile(firstRun);
-	response.send(parse(environmentFile));
-}
+app.post("/env", (req, res) => {
+  const environmentSettings = stringify(req.body);
+  writeFileSync(envFile, environmentSettings, "utf8");
+  res.send({ message: "Successfully saved .env" });
+});
 
-// POST .env: https://localhost:3250/env
-app.post("/env", postEnvironment);
-function postEnvironment(request, response) {
-	toConsole("info", "Settings received! Saving to .env...");
-	let environmentSettings = stringify(request.body);
+app.get("/config", (req, res) => {
+  res.sendFile(resolve() + "/config/config.json");
+});
 
-	fs.writeFile("config/.env", environmentSettings, "utf8", function (error) {
-		if (error) {
-			response.status(400).send({ error: "Error writing .env" });
-		} else {
-			response.send({ message: "Successfully saved .env" });
-		}
-	});
-}
+app.post("/config", (req, res) => {
+  const settings = JSON.stringify(req.body, undefined, 4);
+  writeFileSync(configFile, settings, "utf8");
+  res.send({ message: "Successfully saved config.json" });
+});
 
-// GET config.json: https://localhost:3250/config
-app.get("/config", getSettings);
-function getSettings(request, response) {
-	response.sendFile(path.join(path.resolve() + "/config/config.json"));
-}
-
-// POST config.json: https://localhost:3250/config
-app.post("/config", postSettings);
-function postSettings(request, response) {
-	toConsole("info", "Settings received! Saving to config.json...");
-	let settings = JSON.stringify(request.body, undefined, 4);
-
-	fs.writeFile("config/config.json", settings, "utf8", function (error) {
-		if (error) {
-			response.status(400).send({ error: "Error writing config.json" });
-		} else {
-			response.send({ message: "Successfully saved config.json" });
-		}
-	});
-}
-
-toConsole("info", "Opening settings page on http://localhost:3250/...");
-open("http://localhost:3250/");
+// Start server
+app.listen(port, "0.0.0.0", () => {
+  toConsole("setup", `Server started on port ${port}`);
+  toConsole("info", `Opening settings page on http://localhost:${port}/...`);
+  open(`http://localhost:${port}/`);
+});
