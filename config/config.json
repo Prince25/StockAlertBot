@@ -1,54 +1,47 @@
 {
-    "URLS": [
-        "https://www.microcenter.com/product/674504/amd-ryzen-9-7900x-raphael-am5-47ghz-12-core-boxed-processor-heatsink-not-included",
-        "https://www.microcenter.com/product/687907/amd-ryzen-7-9800x3d-granite-ridge-am5-470ghz-8-core-boxed-processor-heatsink-not-included"
-    ],
-    "INTERVAL": {
-        "unit": "seconds",
-        "value": 10
-    },
-    "TIME_BETWEEN_CHECKS": {
-        "unit": "seconds",
-        "value": 3
-    },
-    "STORE_INTERVALS": {},
-    "OPEN_URL": true,
-    "DESKTOP": true,
-    "AMAZON_MERCHANT_ID": "None",
-    "TARGET_ZIP_CODE": "90024",
-    "TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01",
-    "WEBHOOK_URLS": [],
-    "PROXIES": false,
-    "EMAIL": false,
-    "SMS_METHOD": "None",
-    "SUPPORTED_STORES_DOMAINS": [
-        "amazon",
-        "antonline",
-        "argos",
-        "bestbuy",
-        "costco",
-        "currys",
-        "ebuyer",
-        "gamestop",
-        "microcenter",
-        "newegg",
-        "target",
-        "tesco",
-        "walmart"
-    ],
-    "SUPPORTED_PROXY_DOMAINS": [
-        "amazon",
-        "antonline",
-        "currys",
-        "ebuyer",
-        "microcenter",
-        "newegg",
-        "target",
-        "walmart"
-    ],
-    "SUPPORTED_WEBHOOK_DOMAINS": [
-        "discord",
-        "slack",
-        "ifttt"
-    ]
+	"URLS": [],
+	"INTERVAL": {
+		"unit": "seconds",
+		"value": 10
+	},
+	"TIME_BETWEEN_CHECKS": {
+		"unit": "seconds",
+		"value": 3
+	},
+	"STORE_INTERVALS": {},
+	"OPEN_URL": true,
+	"DESKTOP": true,
+	"AMAZON_MERCHANT_ID": "None",
+	"TARGET_ZIP_CODE": "90024",
+	"TARGET_KEY": "ff457966e64d5e877fdbad070f276d18ecec4a01",
+	"WEBHOOK_URLS": [],
+	"PROXIES": false,
+	"EMAIL": false,
+	"SMS_METHOD": "None",
+	"SUPPORTED_STORES_DOMAINS": [
+		"amazon",
+		"antonline",
+		"argos",
+		"bestbuy",
+		"costco",
+		"currys",
+		"ebuyer",
+		"gamestop",
+		"microcenter",
+		"newegg",
+		"target",
+		"tesco",
+		"walmart"
+	],
+	"SUPPORTED_PROXY_DOMAINS": [
+		"amazon",
+		"antonline",
+		"currys",
+		"ebuyer",
+		"microcenter",
+		"newegg",
+		"target",
+		"walmart"
+	],
+	"SUPPORTED_WEBHOOK_DOMAINS": ["discord", "slack", "ifttt"]
 }
