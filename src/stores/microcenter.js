@@ -8,11 +8,12 @@ export default function microcenter(html) {
 		const $ = cheerio.load(html);
 		const title = $(TITLE_SELECTOR).attr("content")?.replace(" - Micro Center", "");
 		const image = $(IMAGE_SELECTOR).attr("src");
+		
 		let inventory = undefined;
 
-		if (html.includes("in stock")) {
+		if (html.includes("NEW IN STOCK") || html.includes("Open Box:")) {
 			inventory = true;
-		} else if (!html.includes("in stock")) {
+		} else if (!html.includes("NEW IN STOCK") || !html.includes("Open Box:")) {
 			inventory = false;
 		}
 
