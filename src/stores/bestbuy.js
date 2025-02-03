@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import * as cheerio from 'cheerio';
 
 /*
     Checks Best Buy in the following order:

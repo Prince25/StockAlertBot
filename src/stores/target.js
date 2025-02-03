@@ -1,4 +1,4 @@
-import cheerio from "cheerio";
+import * as cheerio from 'cheerio';
 import { fetchPage } from "../utils/fetch.js";
 import { TARGET_KEY, TARGET_ZIP_CODE } from "../main.js";
 

@@ -1,17 +1,17 @@
-import aws from "aws-sdk";
+import { SNS } from "@aws-sdk/client-sns";
 import moment from "moment";
 import * as log from "../log.js";
 
 export default async function sendAlertToSMSViaAWS(service, product_url, title, store) {
 	log.toConsole("alert", "Sending SMS notification via AWS!");
 
-	aws.config.update({
+	var sns = new SNS({
 		region: service.region,
-		accessKeyId: service.key,
-		secretAccessKey: service.secret,
+		credentials: {
+			accessKeyId: service.key,
+			secretAccessKey: service.secret,
+		},
 	});
-
-	var sns = new aws.SNS();
 
 	var parameters = {
 		Message: `${title} in stock at ${store}! \n\n${product_url} \n\nStockAlertBot | ${moment().format(

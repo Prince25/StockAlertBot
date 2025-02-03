@@ -14,23 +14,23 @@
 		"prettierAll": "prettier --write ."
 	},
 	"dependencies": {
-		"aws-sdk": "^2.833.0",
+		"@aws-sdk/client-sns": "^3.738.0",
 		"axios": "^1.7.9",
-		"chalk": "^4.1.0",
-		"cheerio": "^1.0.0-rc.5",
+		"chalk": "^4.1.2",
+		"cheerio": "^1.0.0",
 		"cors": "^2.8.5",
-		"dotenv": "^8.2.0",
-		"envfile": "^6.14.0",
-		"express": "^4.17.1",
-		"https-proxy-agent": "^5.0.0",
-		"moment": "^2.29.1",
-		"node-fetch": "^2.6.1",
+		"dotenv": "^8.6.0",
+		"envfile": "^6.22.0",
+		"express": "^4.21.2",
+		"https-proxy-agent": "^5.0.1",
+		"moment": "^2.30.1",
+		"node-fetch": "^2.7.0",
 		"node-notifier": "^9.0.1",
-		"nodemailer": "^6.4.17",
-		"open": "^7.3.0",
+		"nodemailer": "^6.10.0",
+		"open": "^7.4.2",
 		"random-seed": "^0.3.0",
 		"random-useragent": "^0.5.0",
-		"tmp": "^0.2.1",
+		"tmp": "^0.2.3",
 		"twilio": "^5.4.3"
 	},
 	"repository": {
@@ -44,10 +44,10 @@
 	},
 	"homepage": "https://github.com/Prince25/StockAlertBot#readme",
 	"devDependencies": {
-		"eslint": "^7.22.0",
-		"eslint-config-prettier": "^8.1.0",
-		"eslint-plugin-prettier": "^3.3.1",
+		"eslint": "^7.32.0",
+		"eslint-config-prettier": "^8.10.0",
+		"eslint-plugin-prettier": "^3.4.1",
 		"eslint-plugin-unicorn": "^29.0.0",
-		"prettier": "^2.2.1"
+		"prettier": "^2.8.8"
 	}
 }
