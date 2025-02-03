@@ -15,7 +15,8 @@
 			"error",
 			{},
 			{
-				"usePrettierrc": true
+				"usePrettierrc": true,
+				"endOfLine": "auto",
 			}
 		],
 		"no-multiple-empty-lines": ["error", { "max": 3, "maxEOF": 1, "maxBOF": 1 }], // Doesn't work. Overridden by Prettier
