@@ -11,7 +11,8 @@ const PROXY_BLOCKING_MESSAGES = [
 	"Are you a human?",
 	"Help us keep your account safe by clicking on the checkbox below",
 	"we just need to make sure you're not a robot",
-	"discuss automated access to Amazon",
+	"discuss automated access to Amazon", // Amazon
+	"detected unusual traffic from this device", // Newegg
 ];
 
 /* 
