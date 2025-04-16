@@ -40,7 +40,6 @@ Currently, the following stores are supported:
 * Argos (UK. Does not currently work with proxies)\
   For PS5, use the following links. Disc: `https://www.argos.co.uk/product/8349000`, Digital: `https://www.argos.co.uk/product/8349024`
 * Best Buy, including open-box and packages (Does not currently work with proxies)
-* Costco (Does not currently work with proxies)
 * Currys (UK)
 * Ebuyer (UK)
 * Gamestop (Does not currently work with proxies)
@@ -193,7 +192,7 @@ First, read pricing information [here](https://www.twilio.com/sms/pricing). You 
 <summary>Expand for important information</summary>
 
 If you plan to use low interval rates OR track several items from one store, it is highly recommended that you use proxies such as ones from [Webshare](https://www.webshare.io/) in the format `ip:port` for IP-based authentication or `username:password@ip:port`.<br>\
-**NOTE:** The following stores do not currently work with proxies due to them blocking some connections/headers which results in inconsistent connection: Argos, Best Buy, Costco, Gamestop and Tesco. Thus I thought it'd be best to take off proxy support for now until further research is done or an alternative way is found.
+**NOTE:** The following stores do not currently work with proxies due to them blocking some connections/headers which results in inconsistent connection: Argos, Best Buy, Gamestop and Tesco. Thus I thought it'd be best to take off proxy support for now until further research is done or an alternative way is found.
 </details>
 <br>
 
